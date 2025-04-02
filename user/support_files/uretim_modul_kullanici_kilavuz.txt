@@ -1,0 +1,70 @@
+
+SAYFALAR:
+
+Kullanıcı Sayfaları:
+Müşteri Ekleme / Listeleme /Detay gösterme
+Dosya oluşturma (Teklif)
+Sözleşme dosyası yükleme  yada sözleşme statusune alma
+Üretim listesi
+Üretim Planlama
+Üretim Kontrol/Takip
+İş statu güncelleme/tamamlama - Kullanılan malzeme - Üretilen adet
+Takvim
+
+Admin Sayfaları : 
+Tanımlama / Ayar Sayfaları
+Üretim adımları oluşturma
+Adım Statu/Durum tanımlama,renklendirme
+İş adımlarında kullanılacak ürün belirleme
+Varsayılan kullanıcı/makina belirleme
+
+
+Müşteri listesinden detaylarını görmek istediğiniz müşteri tıklandığında aşağıdaki sayfa gelir. Sistemde bu müşteri ile ilgili tüm bilgilere buradan ulaşabilirsiniz.
+
+
+Üretim veya özel siparişleri barındıran teklifler bu ekrandan girilir.  
+Teklif veya sözleşme seçimi yapılır. dosya girilmesi zorunlu değildir. 
+Teklif ile birlikte üretim adımları otomatik oluşur
+
+Teklif listesi ürezinde teklif ve sözleşme dosyalarına ulaşabilirsiniz. 
+Teklif veya Sözleşme yüklemesi yapabilirsiniz. 
+Filtreleme kısmında genel veya firmanıza özel tanımladığınız statuleri seçebilirsiniz.
+
+Üretim listesinden genel durumu takip edebildiğiniz gibi işin kaldığı adımdaki işlemide tek tıkla başlatabilirsiniz.
+
+Sisteme yüklediğiniz sablon sözleşme excel dosyası üretinde otomatik olarak gerekli bilgiler doldurularak download etmenize olanak tanınmaktadır.
+
+Sözleşme durumuna göre satırlar renklendirilmekte ve bu renkleri siz isteğinize göre değiştirebilmektesiniz.
+
+Planlama ekranı:
+
+Sistem üzerinde istediğini üretim tiplerini kendiniz tanımlayabilmektediniz.
+Bu üretim tiplerine ait :
+İş adımlarını 
+Bu adımlarda kullanılabilecek ürün/malzemeleri 
+Kişileri 
+Makinaları
+Statuleri ve Statu renklerini
+Firmanıza özel olarak tanımlayabilirsiniz.
+
+Kontrol ekranında iş adımlarının statulerini güncelleyebilirsiniz. Özel tanımlanmış datalarınızı veya kullanılmış olan toplam ürün/malzeme miktarını girebilirsiniz. Burada gözüken adetler üretim süresince sisteme girilmiş adetlerin toplamını yansıtmaktadır.
+
+Üzerinizde üretim ile ilgili işleri listeleyebilir bunu güncelleyebilirsiniz. 
+
+Kullanılam ürün / malzeme adetleri
+Tamamlanmış üretim adetlerini sisteme günlük olarak girebilirsiniz.
+
+Üretim ile ilgili ilk tanımlamaları , makina ve araçları buradan girebilir bunlarla ilgili arıza bakım gibi durumları kayıt altına alabilirsiniz 
+
+Üretim tipleri buradan tanımlanabilir ve iş listesi eklenebilir
+
+Üretim tipine ait iş listesi. Göz ikonuna tıkladığınızda detay sayfası açılacak
+
+İş listesin detaylarında , bu iş için kullanacağınız statuleri  bunların renklerini ve kullanılabilecek ürünler sistemde tanımlayabilirisniiz.
+
+Üretim planlama ekranında var defult tanımlı iş listesine ekleme yapabilrisiniz. Tanımladığını kişi veya makinaları değiştirebilir zaman planlamasını girebilirsiniz.
+
+Sevk tarihi girildiğinde takvim de gözükecektir.
+
+Kişilere atanan işleri sms ile gönderebilirsiniz yada ekrandan kendi üzerindeki işlere tıkladıklarında aşağıdaki şekilde sayfalar görükecek.
+bu ekranlardan statu güncellemesi, kullanılan ürün veya üretile adetleri sistem girebilirler.

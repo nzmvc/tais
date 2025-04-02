@@ -1,0 +1,116 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<meta name="description" content="Teknolikya TOYU" />
+	<meta name="author" content="TEKNOLİKYA" />
+	<title>TOYU</title>
+	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+	<!-- icons -->
+	<link href="{% static 'assets/fonts/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/fonts/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/fonts/material-design-icons/material-icon.css' %}" rel="stylesheet" type="text/css" />
+	<!--bootstrap -->
+	<link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+	<!-- data tables -->
+	<link href="{% static 'assets/plugins/datatables/plugins/bootstrap/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+		type="text/css" />
+
+	<!-- Material Design Lite CSS -->
+	<link rel="stylesheet" href="{% static 'assets/css/pages/extra_pages.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/plugins/material/material.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/material_style.css'%}">
+	<link rel="shortcut icon" href="../../static/TEKNOLIKYA_icon.png" />
+
+</head>
+<!-- END HEAD -->
+
+{%if "dark" == request.session.theme %}
+	<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-dark dark-sidebar-color logo-dark dark-theme">
+{%else%}
+	<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-white white-sidebar-color logo-indigo">
+{%endif%}
+
+
+
+
+	<div class="limiter">
+		<div class="container-login100 page-background">
+			<div class="wrap-login100">
+				
+				<form class="login100-form validate-form" method="post">
+					{% csrf_token "%}
+					<span class="login100-form-logo">
+						<img alt="" src="../../static/TEKNOLIKYA_icon.png">
+					</span>
+					<span class="login100-form-title p-b-34 p-t-27">
+						Login
+					</span>
+					<div class="wrap-input100 validate-input" data-validate="Enter username">
+						<input class="input100" type="text" name="username" placeholder="Username">
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" name="password" placeholder="Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+					<div class="contact100-form-checkbox">
+						<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+						<label class="label-checkbox100" for="ckb1">
+							Remember me
+						</label>
+					</div>
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Login
+						</button>
+					</div>
+					<br>
+					
+				</form>
+				<div class="container-login100-form-btn">
+					<a class="txt1" href="/user/register">
+						<button class="login100-form-btn">
+							Register
+						</button>
+					</a>
+				</div>
+				<div class="text-center p-t-30">
+					<a class="txt1" href="/user/password_reset">
+						Forgot Password?
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+</body>
+
+<script>
+// Find the right method, call on correct element
+
+var elem = document.documentElement; if (elem.requestFullscreen) { elem.requestFullscreen() }
+
+
+function launchFullScreen(element) {
+  if(element.requestFullScreen) {
+    element.requestFullScreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen();
+  }
+}
+
+// Launch fullscreen for browsers that support it!
+launchFullScreen(document.documentElement); // the whole page
+</script>
+
+</html>

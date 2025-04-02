@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+  <h1>Username: {{ user.username}}</h1>
+  <hr><br><br><br>
+    <div >
+        
+        <h3> Sahip Olduğu Yetkiler</h3>   
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Content_Type_ID</th>
+              <th scope="col">CODENAME</th>
+              <th scope="col">NAME</th>
+              <th scope="col"></th>
+              
+            </tr>
+          </thead>
+          <tbody>
+              {% for perm in user_p_list %}
+                
+                <tr>
+                  <th scope="row">{{perm.content_type_id}}</th>
+                  <td>{{perm.codename}}</td>
+                  <td>{{perm.name}}</td>
+                
+                  
+                  <td><a href="/user/userYetki/{{userid}}/remove/{{perm.codename}}"><button class="btn btn-danger btn-sm">Sil</button></a></td>
+                </tr>
+              {% endfor %}
+            
+        
+          </tbody>
+        </table>
+     
+    
+    </div>  
+    <div><br><br></div>
+    <div>
+        <h3> Yetki ekleme</h3>   
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Content_Type_ID</th>
+              <th scope="col">CODENAME</th>
+              <th scope="col">NAME</th>
+              <th scope="col"></th>
+              
+            </tr>
+          </thead>
+          <tbody>
+              {% for perm in p_list %}
+                  {% if perm not in user_p_list %}
+                    <tr>
+                      <th scope="row">{{perm.content_type_id}}</th>
+                      <td>{{perm.codename}}</td>
+                      <td>{{perm.name}}</td>
+                    
+                      
+                      <td><a href="/user/userYetki/{{userid}}/add/{{perm.codename}}"><button class="btn btn-success btn-sm">Ekle</button></a></td>
+                    </tr>
+                  {%endif%}  
+              {% endfor %}
+            
+        
+          </tbody>
+        </table>
+     
+    
+    </div>  
+
+     
+</div>
+{% endblock body %}

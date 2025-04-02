@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div >
+    
+
+    <div class="row mb-1">
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                <h3>Worflow ID : {{wf.id}} </h3>   
+               
+                <br>
+                <h5><p class="card-text mb-auto">Durum : {{wf.status}}</p></h5>
+
+                {% if wf.status_id == 14 %}
+                    <a href="/order/yeniWorkflow/{{wf.id}}">
+                      <button class="btn btn-danger btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                        </svg> Yeniden Aç
+                      </button>
+                    </a>
+                {%endif%}
+                {% if wf.status_id == 28 %}
+                    <a href="/order/yeniWorkflow/{{wf.id}}">
+                      <button class="btn btn-danger btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                        </svg> Yeniden Aç
+                      </button>
+                    </a>
+                {%endif%}
+                <a href="/order/workflowStatuUpdate/{{wf.id}}/28" title="Yeniden Planla"  onclick="return confirm('Montaj yeniden planlanacak, emin misiniz?')">
+                  <button class="btn btn-danger btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                      <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                    </svg> Yeniden Planla
+                  </button>
+                </a>
+
+
+            </div>        
+          </div>
+            
+        </div>
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+              <h5>Sipariş ID :<a href="/order/orderView/{{wf.order_id}}">{{wf.order_id}}</a> </h5>
+              <h5>Departman: {{wf.department}}</h5>
+             
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+              <h6>Acılma Tar:<br> {{wf.created_date}}</h6>
+              <h6>Kapanma Tar : <br>{{wf.completed_date}}</h6>
+              
+            </div>
+          </div>
+        </div>
+    </div>  
+     
+    {% if sip_paketi %}
+        <div class="row mb-1">
+
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+               <h3>Siparis Paketi ID : {{wf.siparis_paketi_id}} </h3>  
+               Sip Tipi : 
+                {% if wf.siparis_paketi.order_type == "M" %}
+                  Montaj
+                {% elif wf.siparis_paketi.order_type == "S" %}
+                  Sevk
+                {%else%}
+                  Depo Teslim
+                {%endif%}
+              <br><br>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Paket ID</th>
+                            <th scope="col">Urun</th>
+                            <th scope="col">Renk</th>
+                            <th scope="col">Adet</th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for sip in sip_paketi %}
+                              <tr>
+                                <th scope="row">{{sip.id}}</th>
+                                <td scope="row">{{sip.orderPacket.id}}</a></td>
+                                <td scope="row">{{sip.product.product_name}}</a></td>
+                                <td scope="row">{{sip.orderProducts.colour.renk_kodu}}</td>
+                                <td scope="row">{{sip.amount}}</td>
+                              
+                              </tr>
+                            {% endfor %}
+                          
+                      
+                        </tbody>
+                      </table>
+    
+      
+            </div>        
+          </div>
+      </div>  
+    {%endif%}
+
+    <div class="row mb-1">
+
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <h3> Yapılan işler
+                 
+            </a>
+          </h3>
+          <br><br>
+                {% if loglar %}
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Tarih</th>
+                          <th scope="col">Log Tipi</th>
+                          <th scope="col">Açıklama</th>
+                          <th scope="col">Kullanıcı</th>
+                          <th scope="col">Durum</th>
+                          <th scope="col">Type ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {% for log in loglar %}
+                            <tr>
+                              <th scope="row">{{log.id}}</th>
+                              <td scope="row">{{log.date}}</a></td>
+                              <td scope="row">{{log.log_type}}</td>
+                              <td scope="row">{{log.aciklama}}</td>
+                              <td scope="row">{{log.user.username}}</td>
+                              <td scope="row">{{log.status}}</td>
+                              <td scope="row">{{log.type_id}}</td>
+                            </tr>
+                          {% endfor %}
+                        
+                    
+                      </tbody>
+                    </table>
+                    
+                {% endif%}
+    
+          </div>        
+        </div>
+    </div>  
+
+
+     
+</div>
+{% endblock body %}

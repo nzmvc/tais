@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+  <div class="row">
+    <div class="col-md-2 mb-0" id="container" style="width: 50%;">
+      <canvas id="iskonto_oran" data-url="{% url 'order:iskonto_oran' %}"></canvas>
+    </div>
+    <div class="col-md-2 mb-0" id="container" style="width: 50%;">
+      <canvas id="ciro_sube" data-url="{% url 'order:ciro_sube' %}"></canvas>
+    </div>
+     
+  </div>
+  
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+ 
+    $(function () {
+
+      var $iskonto_oran = $("#iskonto_oran");
+      $.ajax({
+        url: $iskonto_oran.data("url"),
+        success: function (data) {
+          var ctx = $iskonto_oran[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {labels: data.labels,datasets: data.dataset_iskonto_oran  },
+            
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'İSKONTO ORANI'}}
+          });
+        }
+      });
+
+   
+      var $ciro_sube = $("#ciro_sube");
+      $.ajax({
+        url: $ciro_sube.data("url"),
+        success: function (data) {
+
+          var ctx = $ciro_sube[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {labels: data.labels,datasets: data.dataset_ciro },
+            
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'Ciro Dağılım'}}
+          });
+        }
+      });
+
+      var $aylikSatisChart_urun = $("#data_aylik_satis_urun");
+      $.ajax({
+        url: $aylikSatisChart_urun.data("url"),
+        success: function (data) {
+
+          var ctx = $aylikSatisChart_urun[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels_urun,
+              datasets: [{
+                label: 'Adet',
+                backgroundColor: 'red',
+                data: data.data_urun
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Aylık Satılan Urun'
+              }
+            }
+          });
+        }
+      });
+
+      //top5_urun_ciro
+      var $top5_urun_ciro = $("#top5_urun_ciro");
+      $.ajax({
+        url: $top5_urun_ciro.data("url"),
+        success: function (data) {
+
+          var ctx = $top5_urun_ciro[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.urun_adlar,
+              datasets: [{
+                label: 'TL',
+                backgroundColor: 'red',
+                data: data.urun_ciro
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'TOP5 Ürün'
+              }
+            }
+          });
+        }
+      });
+    });
+
+  </script>
+  {% endblock body %}

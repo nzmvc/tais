@@ -1,0 +1,190 @@
+
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% if order %}
+<div class="row mb-1">
+    <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+          <strong class="d-inline-block mb-2 text-primary">
+              Workflow ID: {{wf.id}} 
+              
+            </strong>
+          
+          <h3 class="mb-0">{{wf.order.customer.customer_name}}</h3>
+          <div class="mb-1 text-muted">{{wf.order.created_date}}</div>
+          <p class="card-text mb-auto">{{wf.order.content|safe}}</p>
+          <a href="/order/customerView/{{wf.order.customer.id}}" class="stretched-link">Müşteri Detay</a>
+        </div>
+        
+      </div>
+    </div>
+	
+    <div class="col-md-3">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;" >
+                <h5 class="mb-0">İletişim</h5>
+                <div >email : {{wf.order.customer.email}}</div> 
+                <div class="mb-1 text-muted">Telefon:{{wf.order.customer.telephone}}</div> 
+            </div>
+        </div>
+    </div>    
+    <div class="col-md-3">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                {% if wf.order.order_image.url is not Null %}
+                    <a href="{{wf.order.order_image.url}}" target="popup" 
+                    onclick="window.open('{{order.order_image.url}}','popup','width=600,height=600'); return false;">
+                        <img width="200" height="200"  class="img-fluid rounded" src="{{wf.order.order_image.url}}" alt="">  
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-1">
+
+        <div class="col-md-6 p-4 d-flex flex-column position-static" >
+            <h3> Sipariş paketi</h3>
+            {% if orderPacketsItems %}
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th scope="col"></th>
+                          <th scope="col">Ürün</th>
+                          <th scope="col">Renk</th>
+                          <th scope="col">Adet</th>
+                         
+                          <th scope="col">PaketID</th>
+                          <th scope="col">Tipi</th>
+                          <td></td>
+                      </tr>
+                  </thead>
+              
+              {% for ops in orderPacketsItems%}
+                  <tr>
+                  <th scope="row">{{ops.id}}</th>                    
+                  <td>{{ops.product.product_name}}</td>
+                  <td>{{ops.colour}}</td>
+                  <td>{{ops.amount}}</td>
+                  
+                  <td>{% if ops.orderPacket_id == 0 %}
+                        Yok
+                      {%else%}
+                        {{ops.orderPacket_id}}
+                      {%endif%}
+                  </td>
+                  <td>{{ops.orderPacket.order_type}}</td>
+                  <td>
+           
+                  </td>
+                  
+                  </tr>
+                 
+              {% endfor%}
+
+              </table>
+              {% endif %}
+
+        </div>
+    
+</div>
+<div class="row">
+
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static" >
+          <h3> Planlama </h3>
+            <form method="POST">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>Montaj başlangıç tarihi</td>
+                    <td><input type="date" name="planGun" class="input-sm" placeholder="Tarih" value="{{tarih}}">  <input type="time"  name="stime" value="{{stime}}"></td>
+                </tr>
+                <tr>
+                    <td>Montaj bitiş tarihi</td>
+                    <td> <input type="date" name="planGun_end" class="input-sm" placeholder="Tarih" value="{{tarih_end}}"> <input type="time"  name="etime" value="{{etime}}">
+                       
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-info btn-sm"> Plan yap</button>
+            </form>
+            </div>
+            
+            <div class="col-md-6 ">
+            
+            <form method="POST">
+                {% csrf_token %}
+                Tarih : {{ tarih}}   Başlangıç  : {{ stime}} <br>
+                Tarih : {{ tarih_end}}  Bitiş: {{etime}} <br>
+                <input type="hidden" name="tarih"  id="tarih" value="{{tarih}}"/>
+                <input type="hidden" name="tarih_end"  id="tarih_end" value="{{tarih_end}}"/>
+                <input type="hidden" name="stime"  id="stime" value="{{stime}}"/>
+                <input type="hidden" name="etime"  id="etime" value="{{etime}}"/>
+                <br><br>
+                <table>
+                    <tr>{%if wf.siparis_paketi.order_type == "S"%}
+                            <td colspan="2">Depolar</td>
+
+                        {%else%}
+                        
+                            <td>Personel seçiniz:</td> <td>  </td><td>Araç seçiniz:</td>  <td></td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        {%if wf.siparis_paketi.order_type == "S"%}
+                            <td colspan="2"><select name="depo" >
+                                {% for depo in depolar%}
+                                    <option value="{{depo.id }}">{{depo.depoAdi}}</option>
+                                {% endfor %}
+
+                            </td>
+
+                        {%else%}
+                            <td><select name="ustalar" multiple>
+                                    {% for usta in ustalar%}
+                                        <option value="{{usta.user.id }}">{{usta.user.username}}</option>
+                                    {% endfor %}
+                                </select></td>
+                            <td>  </td>
+                            <td>
+                                <select name="arabalar" multiple>
+                                {% for arac in araclar%}
+                                    <option value="{{arac.id}}">{{arac.type_id}}</option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                        {%endif%}
+                        
+                    </tr>
+                    <tr>
+                       
+                        <td>
+                            <input name="aciklama" placeholder="aciklama"><br>
+                            <button type="submit" class="btn btn-info btn-sm"> Seçimi kaydet </button>
+                        </td>
+                    </tr>
+                </table> 
+                   
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <br><BR>
+
+
+    {%else%}
+    <div class="alert alert-danger">
+        Sipariş bulunamadı
+    </div>
+    {% endif %}
+    
+</div>
+{% endblock body %}

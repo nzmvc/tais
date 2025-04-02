@@ -1,0 +1,223 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load custom_tags  %}
+
+<style>
+  /* Normal table style */
+  .normal-table {
+      display: table;
+  }
+  /* Mobile table style */
+  .mobile-table {
+      display: none;
+  }
+  /* Media query for mobile devices */
+  @media (max-width: 600px) {
+      .normal-table {
+          display: none;
+      }
+      .mobile-table {
+          display: table;
+      }
+  }
+</style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+// Sayfa yüklendiğinde modalı kontrol et
+var ilkGorev = "{{ilkGorev}}";
+$(document).ready(function(){
+  if (ilkGorev == "True") {
+    $("#myModalPopup").modal('show');
+  }
+});
+</script>
+
+<div id="myModalPopup" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> Eğitimi bitirdiniz, tebrikler!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Artık sistemi 14 gün özgürce kullanabilirsiniz. </p>
+                <p>Kullanıcı ekle kısmından başka kullanıcılar ekleyip iş ataması yapabilirsiniz. </p>
+                <p>Takvim ekranından işleri takvim formatında takip edebilirsiniz. </p>
+                <p>Raporlama ekranından anlık olarak kullanıcıların performanslarını görebilirsiniz. </p>
+                <p>TOYU ile ofisten sahayı görün !</p>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Kapat</button>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+
+  <div class="card w-100">
+      <div class="card-header  ">
+                <!--    başlık bolumu -->
+                <div class="row" >
+                  <div class="col-9 normal-table">
+                        <button type="button" class="btn btn-primary">
+                          Görev Statu Listele: <span class="badge badge-light">{{gorevStatus.count }}</span>
+                        </button>
+          
+                        <a href="/gorevler/gorevStatuAdd" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-plus-circle "></i>
+                          </button>
+                        </a>
+                  </div>
+
+                  <div class="col-9 mobile-table">
+                    <button type="button" class="btn btn-primary btn-sm">
+                      Görev Statu Listele: <span class="badge badge-light">{{gorevStatus.count }}</span>
+                    </button>
+      
+                    <a href="/gorevler/gorevStatuAdd" >
+                      <button class="btn btn-success btn-sm p-0 btn-sm "> &nbsp;<i class="las la-2x la-plus-circle"></i>
+                      </button>
+                    </a>
+                  </div>
+                  
+
+                  <div class="col-3 align-self-center">
+
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filtrele
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                        <a class="dropdown-item" href=""></a>
+                        <a class="dropdown-item" href=""></a>
+                      </div>
+                    </div>
+
+      
+                  </div>
+                </div>
+
+          </div>
+
+          <div class="table-full-width table-responsive px-0 card-body">
+      
+      
+            {% if gorevStatus %}
+            <table class="table-hover table-striped table normal-table ">
+              <thead>
+                <tr>
+                  <th class="border-0" scope="col">ID</th>
+                  <th class="border-0" scope="col">Oluşturulma Tarihi</th>
+                  <th class="border-0" scope="col">Statu</th>
+                  <th class="border-0" scope="col">Açıklama</th>
+             
+                  <th class="border-0" scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for gorevStatu in gorevStatus %}
+                    <tr>
+                      <td scope="row">{{gorevStatu.id}}</td>
+                      <td>{{gorevStatu.created_date|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorevStatu.statu}}</td>
+                      <td>{{gorevStatu.aciklama|safe|truncatechars:50}}</td>
+                      
+                    
+                      <td>
+                          
+                          <a href="/gorevler/gorevStatuCustomUpdate/{{gorevStatu.id}}">
+                            <button class="btn btn-outline-warning btn-sm" title="Güncelle">
+                              <i class="las la-pen la-2x"></i> </button></a>
+                          <a href="/gorevler/gorevStatuDelete/{{gorevStatu.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                            <button class="btn btn-outline-danger btn-sm" title="Sil"> <i class="las la-trash la-2x"></i>  </button>
+                          </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+           
+
+
+ 
+
+            <!-- mobile için görüntü -->
+            <!------------------------->
+            <div class="row mobile-table w-100 m-0 p-0" >
+              {% for gorevStatu in gorevStatus %}
+                <!---->
+               
+                  <div class="row  rounded m-2 p-0 border" >
+                       <div class="col-1 font-size-12 line-height p-0  rounded">
+                       </div>
+                        <div class="col-8 font-size-12 line-height p-0">
+                        
+                          <div class="row align-self-center m-1 p-0 "> 
+                            
+                              <p class="p-0 m-0">Başlık : {{gorevStatu.statu|truncatechars:15}} </p>
+                            
+                                
+                          </div>
+                          <div class="row align-self-center m-1 p-0 "> 
+                              <p class="text-right m-0 font-size-12">Açıklama : {{gorevStatu.aciklama|truncatechars:50}}</p>
+                        
+                                
+                          </div>
+
+
+                        </div>
+                        <div class="col-3">
+                          <div class="row  justify-content-between align-self-center m-1 p-0 " > 
+                                <div class="col-1  align-self-center font-size-12 m-0 pl-2 font-size-12 line-height-1 text-left">
+                                  <!-- <p class="p-0"> {{gorev.description|safe|truncatechars:80}} </p> -->
+                                 
+                                </div>
+                                <div class="col-11 text-right  align-self-right m-0 pr-2">  
+                                      <a class=" m-0 p-0"  href="/gorevler/gorevStatuDelete/{{gorevStatu.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                        <i class="las la-trash la-2x"></i> 
+                                      </a>
+                                </div>
+                          </div>
+                        </div>
+                  </div>
+                
+              {% endfor %}
+
+             
+            </div>
+
+            
+
+
+
+          {%else%}
+            <div class="alert alert-danger">
+                Görev Statü kaydı yok
+            </div>
+          {% endif %}
+        
+   
+
+
+    </div>
+  </div>
+
+    
+</div>
+{% endblock body %}

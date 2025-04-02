@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% load tz %}
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+{% load custom_tags  %}
+
+
+
+           <div class="col-lg-12">
+               <div class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4">
+                   <div>
+                       <h4 class="mb-3">Company List  
+
+						<div class="btn-group btn-group-sm" role="group">
+							<button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							  Filtrele
+							</button>
+							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+							  <a class="dropdown-item" href="/saas/companyList/active">Aktif Firmalar</a>
+							  <a class="dropdown-item" href="/saas/companyList/pasive">Pasif Firmalar</a>
+							  <a class="dropdown-item" href="/saas/companyList/all">Tümü</a>
+							  <a class="dropdown-item" href="/saas/companyList/yeni">Son tanımlanan</a>
+							  <a class="dropdown-item" href="/saas/companyList/eski">Eski kayıtlar</a>
+							</div>
+						</div>
+
+					   </h4>
+                       
+                   </div>
+                   <a href="/saas/companyAdd" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Company</a>
+               </div>
+           </div>
+           <div class="col-lg-12">
+               <div class="table-responsive rounded mb-3">
+               <!-- <table class="data-tables table mb-0 tbl-server-info"> -->
+                <table class="table-borderless table mb-0 tbl-server-info">
+                   <thead class="bg-white text-uppercase">
+                       <tr class="ligth ligth-data">
+                            
+						
+							<th> # </th>
+							<th>Durum</th>
+							<th>Oluşturma Tarihi</th>
+							<th>İsim</th>																		
+							<th>Telefon</th>
+							<th>Email</th>
+							<th>Web adresi</th>
+							<th>Adres</th>
+							<th></th>
+
+                       </tr>
+                   </thead>
+                   <tbody class="ligth-body">
+
+                        {% localtime on %}
+
+						{% for company in page_obj %}
+								<tr class="odd gradeX">
+								
+								<td class="left"><a href="/saas/companyView/{{company.id}}">{{company.id}}</a></td>
+								<td class="left">
+									{% if company.status == null %}
+										 <!-- Button trigger modal -->
+										 <button type="button" class="btn btn-outline-warning btn-sm p-1" data-toggle="modal" data-target="#exampleModal{{company.id}}">
+											Not Gir
+										  </button>
+										  
+										  <!-- Modal -->
+										  <div class="modal fade" id="exampleModal{{company.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{company.id}}" aria-hidden="true">
+											<div class="modal-dialog">
+											  <div class="modal-content">
+												<div class="modal-header">
+												  <h5 class="modal-title" id="exampleModalLabel{{company.id}}">Not gir</h5>
+												  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												  <span aria-hidden="true">&times;</span>
+												  </button>
+												</div>
+												<div class="modal-body">
+													  <form method="POST" enctype="multipart/form-data">
+														{% csrf_token %}
+														  <div class="modal-body">
+															<input type="text" name="note" class="form-control" placeholder="Not giriniz">
+															<input type="hidden" name="company_id"  id="hidden" value="{{company.id}}">
+														  </div>
+														  <div class="modal-footer">
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+															<button type="submit" class="btn btn-primary"> Not Gir </button>
+														  </div>
+													  </form>
+												</div>
+					  
+					  
+											  </div>
+											</div>
+										  </div>
+										  <!-- modal end -->
+									
+									{% else %}
+										<span class="badge badge-warning">{{company.status}}</span>
+									{% endif %}
+								</td>
+								<td>{{company.created_date}}</td>
+								<td>{{company.name}}</td>
+								<td>{{company.telefon}}</td>
+								<td>{{company.email}}</td>
+								<td>{{company.web}}</td>
+								<td>{{company.adres}}</td>
+								 
+								<td>
+									<div class="d-flex align-items-center list-action">
+										<a class="badge badge-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings"
+											href="/order/settingsList/{{company.id}}"><i class="las la-cog"></i></a>
+										<a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"
+											href="/saas/companyView/{{company.id}}"><i class="ri-eye-line mr-0"></i></a>
+										<a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
+											href="/saas/companyUpdate/{{company.id}}"><i class="ri-pencil-line mr-0"></i></a>
+										<a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"
+										href="/saas/companyDelete/{{company.id}}"  onclick="return confirm('Silmek istediğinize emin misiniz?')"><i class="ri-delete-bin-line mr-0"></i></a>
+									</div>
+								</td>
+								</tr>
+						{% endfor %}
+                        {% endlocaltime %}
+                   </tbody>
+               	</table>
+               </div>
+
+			<ul class="pagination">
+				{% if page_obj.has_previous %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+					</li>
+				{% endif %}
+				{%for page in page_obj.paginator.page_range %}
+					<li class="page-item {% if page == page_obj.number %}active{% endif %}">
+						<a class="page-link" href="?page={{page}}">{{page}}</a>
+					</li>
+				{% endfor %}
+				{% if page_obj.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+					</li>
+				{% endif %}
+			</ul>
+
+
+
+		</div>
+{% endblock body %}

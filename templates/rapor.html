@@ -1,0 +1,321 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load static%}
+  <div class="row" >
+
+    {% if perms.order.view_order %}
+        <div class="col-md-3 mb-0" id="container" >
+            <div class="card">
+              <!---<img src="{% static '/assets/images/product/3.png' %}" class="card-img-top" alt="#" width="100">-->
+              <img src="{% static '/assets/images/product/3.png' %}"  alt="#" width="100">
+              <div class="card-body">
+                <h4 class="card-title">Müşteri Listesi</h4>
+                <p class="card-text">Sistemdeki aktif rezervasyonları verir . opsiyonlu olanlar dahil</p>
+                <a href="/order/rapor_musteriListesi" class="btn btn-primary">İndir</a>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-0" id="container" >
+          <div class="card">
+            <img src="{% static '/assets/images/product/3.png' %}" alt="#" width="100">
+            <div class="card-body">
+              <h4 class="card-title">Problem Listesi</h4>
+              <p class="card-text">Sistemdeki aktif rezervasyonları verir . opsiyonlu olanlar dahil</p>
+              <a href="/order/rapor_problemListesi" class="btn btn-primary">İndir</a>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-0" id="container" >
+        <div class="card">
+          <img src="{% static '/assets/images/product/3.png' %}" alt="#" width="100">
+          <div class="card-body">
+            <h4 class="card-title">Görev Listesi</h4>
+            <p class="card-text">Sistemdeki aktif rezervasyonları verir . opsiyonlu olanlar dahil</p>
+            <a href="/order/rapor_gorevListesi" class="btn btn-primary">İndir</a>
+          </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-0" id="container" >
+      <div class="card">
+        
+    </div>
+    </div>
+
+
+
+
+
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="ciro_sube_pie" data-url="{% url 'order:ciro_sube_pie' %}"></canvas>
+    </div>
+
+
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="ciro_sube_pie" data-url="{% url 'order:ciro_sube_pie' %}"></canvas>
+      
+    </div>
+
+    <div class="col-md-6 mb-0" id="container" >
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script>
+          <canvas id="rootcause_chart" ></canvas>
+          <script>
+          var ctx = document.getElementById('rootcause_chart');
+          var myChart = new Chart(ctx, {
+              type: 'radar',
+              data: {
+                  labels: ['Montaj', 'Transfer', 'Müşteri', 'İletişim', 'Malzeme', 'Üretim'],
+                  datasets: [{
+                      label: 'Şikayet Sebepleri(Örnek)',
+                      data: [12, 19, 3, 5, 2, 3],
+                      backgroundColor: ['rgba(255, 99, 132, 0.2)','rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)','rgba(75, 192, 192, 0.2)','rgba(153, 102, 255, 0.2)','rgba(255, 159, 64, 0.2)'],
+                      borderColor: ['rgba(255, 99, 132, 1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)'],
+                      borderWidth: 2
+                  }]
+              },
+              
+          });
+          </script>
+    </div>
+  </div>
+  <div><hr></div>
+
+  <div class="row">
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="data_aylik_satis" data-url="{% url 'order:data_aylik_satis' %}"></canvas>
+    </div>
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="data_aylik_satis_tutar" data-url="{% url 'order:data_aylik_satis_tutar' %}"></canvas>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="iskonto_oran" data-url="{% url 'order:iskonto_oran' %}"></canvas>
+    </div>
+    <div class="col-md-6 mb-0" id="container" >
+      <canvas id="ciro_sube" data-url="{% url 'order:ciro_sube' %}"></canvas>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+      <div class="col-md-6 mb-0" id="container" >
+        <canvas id="top5_urun_ciro" data-url="{% url 'order:data_aylik_satis_tutar' %}"></canvas>
+      </div>
+      <div class="col-md-6 mb-0" id="container" >
+        <canvas id="data_aylik_satis_urun" data-url="{% url 'order:data_aylik_satis_tutar' %}"></canvas>
+      </div>
+
+  </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-md-6 mb-0" id="container" >
+        <canvas id="urun_grubu" data-url="{% url 'order:urun_grubu' %}"></canvas>
+      </div>
+      <div class="col-md-6 mb-0" id="container" >
+        <canvas id="data_aylik_satis_urun" data-url="{% url 'order:data_aylik_satis_tutar' %}"></canvas>
+      </div>
+
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+    //------------------------------------------------------------
+    var $urun_grubu = $("#urun_grubu");
+      $.ajax({
+        url: $urun_grubu.data("url"),
+        success: function (data) {
+          var ctx = $urun_grubu[0].getContext("2d");
+          new Chart(ctx, {
+            type: 'bar',
+            data: {labels: data.labels,datasets: data.dataset_urunGrubu },
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'Ürün Grubu'}}
+          });
+        }
+      });
+    
+    //------------------------------------------------------------
+    //------------------------------------------------------------
+    var $iskonto_oran = $("#iskonto_oran");
+      $.ajax({
+        url: $iskonto_oran.data("url"),
+        success: function (data) {
+          var ctx = $iskonto_oran[0].getContext("2d");
+          new Chart(ctx, {
+            type: 'bar',
+            data: {labels: data.labels,datasets: data.dataset_iskonto_oran  },
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'İSKONTO ORANI'}}
+          });
+        }
+      });
+    
+    //------------------------------------------------------------
+    var $ciro_sube = $("#ciro_sube");
+      $.ajax({
+        url: $ciro_sube.data("url"),
+        success: function (data) {
+
+          var ctx = $ciro_sube[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {labels: data.labels,datasets: data.dataset_ciro },
+            
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'CİRO DAĞILIMI'}}
+          });
+        }
+      });
+    
+    //------------------------------------------------------------
+    var $ciro_sube_pie = $("#ciro_sube_pie");
+      $.ajax({
+        url: $ciro_sube_pie.data("url"),
+        success: function (data) {
+          var ctx = $ciro_sube_pie[0].getContext("2d");
+          new Chart(ctx, {
+            type: 'pie',
+            data: {labels: data.labels,datasets: data.dataset_ciro_sube_pie  },
+            options: { responsive: true, legend: { position: 'top',},title: {display: true, text: 'CİRO ŞUBE PAYI'}}
+          });
+        }
+      });
+
+      
+    $(function () {
+
+      var $aylikSatisChart = $("#data_aylik_satis");
+      //alert("test")
+      $.ajax({
+        url: $aylikSatisChart.data("url"),
+        success: function (data) {
+
+          var ctx = $aylikSatisChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Adet',
+                backgroundColor: 'blue',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Aylık Sipariş Sayısı'
+              }
+            }
+          });
+
+          // With an explicit size:
+          // Chart.resize(500, 300);
+
+        }
+      });
+
+      var $aylikSatisChart_tutar = $("#data_aylik_satis_tutar");
+      $.ajax({
+        url: $aylikSatisChart_tutar.data("url"),
+        success: function (data) {
+
+          var ctx = $aylikSatisChart_tutar[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'TL',
+                backgroundColor: 'blue',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Aylık Ciro'
+              }
+            }
+          });
+        }
+      });
+
+      var $aylikSatisChart_urun = $("#data_aylik_satis_urun");
+      $.ajax({
+        url: $aylikSatisChart_urun.data("url"),
+        success: function (data) {
+
+          var ctx = $aylikSatisChart_urun[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels_urun,
+              datasets: [{
+                label: 'Adet',
+                backgroundColor: 'red',
+                data: data.data_urun
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Aylık Satılan Urun'
+              }
+            }
+          });
+        }
+      });
+
+      //top5_urun_ciro
+      var $top5_urun_ciro = $("#top5_urun_ciro");
+      $.ajax({
+        url: $top5_urun_ciro.data("url"),
+        success: function (data) {
+
+          var ctx = $top5_urun_ciro[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.urun_adlar,
+              datasets: [{
+                label: 'TL',
+                backgroundColor: 'red',
+                data: data.urun_ciro
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'TOP5 Ürün'
+              }
+            }
+          });
+        }
+      });
+    });
+
+  </script>
+
+    {%endif%}
+  {% endblock body %}

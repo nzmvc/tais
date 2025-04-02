@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js"></script>
+
+  <div class="row" >
+  
+    <div class="col-md-6 mb-0" id="container" >
+      <h1>Bayi bazında iskonto oranı</h1>
+      
+          <canvas id="iskonto_chart" ></canvas>
+          <script>
+          var ctx = document.getElementById('iskonto_chart');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: {{ labels|safe }},
+                datasets:   {{ dataset_iskonto_oran|safe }}
+              },
+
+              options: {
+                responsive: true,
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: 'İskonto Oran'
+                }
+              }
+              
+          });
+          </script>
+    </div>
+    <!-- --------------------------------------------------- -->
+    <!-- --------------------------------------------------- -->
+    <!-- --------------------------------------------------- -->
+    <div class="col-md-6 mb-0" id="container" >
+      RADAR<br>
+
+          <canvas id="myChart" ></canvas>
+          <script>
+          var ctx = document.getElementById('myChart');
+          var myChart = new Chart(ctx, {
+              type: 'radar',
+              data: {
+                  labels: ['Montaj', 'Transfer', 'Müşteri', 'İletişim', 'Malzeme', 'Üretim'],
+                  datasets: [{
+                      label: 'Şikayet Sebepleri(Örnek)',
+                      data: [12, 19, 3, 5, 2, 3],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 2
+                  }]
+              },
+              
+          });
+          </script>
+    </div>
+  </div>
+  
+  <div class="row" >
+  
+    <div class="col-md-6 mb-0" id="container" >
+      <h1>Bayi bazında Ciro </h1>
+     
+          <canvas id="bayi_ciro" ></canvas>
+          <script>
+          var ctx = document.getElementById('bayi_ciro');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {labels: {{ labels|safe }},datasets:   {{ dataset_ciro|safe }} },
+              options: {responsive: true,legend: {position: 'top',},title: {display: true,text: 'Bayi ciro'}}
+              
+          });
+          </script>
+    </div>
+    <!-- --------------------------------------------------- -->
+    <!-- --------------------------------------------------- -->
+    <!-- --------------------------------------------------- -->
+    <div class="col-md-6 mb-0" id="container" >
+      TEST
+      <canvas id="iskonto_oran" ></canvas>
+      
+      <script>
+        $(function () {
+
+          var $iskonto_oran_chart = $("#iskonto_oran");
+          $.ajax({
+            url: 'order:iskonto_oran_chart',
+            success: function (data) {
+    
+              var ctx = $iskonto_oran_chart[0].getContext("2d");
+    
+              new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: data.labels,
+                  datasets: [{
+                    label: 'Adet',
+                    backgroundColor: 'blue',
+                    data: data.data
+                  }]          
+                },
+                options: {
+                  responsive: true,
+                  legend: {
+                    position: 'top',
+                  },
+                  title: {
+                    display: true,
+                    text: 'Aylık Sipariş Sayısı'
+                  }
+                }
+              });
+    
+              // With an explicit size:
+              //Chart.resize(500, 300);
+    
+            }
+          });
+        }
+      </script>
+    </div>
+  </div>
+  {% endblock body %}

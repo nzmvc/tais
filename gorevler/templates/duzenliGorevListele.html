@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load custom_tags  %}
+
+<style>
+  /* Normal table style */
+  .normal-table {
+      display: table;
+  }
+  /* Mobile table style */
+  .mobile-table {
+      display: none;
+  }
+  /* Media query for mobile devices */
+  @media (max-width: 600px) {
+      .normal-table {
+          display: none;
+      }
+      .mobile-table {
+          display: table;
+      }
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<div class="row">
+
+  <div class="card w-100">
+      <div class="card-header  ">
+                <!--    başlık bolumu -->
+                <div class="row" >
+                  <div class="col-9 ">
+                        <button type="button" class="btn btn-primary">
+                          Düzenli Görev Listele: <span class="badge badge-light">{{duzenliGorevler.count }}</span>
+                        </button>
+          
+                        <a href="/gorevler/duzenliGorevTanimla" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-plus-circle "></i>
+                          </button>
+                        </a>
+                  </div>
+
+                  <div class="col-9 mobile-table">
+                    <button type="button" class="btn btn-primary btn-sm">
+                      Düzenli Görev Listele: <span class="badge badge-light">{{duzenliGorevler.count }}</span>
+                    </button>
+      
+                    <a href="/gorevler/duzenliGorevEkle" >
+                      <button class="btn btn-success btn-sm p-0 btn-sm "> &nbsp;<i class="las la-2x la-plus-circle"></i>
+                      </button>
+                    </a>
+                  </div>
+                  
+
+                  <div class="col-3 align-self-center">
+
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filtrele
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                        <a class="dropdown-item" href="/gorevler/gorevListele/aktif">Açık Görevler</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/pasif">Kapanmış görevler</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/baslangicTarihi">Baslangiç Tarihi</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/planlananTarih">Planlanan Tarih</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/all">Tümü</a>
+                        {%for statu in gorevStatus%}
+                            <a class="dropdown-item" href="/gorevler/gorevListele/{{statu.id}}">{{statu.aciklama}}</a>
+                        {%endfor%} 
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      </div>
+
+          <div class="table-full-width table-responsive px-0 card-body">
+    
+            {% if page_obj %}
+              <table class="table-hover table-striped table normal-table ">
+                <thead>
+                  <tr>
+                    <th class="border-0" scope="col">ID</th>
+                    
+                    <th class="border-0" scope="col">Başlık</th>
+                    <th class="border-0" scope="col">Oluşturma Tarihi</th>
+                    <th class="border-0" scope="col">Başlangıç Tarihi</th>
+                    <th class="border-0" scope="col">Ne zaman oluşturulacak</th>
+                    <th class="border-0" scope="col">Açık kalma süresi</th>
+                    <th class="border-0" scope="col">Tipi</th>
+                    <th class="border-0" scope="col">Sıklığı</th>
+                    <th class="border-0" scope="col">Haftanın</th>
+                    <th class="border-0" scope="col">Ayın</th>
+                    <th class="border-0" scope="col">Sorumlu</th>
+                    <th class="border-0" scope="col">Dokuman</th>
+                    <th class="border-0" scope="col">Durum</th>
+                    
+                    <th class="border-0" scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for gorev in page_obj %}
+                      <tr>
+                        <td scope="row"><a href="/gorevler/duzenliGorevGoster/{{gorev.id}}">{{gorev.id}}</a></td>
+                        
+                        <td>{{gorev.title|truncatechars:20}}</td>
+                        
+                        <td>{{gorev.created_date|date:'d-m-Y'}}</td>
+                        <td>{{gorev.start_date|date:'d-m-Y'}}</td>
+                        <td>{{gorev.numberOfDayCreate}}</td>
+                        <td>{{gorev.numberOfDayOpen}}</td>
+
+                        <td>
+                          {% if gorev.repeat_type == "1" %}
+                            Günlük
+                        {% elif gorev.repeat_type == "2" %}
+                            Haftalık
+                        {% elif gorev.repeat_type == "3" %}
+                            Aylık
+                        {% elif gorev.repeat_type == "4" %}
+                            Yıllık
+                        {% endif %}</td>
+
+                        <td>{{gorev.frequency}}</td>
+                        <td>{{gorev.days_of_week}}</td>
+                        <td>{{gorev.days_of_month}}</td>
+                        <td>{{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}</td>
+                        <td>{{gorev.document}}</td>
+                        <td>{{gorev.statu}}</td>
+                        
+                        <td>
+                            <a href="/gorevler/duzenliGorevGoster/{{gorev.id}}"> 
+                              <button class="btn btn-success btn-sm" title="Göster">
+                                <i class="las la-eye la-2x"></i>
+                              </button>
+                            </a>
+                            <a href="/gorevler/duzenliGorevGuncelle/{{gorev.id}}">
+                              <button class="btn btn-outline-warning btn-sm" title="Güncelle">
+                                <i class="las la-pen la-2x"></i> </button></a>
+                            <a href="/gorevler/duzenliGorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                              <button class="btn btn-outline-danger btn-sm" title="Sil"> <i class="las la-trash la-2x"></i>  </button>
+                            </a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+
+              <div class="normal-table ">
+                <ul class="pagination">
+                  {% if page_obj.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+                      </li>
+                  {% endif %}
+                  {%for page in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                          <a class="page-link" href="?page={{page}}">{{page}}</a>
+                      </li>
+                  {% endfor %}
+                  {% if page_obj.has_next %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                      </li>
+                  {% endif %}
+                </ul>
+              </div>
+            {%else%}
+              <div class="alert alert-danger">
+                  Görev kaydı yok
+              </div>
+            {% endif %}
+          </div>
+  </div>
+</div>
+{% endblock body %}

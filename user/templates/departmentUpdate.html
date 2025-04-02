@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div class="col-12">
+    <h3> 
+            Departman Guncelle
+            
+    </h3>   
+ 
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        
+            <div class="row">
+                <div class="form-group col-6 ">
+                    {{ form.department_number |as_crispy_field }}
+               
+                
+                
+                
+                
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    {{ form.title |as_crispy_field }}
+                </div>
+                
+            </div>
+    
+            
+            
+
+        <br>
+        <button type="submit" class="btn btn-warning">Güncelle</button>
+    </form>
+</div>
+{% endblock body %}

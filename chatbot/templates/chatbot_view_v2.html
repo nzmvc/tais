@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Üst Bilgi ve Genel Bilgiler -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">{{ chatbot.name }}</h1>
+                <p class="text-gray-600 mt-2">{{ chatbot.description }}</p>
+            </div>
+            <span class="inline-block w-8 h-8 rounded-full" 
+                   style="background-color: {{ chatbot.widget_color }}"></span>
+        </div>
+        
+        <!-- İstatistik Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="text-blue-600 font-semibold">Toplam Mesaj</div>
+                <div class="text-2xl font-bold">{{ chatbot.sessions.count }}</div>
+                <div class="text-sm text-gray-500">Son 24 saat: {{ recent_messages }}</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <div class="text-green-600 font-semibold">Token Kullanımı</div>
+                <div class="text-2xl font-bold">{{ total_tokens }}</div>
+                <div class="text-sm text-gray-500">(~{{ estimated_cost }} USD)</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <div class="text-purple-600 font-semibold">Aktif Oturum</div>
+                <div class="text-2xl font-bold">{{ active_sessions }}</div>
+                <div class="text-sm text-gray-500">Son 1 saatte: {{ recent_sessions }}</div>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+                <div class="text-yellow-600 font-semibold">Yüklenen Dosya</div>
+                <div class="text-2xl font-bold">{{ chatbot.files.count }}</div>
+                <div class="text-sm text-gray-500">{{ total_file_size|filesizeformat }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Chat Test Alanı -->
+        <div class="bg-white rounded-lg shadow-md p-6 h-[600px] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Chatbot Test</h2>
+                <div class="text-sm text-gray-500">
+                    Model: {{ chatbot.get_model_display }}
+                    <span class="mx-2">•</span>
+                    Sıcaklık: {{ chatbot.temperature }}
+                </div>
+            </div>
+            
+            <div id="chat-container" class="flex-1 overflow-y-auto mb-4 space-y-4">
+                {% for message in test_messages %}
+                <div class="{% if message.role == 'user' %}text-right{% endif %}">
+                    <div class="inline-block max-w-[80%] p-3 rounded-lg 
+                              {% if message.role == 'user' %}bg-blue-100{% else %}bg-gray-100{% endif %}">
+                        <div class="text-sm text-gray-500 mb-1">
+                            {{ message.get_role_display }}
+                        </div>
+                        <p class="text-gray-800">{{ message.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <form id="chat-form" hx-post="/chatbot/api/chatbot/{{chatbot.api_key}}" 
+                  hx-swap="beforeend" hx-target="#chat-container">
+                <div class="flex gap-2">
+                    <input type="text" name="message" 
+                           class="flex-1 p-2 border rounded-lg"
+                           placeholder="Mesajınızı yazın..." required>
+                    <button type="submit" 
+                            class="px-4 py-2 text-white rounded-lg"
+                            style="background-color: {{ chatbot.widget_color }}">
+                        Gönder
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Gömme Kodu ve Ayarlar -->
+        <div class="space-y-8">
+            <!-- Embed Kod Alanı -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Websitenize Ekleyin</h3>
+                    <button onclick="copyEmbedCode()"
+                            class="text-sm px-3 py-1 bg-gray-100 rounded-lg">
+                        Kopyala
+                    </button>
+                </div>
+                <pre id="embed-code" class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">
+                    
+&lt;script src="http://localhost:8000/static/js/embed.js?api_key={{ chatbot.api_key }}"&gt;&lt;/script&gt;
+</pre>
+                <p class="text-sm text-gray-600 mt-2">
+                    Bu kodu web sitenizin &lt;/body&gt; etiketinden önce yapıştırın
+                </p>
+            </div>
+
+            <!-- Yapılandırma Detayları -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Yapılandırma Detayları</h3>
+                <dl class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <dt class="text-sm text-gray-500">Asistan ID</dt>
+                        <dd class="font-mono text-sm break-all">{{ chatbot.assistant_id }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Oluşturulma Tarihi</dt>
+                        <dd>{{ chatbot.created_at|date:"d M Y H:i" }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Son Güncelleme</dt>
+                        <dd>{{ chatbot.updated_at|date:"d M Y H:i" }}</dd>
+                    </div>
+                    <div class="col-span-2">
+                        <dt class="text-sm text-gray-500">Talimatlar</dt>
+                        <dd class="whitespace-pre-wrap bg-gray-50 p-3 rounded mt-1">
+                            {{ chatbot.instructions }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyEmbedCode() {
+    const code = document.getElementById('embed-code');
+    navigator.clipboard.writeText(code.innerText).then(() => {
+        alert('Kopyalandı!');
+    });
+}
+
+// Otomatik scroll için
+document.getElementById('chat-form').addEventListener('htmx:afterSwap', function() {
+    const container = document.getElementById('chat-container');
+    container.scrollTop = container.scrollHeight;
+});
+
+// Enter tuşu ile gönderim
+document.querySelector('[name="message"]').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('chat-form').requestSubmit();
+    }
+});
+</script>
+
+<style>
+#chat-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+#chat-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+#chat-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+</style>
+{% endblock body%}

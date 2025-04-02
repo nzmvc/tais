@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+
+			<!-- start page content -->
+			<div class="page-content-wrapper">
+				<div class="page-content">			
+						<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-12"> body
+												<div class="card card-box">
+													<div class="card-head">
+														<header>Öğretmen Listesi</header>
+														<div class="tools">
+															<a class="fa fa-repeat btn-color box-refresh"
+																href="javascript:;"></a>
+															<a class="t-collapse btn-color fa fa-chevron-down"
+																href="javascript:;"></a>
+															<a class="t-close btn-color fa fa-times"
+																href="javascript:;"></a>
+														</div>
+													</div>
+													<div class="card-body ">
+														<div class="row">
+															<div class="col-md-6 col-sm-6 col-6">
+																<div class="btn-group">
+																	<a href="/user/teacherAdd" id="addRow"
+																		class="btn btn-info">
+																		Ekle <i class="fa fa-plus"></i>
+																	</a>
+																</div>
+															</div>
+															<div class="col-md-6 col-sm-6 col-6">
+																<div class="btn-group pull-right">
+																	<a class="btn deepPink-bgcolor  btn-outline dropdown-toggle"
+																		data-bs-toggle="dropdown">Tools
+																		<i class="fa fa-angle-down"></i>
+																	</a>
+																	<ul class="dropdown-menu pull-right">
+																		<li>
+																			<a href="javascript:;">
+																				<i class="fa fa-print"></i> Yazdır </a>
+																		</li>
+																		<li>
+																			<a href="javascript:;">
+																				<i class="fa fa-file-pdf-o"></i> PDF Kaydet </a>
+																		</li>
+																		<li>
+																			<a href="javascript:;">
+																				<i class="fa fa-file-excel-o"></i>Export to Excel </a>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														</div>
+														<div class="table-scrollable">
+															<table
+																class="table table-striped table-bordered table-hover table-checkable order-column valign-middle"
+																id="example4">
+																<thead>
+																	<tr>
+																		
+																		<th> # </th>
+																		<th> Oluşturma Tarihi </th>
+																																			
+																		<th> Kapatılma Tarihi </th>
+																		<th>Açan</th>
+																		<th>Sorumlu</th>
+																		<th>Açıklama</th>
+																		<th>Durum</th>
+																		<th>Aksiyon</th>
+																	</tr>
+																</thead>
+																<tbody>
+
+																	
+																{% for gorev in tasks %}
+																		<tr class="odd gradeX">
+																		
+																		<td class="left"><a href="/tasks/taskView/{{gorev.id}}">{{gorev.id}}</a></td>
+																		<td>{{gorev.created_date}}</td>
+																		<td>{{gorev.closed_date}}</td>
+																		<td>{{gorev.open_user}}</td>
+																		
+																		<td class="left">{{gorev.responsible_user}}</td>
+																		<td class="left">{{gorev.description|safe}}</td>
+																		<td>{{gorev.statu}}</td>
+																		<td>
+																			<a href="/tasks/taskView/{{gorev.id}}" class="btn btn-info btn-xs">	<i class="fa fa-eye"></i>
+																			</a>
+																			{% if gorev.statu_id != 4%}
+																				<a href="/tasks/taskUpdate/{{gorev.id}}" class="btn btn-primary btn-xs">	<i class="fa fa-pencil"></i>
+																				</a>	
+																				
+																				<a href="/tasks/taskDelete/{{gorev.id}}"  onclick="return confirm('Silmek istediğinize emin misiniz?')">
+																				<button class="btn btn-danger btn-xs">	<i class="fa fa-trash-o "></i>	</button>
+																				</a>
+																			{%endif%}
+																		</td>
+																		</tr>
+																{% endfor %}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+							
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end page content -->
+
+
+{% endblock body %}

@@ -1,0 +1,143 @@
+{% load static%}
+{% load crispy_forms_tags %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>TOYU</title>
+      <link rel="shortcut icon" href="{% static 'TEKNOLIKYA_icon.png' %}"/>
+      <link rel="stylesheet" href="{% static 'assets/css/backend-plugin.min.css' %}">
+      <link rel="stylesheet" href="{% static 'assets/css/backend.css' %}">
+      <link rel="stylesheet" href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}">
+      <link rel="stylesheet" href="{% static 'assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css' %}">
+      <link rel="stylesheet" href="{% static 'assets/vendor/remixicon/fonts/remixicon.css' %}">  
+      
+      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+      
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+      <!--  recaptcha  için  view den site_key içinde public key gelmeli   -->
+      <script src="https://www.google.com/recaptcha/api.js?render={{site_key}}"></script>
+      <script>
+         //global grecaptcha
+         grecaptcha.ready(function() {
+           grecaptcha.execute('{{site_key}}', {action: "/user/register/"}).then(function(token) {
+             document.getElementById('g-recaptcha-response').value = token;
+           });
+         });
+       </script>
+
+   </head>
+
+  <body class=" ">
+    <!-- loader Start -->
+    <div id="loading">
+          <div id="loading-center">
+          </div>
+    </div>
+    <!-- loader END -->
+    
+   {% if messages %}
+      {% for message in messages %}
+         <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}> {{ message }} </div>
+      {% endfor %}
+   {% endif %}
+
+      <script>
+         // Sayfa yüklendiğinde modalı aç
+         $(document).ready(function(){
+            $("#myModal").modal('show');
+         });
+      </script>
+      <div id="myModal" class="modal fade">
+         <div class="modal-dialog modal-dialog-centered">
+           <div class="modal-content">
+           
+             <!-- Modal Header -->
+             <div class="modal-header">
+               <h4 class="modal-title"> Demodan önce kısa bir eğitim</h4>
+               <button type="button" class="close" data-dismiss="modal">&times;</button>
+             </div>
+             
+             <!-- Modal Body -->
+             <div class="modal-body">
+               <p>İlk görevi birlikte belirleyelim. </p>
+               <p>TOYU ile kolayca görev ataması yapabilirsiniz, aşağıdaki bilgileri doldurunuz ve kendinize iş açınız. </p>
+             </div>
+             
+             <!-- Modal Footer -->
+             <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-dismiss="modal">Kapat</button>
+             </div>
+             
+           </div>
+         </div>
+      </div>
+
+
+      <div class="wrapper">
+      <section class="login-content">
+         <div class="container">
+            <div class="row align-items-center justify-content-center height-self-center">
+               <div class="col-lg-8">
+                  <div class="card auth-card">
+                     <div class="card-body p-0">
+                        <div class="d-flex align-items-center auth-content">
+                           <div class="col-lg-7 align-self-center">
+                              <div class="p-2">
+                                 <h2 class="mb-2">Görev Atama Ekranı</h2>
+                                 <p>Aşağıdaki bilgileri doldurarak hızlıca bir görev ataması yapınız.</p>
+                                 <form method="post" enctype="multipart/form-data">
+
+                                    <div class="border p-2 rounded">
+                                    
+                                       <div id="div_id_title" class="form-group"> 
+                                          <label for="id_title" class=" requiredField">
+                                             Görev Sorumlusu<span class="asteriskField">*</span> </label> 
+                                          <div> 
+                                             <input type="text" name="title" placeholder="Kısa açıklama" maxlength="150" class="textinput textInput form-control" required="" id="id_title" value="{{user}}" disabled> 
+                                             
+                                          </div> 
+                                       </div>
+
+
+                                       {{ form.media }}
+                                       {% csrf_token %}
+                                       {{form|crispy }}
+                                       <br>
+                                       <button type="submit" class="btn btn-warning">Giriş</button>
+                                    </div>
+                                </form>
+                              </div>
+                           </div>
+                           <div class="col-lg-5 content-right">
+                              <img src="{% static 'TOYU_LOGO_V2_AMBLEM_YAZI.png' %}" class="img-fluid image-right" alt="">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      </div>
+    
+    <!-- Backend Bundle JavaScript -->
+    <script src="{% static 'assets/js/backend-bundle.min.js' %}"></script>
+    
+    <!-- Table Treeview JavaScript -->
+    <script src="{% static 'assets/js/table-treeview.js' %}"></script>
+    
+    <!-- Chart Custom JavaScript -->
+    <script src="{% static 'assets/js/customizer.js' %}"></script>
+    
+    <!-- Chart Custom JavaScript -->
+    <script async src="{% static 'assets/js/chart-custom.js' %}"></script>
+    
+    <!-- app JavaScript -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+  </body>
+</html>

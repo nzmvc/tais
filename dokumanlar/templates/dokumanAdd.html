@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div >
+        <h3> 
+            Dokuman Ekleme
+                
+        </h3>   
+       
+        <hr>
+
+        
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.media }}
+          {{form|crispy }}
+          <br>
+          <button type="submit" class="btn btn-warning">Güncelle
+              
+          </button>
+      </form>
+    </div>
+
+
+    
+</div>
+{% endblock body %}

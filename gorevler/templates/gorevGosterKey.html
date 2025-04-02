@@ -1,0 +1,61 @@
+{% load static%}
+{% load crispy_forms_tags %}
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>TOYU</title>
+    
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfPQuwoAAAAADpo8IvJb9m34YGacHI2Ds7YHyIp" async defer></script>
+                
+        <!-- Favicon  href="{% static 'assets/css/pages/extra_pages.css' %}"   -->
+        <link rel="shortcut icon" href="{% static 'TOYU_LOGO_V2_AMBLEM.png' %}" />
+        <link rel="stylesheet" href="{% static 'assets/css/backend-plugin.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/backend.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/remixicon/fonts/remixicon.css' %}">  
+        
+    </head>
+
+    <body class=" ">
+        <!-- loader Start -->
+        <div id="loading">
+                <div id="loading-center">
+                </div>
+        </div>
+        <!-- loader END -->
+    
+        {% if messages %}
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}> {{ message }} </div>
+            {% endfor %}
+        {% endif %}
+
+
+         
+        {% include "gorevGoster_content.html" %}
+       
+    
+
+        <!-- Backend Bundle JavaScript -->
+        <script src="{% static 'assets/js/backend-bundle.min.js' %}"></script>
+
+        <!-- Table Treeview JavaScript -->
+        <script src="{% static 'assets/js/table-treeview.js' %}"></script>
+        
+        <!-- Chart Custom JavaScript -->
+        <script src="{% static 'assets/js/customizer.js' %}"></script>
+        
+        <!-- Chart Custom JavaScript -->
+        <script async src="{% static 'assets/js/chart-custom.js' %}"></script>
+        
+        <!-- app JavaScript -->
+        <script src="{% static 'assets/js/app.js' %}"></script>
+
+    </body>
+</html>
+
+

@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<form method="post" >
+    {% csrf_token %}
+ <div class="container">
+    <h1 style="margin:10px auto 50px auto; text-align:center">Sipariş Paket seçimi</h1>
+
+    
+        <div class="row">
+            <div class="col-sm-8">
+              <table class="table">
+                    <tr><TD>Urun</TD><TD>Adet</TD><TD>Renk</TD><TD>Planlanmış</TD><TD>Alt Paket</TD></tr>
+                {% for urun in urunler %}
+                    <tr>
+                      <td>
+                        {{urun.name}}
+                      </td>
+                      <td>
+                        {{urun.toplam}}
+                      </td>
+                      <td>
+                        {{urun.renk}}
+                      </td>
+                      <td>
+                        {{urun.planlanan}}
+                      </td>
+                      <td>
+                        {% if urun.planlanan < urun.toplam or urun.planlanan == null %}
+                          <input name="altPaketAdet_{{urun.orderProduct_id}}">
+                        {%endif%}
+                        {% if urun.planlanan == urun.toplam  %}
+                          <input name="altPaketAdet_{{urun.orderProduct_id}}" value=0 readonly>
+                        {%endif%}
+                      </td>
+                    </tr>
+                
+                  {% endfor %}
+              </table>
+            
+              
+            </div>
+          </div>
+          <br><br><br>
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="Açıklama" name="aciklama">
+            </div>
+          </div>
+          <br>
+
+          <div class="row">
+            <div  class="col-sm-3">
+
+                <select name="order_type" class="select form-control" required="" id="id_order_type">
+                  <option value="" selected="">Sipariş Tipi</option>
+                  <!--  <option value="U">Uretim</option> -->
+                  <option value="S">Sevk</option>
+                  <option value="M">Montaj</option>
+                  <option value="D">Depo Teslim</option>
+                </select>
+        
+            </div>
+            <div  class="col-sm-3"> 
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="uretim" id="inlineRadio1" value="1">
+                  <label class="form-check-label" for="inlineRadio1">Üretim olacak</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="uretim" id="inlineRadio2" value="0" checked>
+                  <label class="form-check-label" for="inlineRadio2" >Olmayacak</label>
+                </div>
+            </div>
+            <div class="col-sm-2">
+              {% if order.siparis_paketi == False %}
+                  <button class="btn btn-primary" >Sipariş paketi oluştur</button>
+              {% endif %}
+            </div>
+          </div>
+      
+
+  </div>
+
+</form>
+<hr><br><br>
+<div class="container">
+
+  <div class="row">
+      <div class="col-sm-8">
+            
+          {% if orderPacketList %}
+          <h1 style="margin:10px auto 50px auto; text-align:center">Sipariş Grupları</h1>
+          
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="border-0" scope="col">ID</th>
+                <th class="border-0" scope="col">Order</th>
+                <th class="border-0" scope="col">Order Type</th>
+                <th class="border-0" scope="col">Statu</th>
+                <th class="border-0" scope="col">Üretim</th>
+                <th class="border-0" scope="col">Açıklama</th>
+                <th class="border-0" scope="col"></th>
+                
+              </tr>
+            </thead>
+            <tbody>
+                {% for packet in orderPacketList %}
+                  <tr>
+                    <td scope="row">{{packet.id}}</td>
+                    <td>{{packet.order.id}}</td>
+                    <td>{{packet.order_type}}</td>
+                    <td>{{packet.status}}</td>
+                    <td>
+                      {% if packet.orderpackets.uretim %}
+                        Var
+                      {%else%}
+                        Yok
+                      {%endif%}
+                      
+                    </td>
+                    <td>{{packet.aciklama}}</td>
+                    <td>
+                      <div >
+                          {% if packet.status == False %}
+                          <a href="/order/orderPacketDelete/{{packet.id}}"><button class="btn btn-outline-info" type="button">
+                              Sil
+                          </button></a>
+                          {% endif %}
+                          
+                          {% if packet.status == False %}
+                          <a href="/order/orderPaketOnayla2/{{packet.id}}/{{workflow_id}}"><button class="btn btn-outline-info" type="button">
+                              BAŞLAT
+                          </button></a>
+                          {% endif %}
+
+                      </div>
+                      
+                  </tr>
+                {% endfor %}
+              
+          
+            </tbody>
+          </table>
+        {%else%}
+          <div class="alert alert-danger">
+              Sipariş Paketi oluşturulmamış!!!
+          </div>
+        {% endif %}
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-10 ">
+        {% if products.count == 0%}
+            <a href="/order/orderPaketOnayla/{{order.id}}/{{workflow_id}}"><button class="btn btn-danger" > Sipariş paketlerini Onayla  </button></a>
+        {% endif %}
+    </div>
+  </div>
+
+</div>
+<br><br><br>
+
+    
+{% endblock body %}

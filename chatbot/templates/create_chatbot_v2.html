@@ -1,0 +1,92 @@
+
+
+{% extends 'layout.html' %}
+
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static %}
+<div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Yeni Chatbot Oluştur</h1>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-2 gap-6">
+            <!-- Sol Kolon -->
+            <div class="space-y-4">
+                <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-red-500 text-sm">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.instructions.label_tag }}
+                    {{ form.instructions }}
+                </div>
+            </div>
+
+            <!-- Sağ Kolon -->
+            <div class="space-y-4">
+                <div class="form-group">
+                    <label class="block mb-2">{{ form.widget_color.label }}</label>
+                    <div class="flex items-center gap-4">
+                        {{ form.widget_color }}
+                        <div class="w-8 h-8 rounded-lg shadow-sm border" 
+                             :style="`background-color: ${selectedColor}`"
+                             @click="colorPicker.click()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form.model.label_tag }}
+                    {{ form.model }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.temperature.label_tag }}
+                    <div class="flex items-center gap-4">
+                        {{ form.temperature }}
+                        <output class="text-sm">{{ form.temperature.value }}</output>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.1" 
+                           class="w-full mt-2" 
+                           value="{{ form.temperature.value }}"
+                           @input="updateTemperature">
+                </div>
+
+                <div class="form-group">
+                    {{ form.files.label_tag }}
+                    {{ form.files }}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3">
+            Chatbot'u Oluştur ve Test Et
+        </button>
+    </form>
+</div>
+
+<script>
+// Basit Alpine.js implementasyonu
+document.addEventListener('alpine:init', () => {
+    Alpine.data('formData', () => ({
+        selectedColor: '{{ form.widget_color.value }}',
+        
+        updateTemperature(event) {
+            this.$el.querySelector('output').textContent = event.target.value
+        }
+    }))
+})
+</script>
+{% endblock body %}

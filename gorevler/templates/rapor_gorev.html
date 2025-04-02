@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row"> 
+    <div class="col-12 col-md-8" id="kisiRapor" ></div>
+    <div class="col-12 col-md-4" id="kisiDagilim" ></div>
+   
+    
+  </div>
+<br><br>
+ <!--  <div class="row"> 
+    <div class="col-12 col-md-6" id="acilan" ></div>
+    <div class="col-12 col-md-6" id="kapatilan" ></div>
+  </div>
+ -->
+  <div class="row"> 
+    <div class="col-12 col-md-6" id="zamanindaBitenOran" ></div>
+    <div class="col-12 col-md-6  p-2" id="taskStatuOran" ></div>
+    <div class="col-12 col-md-6" id="acilan_kapatilan" ></div>
+
+  </div>
+  
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+ 
+  <script>
+        //------------------------------ KİŞİ bazlı açık kapalı task adetleri bar chart --------------------------------
+        var options = {
+                          series: [{ 
+                                    name: 'Açık Görev',data:{{acikTask}}
+                                  }, {
+                                    name: 'Kapatılmış görev', data: {{kapatilanGorevSayisi}}
+                                  }],
+                          chart: {
+                                type: 'bar',
+                                height: 350,
+                                stacked: true,
+                              },
+                          plotOptions: {
+                                        bar: {
+                                          horizontal: true,
+                                            dataLabels: {
+                                              total: {
+                                                enabled: true,
+                                                offsetX: 0,
+                                                style: {
+                                                  fontSize: '13px',
+                                                  fontWeight: 900
+                                                }
+                                              }
+                                            }
+                                          },
+                                        },
+                                        stroke: {
+                                          width: 1,
+                                          colors: ['#fff']
+                                        },
+                                        title: {
+                                          text: 'Kullanıcı task raporu',
+                                        },
+                                        xaxis: {
+                                          categories: {{userList|safe}},
+                                          labels: {
+                                            formatter: function (val) {
+                                              return val + ""
+                                            }
+                                          }
+                                        },
+                                        yaxis: {
+                                          title: {
+                                            text: undefined
+                                          },
+                                        },
+                                        tooltip: {
+                                          y: {
+                                            formatter: function (val) {
+                                              return val + ""
+                                            }
+                                          }
+                                        },
+                                        fill: {
+                                          opacity: 1
+                                        },
+                                        legend: {
+                                          position: 'top',
+                                          horizontalAlign: 'left',
+                                          offsetX: 40
+                                        }
+                        };
+
+        var chart = new ApexCharts(document.querySelector("#kisiRapor"), options);
+        chart.render();
+      
+        //------------------------------ KİŞİ DAĞILIMI  pie/donut --------------------------------
+        options = {
+          series: {{toplamTaskList}},
+          labels: {{userList|safe}},
+          title: {
+                    text: 'Kişi bazlı görev dağılımı',
+          },
+          chart: {
+            type: 'donut'
+          }
+        }
+
+        var chart = new ApexCharts(document.querySelector("#kisiDagilim"), options);
+        chart.render();
+
+        //------------------------------ Task Statu --------------------------------
+        var options = {
+          series: [
+          {
+            data: {{taskStatuOranData|safe}} 
+          }
+        ],
+          legend: {show: false},
+          
+          chart: {height: 350, type: 'treemap' },
+          title: { text: 'Görev durum dağılımı' }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#taskStatuOran"), options);
+        chart.render();
+
+
+        //------------------------------ Kapatılan adet --------------------------------
+      var options = {chart: {height: 280, type: "area" },
+        dataLabels: {  enabled: true },
+        series: [{name: "Kapatilan Görev", data: {{kapatilanGorevAylik.data}} } ],
+        fill: {  type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.9, stops: [0, 90, 100] } },
+        xaxis: {  categories: {{kapatilanGorevAylik.labels|safe}} },
+        title: {
+                    text: 'Kişi bazlı görev dağılımı',
+          },
+      }
+      var kapatilan = new ApexCharts(document.querySelector("#kapatilan"), options);
+      kapatilan.render();
+      //------------------------------ Açılan task Adet --------------------------------
+      var options = {chart: {height: 280, type: "area" },
+        dataLabels: {  enabled: true },
+        series: [{name: "Açılan  Görev", data: {{acilanGorevAylik.data}} } ],
+        fill: {  type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.9, stops: [0, 90, 100] } },
+        xaxis: {  categories: {{acilanGorevAylik.labels|safe}} }
+      }
+      var acilan = new ApexCharts(document.querySelector("#acilan"), options);
+      acilan.render();
+
+      //------------------------------ acılan/kapatılan birlikte --------------------------------
+      var options = {chart: {height: 280, type: "area" },
+        dataLabels: {  enabled: true },
+        series: [{name: "Açılan  Görev", data: {{acilanGorevAylik.data}} },{name: "Kapatilan Görev", data: {{kapatilanGorevAylik.data}} }  ],
+        fill: {  type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.9, stops: [0, 90, 100] } },
+        title: {
+                    text: 'Açılan ve Kapatılan Görevler',
+        },
+        xaxis: {  categories: {{acilanGorevAylik.labels|safe}} }
+      }
+      var acilan_kapatilan = new ApexCharts(document.querySelector("#acilan_kapatilan"), options);
+      acilan_kapatilan.render();
+
+      //------------------------------ Zamanında kapatılan oranı --------------------------------
+      var options = {chart: {height: 280, type: "area" },
+        dataLabels: {  enabled: true },
+        series: [{name: "Zamanında Biten Oranı", data: {{zamanindaBitenGorevOraniAylik.data}} } ],
+        fill: {  type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.9, stops: [0, 90, 100] } },
+        xaxis: {  categories: {{zamanindaBitenGorevOraniAylik.labels|safe}} },
+        title: {
+                    text: 'Zamanında Kapatılma Oranı (%)',
+        },
+      }
+      var zamanindaBitenOran = new ApexCharts(document.querySelector("#zamanindaBitenOran"), options);
+      zamanindaBitenOran.render();
+
+  </script>
+  
+    
+
+  {% endblock body %}

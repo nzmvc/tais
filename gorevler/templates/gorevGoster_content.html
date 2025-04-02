@@ -1,0 +1,449 @@
+{% load crispy_forms_tags %}
+
+<style>
+    /* İkonun rengini buradan belirleyebilirsiniz */
+    .custom-icon-white {
+    color: white; /* İstediğiniz rengi kullanabilirsiniz */
+    border-color: #ffffff;    
+    }
+
+</style> 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+// Sayfa yüklendiğinde modalı kontrol et
+var ilkGorev = "{{ilkGorev}}";
+$(document).ready(function(){
+  if (ilkGorev == "True") {
+    $("#myModalPopup").modal('show');
+  }
+});
+</script>
+
+<div id="myModalPopup" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> "Tamamlandı" butonuna basarak görevi tamamlayınız</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Bu işlem eğitimi sonlandırıp, sizi şifre oluşturma ekranına yönlendirecek. Ardından demoyu kullanmaya başlayabilirsiniz. </p>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Kapat</button>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm position-relative">
+        <div class="col d-flex flex-column position-static ">
+            <div class="row  {%if gorev.statu.id == 1%}
+                                bg-info
+                            {%elif gorev.statu.id == 2%}
+                                bg-primary
+                            {%elif gorev.statu.id == 3%}
+                                bg-warning
+                            {%elif gorev.statu.id == 4%}
+                                bg-success
+                            {%else%}
+                                bg-danger
+                            {%endif%}
+
+        ">
+                <div class="col-md-12 pl-4  pb-2 pt-2 line-height font-size-24">
+                    <div class="row pr-2">
+                        <div class="col-10 align-self-center ">
+                            <strong class="d-inline-block mb-2  text-white">
+                                Konu 
+                                </strong>  &nbsp;&nbsp; {{gorev.title}}
+                        </div>
+                        <div class="col-2 align-self-center">
+                            {% if gorev.dokuman.url is not Null %}
+                                <a href="{{gorev.dokuman.url}}" target="popup" 
+                                    onclick="window.open('{{gorev.dokuman.url}}','popup','width=600,height=600'); return false;">
+                                    <button type="button" class="btn custom-icon-white rounded-pill mt-2 btn-sm">
+                                        <i class="las la-2x la-file-alt"></i>
+                                    </button>
+                                </a>
+                            {% endif %}
+
+                            {% if gorev.problem is not Null %}
+                                <a href="/order/problemView/{{gorev.problem_id}}" >
+                                    <button type="button" class="btn custom-icon-white rounded-pill mt-2 btn-sm">
+                                        Problem Kaydı
+                                    </button>
+                                </a>
+                            {% endif %}
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 p-4">
+                   
+                    <h4 class="p-0">Açıklama</h4> 
+                    <p class=" font-size-16"> {{gorev.description|safe}}  </p>
+
+
+                    {%if gorev.solution %}
+                        <h4 class="p-0">Çözüm</h4> 
+                        <p class=" font-size>16"> {{gorev.solution|safe}}  </p>
+                    {%endif%}
+                </div> 
+            
+            </div>
+        </div>
+        <div class=" text-white col-md-3 p-1 pt-0 d-flex flex-column position-static bg-light">
+            <div class="card-body pt-2 pb-0">
+                  
+                <div class="row pr-2">
+                    <div class="col-6 col-md-9 align-self-center pr-0 mr-0 ">
+                        <h6 class="card-title "> Durum: {{gorev.statu}}</h6>
+                
+                    
+                  <p class="font-size-12 line-height ">
+                    Gorev ID: {{gorev.id}} <br>
+                    Açılma Tarihi  : {{gorev.created_date|date:'d-m-Y'}} <br>
+                    Planlanan : {{gorev.deadline|date:'d-m-Y'}} <br>
+                    Açan : {{gorev.open_user.first_name}} {{gorev.open_user.last_name}} <br>
+                    Sorumlu : 
+                            {%if gorev.responsible_user.first_name%}
+                                {{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}
+                            {%else%}
+                                {{gorev.responsible_user}} 
+                            {%endif%}
+
+                  </p>
+                    </div>
+                    <div class="col-6 col-md-3 text-right">
+                        {%if gorev.open_user.id  == user.id %}
+                            <a href="/gorevler/gorevGuncelle/{{gorev.id}}">
+                                <button class="btn btn-outline-warning rounded-pill mt-2 btn-sm custom-icon-white" title="Güncelle"> <i class="las la-pen la-2x"></i> </button></a>
+                            <a href="/gorevler/gorevSil/{{gorev.id}}" class="text-white" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                <button class="btn btn-outline-danger rounded-pill mt-2 btn-sm custom-icon-white" title="Sil"> <i class="las la-trash la-2x"></i>  </button>
+                            </a>
+                        {%endif%}
+                        <a href="/gorevler/gorevListele/aktif">
+                            <button class="btn btn-outline-warning rounded-pill mt-2 btn-sm custom-icon-white" title="Görevlerim"> Görevlerim</button></a>
+                    </div>
+                </div>
+
+
+             
+            </div>
+         </div>
+    </div>
+
+    <div class="row  border rounded overflow-hidden flex-md-row  shadow-sm position-relative">
+    
+        <div class="col-md-9 border p-4" >
+           
+
+                <div class="row ">
+                    <div class="col-10">
+                           <h4>Notlar   &nbsp;&nbsp;  
+                                    {% if gorev.statu_id != 4 and  gorev.statu_id != 5 %}
+                                    <!-- Button trigger modal -->
+                                    {%if ilkGorev %}
+                                        <button disabled type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal2">
+                                            <i class="las la-2x la-plus-circle"></i>
+                                        </button>
+                                    {%else%}
+                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal2">
+                                            <i class="las la-2x la-plus-circle"></i>
+                                        </button>
+                                    {%endif%}
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel2">Not Ekle</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form method="post" enctype="multipart/form-data">
+                                                    <div class="modal-body font-size-16">
+                                                        
+                                                            {{gorevNotuForm.media }}
+                                                            {% csrf_token %}
+                                                            {{gorevNotuForm|crispy }}
+                                                            <br>
+                                                            <input type="hidden" name="gorevNotEkle" value="1">
+                                                            <!-- <button type="submit" class="btn btn-warning">Güncelle</button> -->
+                                                        
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Not Ekle</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <!--    modal end-->
+                                    {% endif%}
+                            </h4>
+                    </div>
+
+                    <div class="col-2">
+                       
+                    </div>
+
+                </div>
+                <div class="row p-4">
+                    {% if gorevNotlar %}
+                    
+                        <ul class="list-inline p-0 m-0 w-100">
+                            {% for not in gorevNotlar %}
+                                <li>
+                                    <div class="row align-items-top">
+                                        <div class="col-md-3">
+                                            <h6 class="mb-2">{{not.created_date|date:'d-m-Y h:s'}}</h6>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="media profile-media align-items-top">
+                                                <div class="profile-dots border-primary mt-1"></div>
+                                                <div class="ml-4">
+                                                    <h6 class=" mb-1">{{not.open_user.first_name}} {{not.open_user.last_name}}</h6>
+                                                    <p class="mb-0 font-size-14">{{not.description|safe}}
+
+                                                        {% if not.dokuman %}
+                                                            <a href="{{not.dokuman.url}}" target="popup" 
+                                                                onclick="window.open('{{not.dokuman.url}}','popup','width=600,height=600'); return false;">
+                                                                <button type="button" class="btn btn-warning btn-sm">
+                                                                    <i class="las la-2x la-file-alt"></i>
+                                                                </button>
+                                                            </a>
+                                                        {% endif %}
+
+
+                                                    </p>
+                                                </div>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </li>
+                             {% endfor %}
+                        </ul>
+
+
+                        
+                        {%else%}
+                            <div class="alert alert-danger">
+                                Görev kaydı yok
+                            </div>
+                        {% endif %} 
+
+                </div>
+          
+        
+        </div>
+        
+        <style>
+            .my-button {
+                animation: blink 1s linear infinite;
+                }
+
+            @keyframes blink {
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+                }
+        </style>
+
+        <div class="col-md-3 border p-4" >
+        
+                {% if gorev.statu_id != 4 and  gorev.statu_id != 5 %}
+                    {%if ilkGorev %}
+                   
+                            <button type="button" class="btn  btn-light btn-block" disabled>Çalışılıyor</button>
+                  
+                            <button type="button" class="btn  btn-light btn-block" disabled>Beklemeye Al</button>
+             
+                            <button type="button" class="btn  btn-light btn-block" disabled>İptal Et</button>
+     
+                    {%else%}
+                        
+        
+                        <div class="btn-group btn-block pb-2" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn bg-secondary-light btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Diğer
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                {%for statu in statuList%}
+                                        <a class="dropdown-item" href="/gorevler/gorevStatuUpdate/{{gorev.id}}/{{statu.id}}/{{gorev.secret}}">{{statu.aciklama}}</a>
+                                {%endfor%} 
+                              
+                              <a class="dropdown-item" href=""></a>
+                            </div>
+                        </div>
+                        <div class="pb-2"><a href="/gorevler/gorevStatuUpdate/{{gorev.id}}/2/{{gorev.secret}}" onclick="return confirm('Çalışılıyor statusune alınacak?')">
+                            <button type="button" class="btn  bg-secondary-light btn-block">Çalışılıyor</button>
+                        </a> </div>
+                        <div><a href="/gorevler/gorevStatuUpdate/{{gorev.id}}/3/{{gorev.secret}}" onclick="return confirm('Beklemeye alınacak?')">
+                            <button type="button" class="btn bg-secondary-light btn-block">Beklemeye Al</button>
+                        </a> 
+</div>
+                          
+                    
+                        
+                    {%endif%}
+
+    
+                    <!-- Button trigger modal -->
+                    {%if ilkGorev %}
+                        <button type="button" class="btn btn-success mt-2 btn-block my-button " data-toggle="modal" data-target="#exampleModal">
+                    {%else%}
+                        <button type="button" class="btn btn-success mt-2 btn-block " data-toggle="modal" data-target="#exampleModal">
+                    {%endif%}
+
+                    
+                        Tamamlandı 
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Görev Güncelle</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        
+                                            {{ form.media }}
+                                            {% csrf_token %}
+                                            {{form|crispy }}
+                                            <br>
+                                            <input type="hidden" name="gorevGuncelle" value="1">
+                                            <!-- <button type="submit" class="btn btn-warning">Güncelle</button> -->
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Tamamlandı</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                        <!--    modal end-->
+                        <!-- <a href="/gorevler/gorevStatuUpdate/{{gorev.id}}/4/{{gorev.secret}}" onclick="return confirm('Görev kapatılacak emin misiniz?')">
+                        <button type="button" class="btn  btn-success btn-block">Tamamlandı</button>
+                        </a>  -->
+    
+                {% endif%}
+           
+        </div>
+
+
+        
+    </div>
+    <br>
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm position-relative">
+        <div class="col p-4 d-flex flex-column position-static" >
+            Zaman Durumu
+            <div class="progress">
+                <div class="progress-bar bg-danger" role="progressbar" style="width:{{gecenOran}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"> {{gecenOran}}%</div>
+             </div>
+
+        </div>
+    </div>
+          
+
+    
+    <!-- Gider ekleme-->
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm  position-relative">          
+        <div class="col p-4 d-flex flex-column position-static" >
+            {%if perms.order.add_order%}
+            <div class="col p-4 d-flex flex-column position-static">
+                
+                <h3>Gider ekle </h3>
+                <div class="jumbotron  rounded overflow-hidden ">
+                    <form method="post" enctype="multipart/form-data">
+                    
+                        {% csrf_token %}
+                        {{gorevOrderProductForm|crispy }}
+                        <br>
+                        <input type="hidden" name="gorevAddProduct" value="1">
+                        <button type="submit" class="btn btn-warning">Ekle</button>
+                        
+                    </form>
+                </div>
+                <br><br>
+                <h3>Kullanılan Ürün/Malzeme</h3>
+                <div class="jumbotron  rounded overflow-hidden ">
+                    {%if orderProducts%}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ürün</th>
+                                    <th>Miktar</th>
+                                    <th>Birim fiyat</th>
+                                    <th>Toplam tutar</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            {%for product in orderProducts%}
+                            
+                                <tr>
+                                <td>{{product.product}}</td>
+                                <td>{{product.amount}}</td>
+                                <td>{{product.birim_fiyat}}</td>
+                                <td>{{product.toplam_tutar}}</td>
+                                <td> <a href="/order/orderDeleteProduct/{{product.id}}"> <button type="button" class="btn btn-danger mt-2" >Sil</button></a></td>
+                                </tr>  
+
+                            {%endfor%}
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th> TOPLAM: </th>
+                                <th>{{toplamTutar}}</th>
+                                <th></th>
+                            </tr>
+                        </table>
+                        <a href="/order/gorevSiparisTamamla/{{gorev.id}}"> <button type="button" class="btn btn-warning mt-2" >Onayla</button></a>
+                        <a href="/order/orderSiparisFisi/{{gorev.order.id}}" target="popup" onclick="window.open('/order/orderSiparisFisi/{{order.id}}','popup','width=600,height=600'); return false;> <button type="button" class="btn btn-secondary mt-2" >Yazdır</button></a>
+                       
+
+                    {%endif%}
+                </div>
+            </div>
+            {%else%}
+                <div class="alert alert-danger">
+                    Gider ekleme yetkiniz yok. Bunun için "Sipariş Yönetim" modülünü almalısınız.
+                </div>
+            {%endif%}
+        </div>
+    </div>
+
+
+
+
+</div>

@@ -1,0 +1,108 @@
+TOYU MODULLERİ
+Saha Yönetimi
+Üretim Yönetimi
+Görev Yönetimi
+Şikayet Yönetimi
+CRM
+B2B 
+Proje Yönetimi 
+Sipariş Yönetimi
+Stok Yönetimi 
+
+
+GENEL ÖZELLİKLER
+Mail gönderimi
+Sms gönderimi
+Kullanıcı Yetkilendirme
+Mobil uyumlu web arayüzü
+Excel import,Export
+Excel form oluşturma
+Statuleri renklendirme
+Custom statü tanımlama
+Takvim üzerinde iş takibi
+Sms ile iş güncelleme
+
+
+
+
+Saha Yönetimi MODUL ÖZELLİKLERİ
+Ürün tanımlama
+Müşteri tanımlama
+Proje tanımlama
+Sipariş girişi
+Otomatik Task oluşturma
+Kurulum rezervasyon
+Üretim görevi
+SMS ile Ustaya görev iletimi
+İş kapanınca müşteriye sms ile memnuniyet ekranına yönlendirme
+Kurulum tarihinden önceki gün  müşteriye otomatik sms ile bilgilendirme
+Siparişi Alt paketlere bölebilme
+Alt paketleri iş tipine göre otomatik görevlerin oluşturulması
+Hakediş takibi
+Detaylı raporlama ekranı. 
+Saha performans takibi
+
+
+Üretim Yönetimi MODUL ÖZELLİKLERİ
+	Aktif özellikler:
+Üretim tipi tanımlama
+Üretim tipine göre iş/Görev tanımlama
+Tanımlanan işlerde kullanılacak malzemeleri belirleme
+Tanımlanmış adımlara özel statüler belirleme
+Tanımlanmış işler için default personel, makina veya araç belirleme. 
+Proje tanımlama 
+Proje içinde çoklu üretim tanımlama
+Üretim tipine göre otomatik görevlerin oluşması.
+Proje dosyasının yüklenmesi
+Firma Sözleşme template i yükleme.
+Müşteri üretim sözleşmesinin excel formatında otomatik oluşturulması ve download edilmesi
+İmzalı sözleşmenin yüklenmesi
+Otomatik oluşan iş adımlarının planlanması.(Sorumlu atama i tarih belirleme)
+Planlamada varsayılan personel,makina veya aracın güncellenmesi
+Sevk tarihi ve takvimden işlerin görüntülenmesi
+Kişilere atanan işlerin sms olarak gönderilmesi ve sms ile gelen linkten iş durumunun güncellenmesi
+İş durum güncelleme ekranında kullanılan malzeme girişi
+Üretimde tamamlanan miktarın sisteme girilmesi
+Üretimde kullanılan araç tipleri ,araçlar (palet, kamyon, araba , vinç) tanımlanması
+Üretimde kullanılan makina tipleri ve makinaların tanımlanması
+Üretim planlamada araç ve makinaların işlere atanabilmesi
+Üretim kontrol ekranı ile  üretim tipine göre işlerin statülerinin görüntülenmesi
+İş statürelinin renklendirilmesi
+Kontrol ekranında satır renklendirilmesi. Renklendirmede iş adımı sırasına göre ileriki adımların renklerinin baskın ayarlanması
+Kişilerin kendi üzerindeki işleri görebilmesi
+İşlerin tarih kontrolü, yaklaşan veya geç kalan ilerin bilgilendirilmesi
+Makina rezervasyon ile işlerin zaman planlarının otomaitikleştirilmesi ve optimizasyonu
+sözleşme template içinde belirtilen kolonların güncellenmessi
+Görev Yönetimi
+İş/Görev tanımlama
+Sms ile ilgililere gonderim. 
+Göreve dosya ekleme
+Not ekleme
+Sms linki üzerinden güncelleme kapatma
+Görev kapatılırken harcama girişi
+deadline kontrolü ve bilgilendirmesi
+Takvimde görev takibi
+
+
+
+Şikayet Yönetimi MODUL ÖZELLİKLERİ
+Şikayet girişi
+Şikayet içinden görev açılarak sorumluya gönderilebilir
+Şikayete birden fazla not ekleme.zaman bazlı görebilme
+Şikayet statü güncelleme veya çözüm girerek kapatmak.
+Varsa harcamalar eklenebilir.
+Harcama siparişe dönüştürülerek print çıktısı alınabilir
+Kök sebep ekleme
+
+
+STOK MODUL ÖZELLİKLERİ
+Ürün/Malzeme tanımlama
+Stok girişi
+Malzeme kullanımında stoktan düşme
+Belirli değerlere ulaşıldığında stok uyarısı mail/sms 
+Raporlama( Kök sebep , açıları kapanan şikayet sayıları. Sebep bazlı.)
+
+CRM MODUL ÖZELLİKLERİ
+Teklif girişi( teklif dosyası sözleşme dosyası)
+Teklif ile birlikte üretim girişi
+Teklif duruma göre listeleme 

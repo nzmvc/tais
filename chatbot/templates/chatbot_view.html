@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static %}
+<div class="container mt-4">
+    <h2>{{ chatbot.name }} - Chatbot Detayları</h2>
+    <p><strong>Açıklama:</strong> {{ chatbot.description }}</p>
+    <p><strong>Model:</strong> {{ chatbot.model }}</p>
+    <p><strong>Sıcaklık (Temperature):</strong> {{ chatbot.temperature }}</p>
+    <p><strong>Oluşturulma Tarihi:</strong> {{ chatbot.created_at|date:"d-m-Y H:i" }}</p>
+    <p><strong>Durum:</strong> {% if chatbot.is_active %} Aktif {% else %} Pasif {% endif %}</p>
+    <p><strong>Depolama Kullanımı:</strong> {{ storage_usage }} MB</p>
+    <p><strong>Toplam Görüşme Sayısı:</strong> {{ total_chats }}</p>
+
+    <hr>
+    
+    
+    <div>
+        <h3>Chatbot Test Alanı</h3>
+        <div id="chat-log" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:scroll;"></div>
+        <input type="text" id="chat-input" placeholder="Mesajınızı yazın..." />
+        <button onclick="sendMessage()">Gönder</button>
+    </div>
+    <hr>
+    <script>
+        function sendMessage() {
+            let message = document.getElementById("chat-input").value;
+            let chatLog = document.getElementById("chat-log");
+    
+            if (!message.trim()) return;
+    
+            chatLog.innerHTML += "<p><strong>Sen:</strong> " + message + "</p>";
+    
+            fetch("/chatbot/api/chatbot/{{ chatbot.id }}/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.reply) {
+                    chatLog.innerHTML += "<p><strong>Chatbot:</strong> " + data.reply + "</p>";
+                } else {
+                    chatLog.innerHTML += "<p><strong>Hata:</strong> " + data.error + "</p>";
+                }
+            })
+            .catch(error => console.error("Hata:", error));
+        }
+    </script>
+
+    <hr>
+    
+    <h3>Chatbot'u Müşteri Sayfasına Gömme Kodu</h3>
+    <textarea class="form-control" rows="3" readonly>
+        &lt;script src="https://yourdomain.com/chatbot/widget.js?api_key={{ chatbot.api_key }}"&gt;&lt;/script&gt;
+    </textarea>
+</div>
+{% endblock body%}

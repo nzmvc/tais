@@ -1,0 +1,5 @@
+
+<option value="">---------</option>
+{% for color in colors %} 
+<option value="{{ color.id }}" title ="{{ color.renk_kodu }}">{{ color.renk_kodu |truncatechars:50}}</option>
+{% endfor %}

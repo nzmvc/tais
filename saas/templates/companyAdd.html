@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+
+<div class="card">
+	<div class="card-header d-flex justify-content-between">
+		<div class="header-title">
+			<h4 class="card-title">Add Company</h4>
+		</div>
+	</div>
+	<div class="card-body">
+
+		<form method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{form.media}}
+			{{form|crispy }}
+			<button type="submit" class="btn btn-warning">Add</button>
+		</form>
+
+	</div>
+</div>
+</div>
+</div>
+{% endblock body %}

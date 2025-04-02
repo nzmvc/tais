@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const repeatTypeField = document.getElementById("id_repeat_type");
+        const daysOfWeekField = document.getElementById("div_id_days_of_week");
+        const daysOfMonthField = document.getElementById("div_id_days_of_month");
+    
+        function toggleFields() {
+            if (repeatTypeField.value === "2") {
+                daysOfWeekField.style.display = "block";
+                daysOfMonthField.style.display = "none";
+            } else if (repeatTypeField.value === "3") {
+                daysOfWeekField.style.display = "none";
+                daysOfMonthField.style.display = "block";
+            } else {
+                daysOfWeekField.style.display = "none";
+                daysOfMonthField.style.display = "none";
+            }
+        }
+    
+        // Sayfa yüklendiğinde başlangıç durumunu kontrol et
+        toggleFields();
+    
+        // repeat_type değiştiğinde alanları kontrol et
+        repeatTypeField.addEventListener("change", toggleFields);
+    });
+    
+</script>
+<div class="row  m-2">
+    <div >
+        <br>
+        <h3> Görev Ekle</h3>   
+        <hr>
+        
+        <form method="post" enctype="multipart/form-data">
+            {{ form.media }}
+            {% csrf_token %}
+            {{form|crispy }}
+            {{formReminder|crispy }}
+            
+            <br>
+            <button type="submit" class="btn btn-warning">Giriş</button>
+        </form>
+    </div>
+</div>
+{% endblock body %}

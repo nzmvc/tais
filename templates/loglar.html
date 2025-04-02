@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row"> 
+    <div align="right">
+      <form>
+          {% csrf_token %}
+          <input type="text" name="keyword" class="input-sm" placeholder="Ara...">
+          <button type="submit" class="btn btn-info btn-sm"> search</button>
+      </form>
+    </div>
+</div>
+
+
+<div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Tarih</th>
+          <th scope="col">Log</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      
+        {%for line in lines%}
+            <tr><td scope="row">{{line.0}}</td> <td scope="row">{{line.1}}</td></tr>
+        {%endfor%}     
+      </tbody>
+    </table>
+
+</div>
+
+{% if loglar.has_other_pages %}
+  <ul class="pagination">
+    {% if loglar.has_previous %}
+      <li><a href="?page={{ loglar.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in loglar.paginator.page_range %}
+      {% if loglar.number == i %}
+        <li class="active"><span>{{ i }}- <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a>-</li>
+      {% endif %}
+    {% endfor %}
+    {% if loglar.has_next %}
+      <li><a href="?page={{ loglar.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+{% endblock body %}

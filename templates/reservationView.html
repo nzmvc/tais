@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<div class="row mb-1">
+    <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-primary">
+              Reservasyon ID: {{res.id}} 
+              
+            </strong>
+          
+          <h3 class="mb-0">{{res.order.customer.customer_name}} </h3>
+         
+          
+          <a href="/order/orderView/{{res.order.id}}" class="stretched-link">Sipariş Detay</a>
+        </div>
+        
+      </div>
+    </div>
+	
+    <div class="col-md-3">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+                <h5 class="mb-0">İletişim</h5>
+                <div >email : {{res.order.customer.email}}</div> 
+                <div class="mb-1 text-muted">Telefon:{{res.order.customer.telephone}}</div> 
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                
+                <h1>DURUM <br> {{problem.statu}}</h1>
+
+            </div>
+    </div>
+
+</div>
+
+<div >
+
+    <div class="jumbotron border rounded overflow-hidden ">
+        <h3>Açıklama</h3>
+        {{problem.description|safe}}
+      
+       <br><br>
+    </div>
+
+</div>
+<br><br>
+
+
+<div class="row mb-1">
+
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static">
+        Araçlar: <br>
+        {%if res_vehicles %}
+        {% for arac in res_vehicles%}
+
+            Plaka : {{arac.vehicle.type_id}} <br>
+            Araç tipi : {{arac.vehicle.type_name}} <br>
+            Açıklama : {{arac.vehicle.decription}} <br>
+        {% endfor%}
+        {% endif %}
+        <br>  <hr> <br>
+        Personel: <br>
+        {%if res_persons %}
+        {% for person in res_persons%}
+            Adı :  {{person.employee.user.first_name}} <br>
+            Telefon : {{person.employee.telephone}} <br>
+            Email: {{person.employee.user.email}} <br>
+        <br>  <hr> <br>
+        {% endfor%}
+        {% endif %}
+      </div>        
+    </div>
+  </div>  
+
+
+
+
+ 
+
+{% endblock body %}

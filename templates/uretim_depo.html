@@ -1,0 +1,330 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">Depo sorumlusunu bekleyen Sevk atama  
+        <button type="button" class="btn btn-primary btn-sm">
+          iş adedi: <span class="badge badge-light">{{depo_jobs.count }}</span>
+        </button>
+      </h4>
+      
+  </div>
+  <div class="table-full-width table-responsive px-0 card-body">
+
+
+    {% if depo_jobs %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th class="border-0" scope="col">#</th>
+          <th class="border-0" scope="col">Durum</th>
+          <th class="border-0" scope="col">Tarih</th>
+          <th class="border-0" scope="col">Sipariş</th>
+          <th class="border-0" scope="col">Açıklama</th>
+          <th class="border-0" scope="col">Müşteri</th>
+          <th class="border-0" scope="col">Sip Tes. Tar.</th>
+          <th class="border-0" scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for job in depo_jobs %}
+            <tr>
+              <td><a href="/order/workflowView/{{job.id}}">{{job.id}}</a></td>
+              <td>{{job.status}}</td>
+              <td>{{job.created_date|date:'d-m-Y'}}</td>
+              <td><a href="/order/orderView/{{job.order.id}}">{{job.order.id}}</td>
+              <td>{{job.order.content|safe}}</td>
+              <td>{{job.order.customer.customer_name}}</td>
+              <td>{{job.order.tahmini_tarih_max|date:'d-m-Y'}} - {{job.order.tahmini_tarih_max|timeuntil}} gün</td>
+              <td>
+                  
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{job.id}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-file-earmark-lock2" viewBox="0 0 16 16">
+                      <path d="M10 7v1.076c.54.166 1 .597 1 1.224v2.4c0 .816-.781 1.3-1.5 1.3h-3c-.719 0-1.5-.484-1.5-1.3V9.3c0-.627.46-1.058 1-1.224V7a2 2 0 1 1 4 0zM7 7v1h2V7a1 1 0 0 0-2 0z"/>
+                      <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                    </svg>
+                  </button>
+                  
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal{{job.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{job.id}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel{{user.id}}">Username: {{user.username}}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST">
+                          {% csrf_token %}
+                            <div class="modal-body">
+                              
+                              <input type="hidden" name="wf_useratanacak"  id="wf_useratanacak" value="{{job.id}}"/>
+                              <select name="personel">
+                                {%for p in  personel%}
+                                  <option value={{p.user_id}}>{{p.user.username}}</option>
+                                {%endfor%}
+                              </select>
+                              
+                            </div>
+                            <div class="modal-footer">
+
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Görev Ata</button>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+
+               </td>
+            </tr>
+          {% endfor %}
+        
+    
+      </tbody>
+    </table>
+  {%else%}
+    <div class="alert alert-danger">
+        Bekleyen iş yok
+    </div>
+  {% endif %}
+  </div>
+  </div>
+</div>
+
+<br><br>
+
+<div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Bekleyen üretim  
+          <button type="button" class="btn btn-primary btn-sm">
+            iş adedi: <span class="badge badge-light">{{uretim_planlandi_jobs.count }}</span>
+          </button>
+        </h4>
+        
+    </div>
+    <div class="table-full-width table-responsive px-0 card-body">
+  
+  
+      {% if uretim_planlandi_jobs %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="border-0" scope="col">#</th>
+            <th class="border-0" scope="col">Durum</th>
+            <th class="border-0" scope="col">Tarih</th>
+            <th class="border-0" scope="col">Sipariş</th>
+            <th class="border-0" scope="col">Açıklama</th>
+            <th class="border-0" scope="col">Müşteri</th>
+            <th class="border-0" scope="col">Sip Tes. Tar.</th>
+            <th class="border-0" scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for job in uretim_planlandi_jobs %}
+              <tr>
+                <td><a href="/order/workflowView/{{job.id}}">{{job.id}}</a></td>
+                <td>{{job.status}}</td>
+                <td>{{job.created_date|date:'d-m-Y'}}</td>
+                <td><a href="/order/orderView/{{job.order.id}}">{{job.order.id}}</td>
+                <td>{{job.order.content|safe}}</td>
+                <td>{{job.order.customer.customer_name}}</td>
+                <td>{{job.order.tahmini_tarih_max|date:'d-m-Y'}} - {{job.order.tahmini_tarih_max|timeuntil}} gün</td>
+                <td>
+                    <a href="/order/workflowStatuUpdate/{{job.id}}/4" data-toggle="tooltip" data-placement="left" title="Üretime başlandı">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+                      </svg>
+                    </a>
+
+                 </td>
+              </tr>
+            {% endfor %}
+          
+      
+        </tbody>
+      </table>
+    {%else%}
+      <div class="alert alert-danger">
+          Bekleyen iş yok
+      </div>
+    {% endif %}
+    </div>
+    </div>
+  </div>
+
+<br><br>
+
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Üretimdeki işler 
+          <button type="button" class="btn btn-primary btn-sm">
+            iş adedi: <span class="badge badge-light">{{uretimde_jobs.count }}</span>
+          </button>
+        </h4>
+
+    </div>
+    <div class="table-full-width table-responsive px-0 card-body">
+  
+  
+      {% if uretimde_jobs %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="border-0" scope="col">#</th>
+            <th class="border-0" scope="col">Durum</th>
+            <th class="border-0" scope="col">Tarih</th>
+            <th class="border-0" scope="col">Sipariş</th>
+            <th class="border-0" scope="col">Açıklama</th>
+            <th class="border-0" scope="col">Müşteri</th>
+            <th class="border-0" scope="col">Sip Tes. Tar.</th>
+            <th class="border-0" scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for job in uretimde_jobs %}
+              <tr>
+                <td><a href="/order/workflowView/{{job.id}}">{{job.id}}</a></td>
+                <td>{{job.status}}</td>
+                <td>{{job.created_date|date:'d-m-Y'}}</td>
+                <td><a href="/order/orderView/{{job.order.id}}">{{job.order.id}}</td>
+                <td>{{job.order.content|safe}}</td>
+                <td>{{job.order.customer.customer_name}}</td>
+                <td>{{job.order.tahmini_tarih_max|date:'d-m-Y'}} - {{job.order.tahmini_tarih_max|timeuntil}} gün</td>
+                
+                <td>
+                  
+                  
+
+                      <a href="/order/workflowStatuUpdate/{{job.id}}/5" data-toggle="tooltip" data-placement="left" title="Üretim tamamlandı" onclick="return confirm('Tamamlandığına  emin misiniz?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                        </svg>
+                      </a>
+                  
+                      <a href="/order/workflowStatuUpdate/{{job.id}}/2" data-toggle="tooltip" data-placement="left" title="Üretim planlanacak">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-stop-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3z"/>
+                        </svg></a>
+                      </a>
+                 </td>
+                
+              </tr>
+            {% endfor %}
+          
+      
+        </tbody>
+      </table>
+    {%else%}
+      <div class="alert alert-danger">
+          Bekleyen iş yok
+      </div>
+    {% endif %}
+    </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Diğer işler 
+          <button type="button" class="btn btn-primary btn-sm">
+            iş adedi: <span class="badge badge-light">{{diger_jobs.count }}</span>
+          </button>
+        </h4>
+        <!--
+        <div class="row">
+          <div class="col-sm-8">
+              <p class="card-category">Buraya bilgilendirme mesajları veya sayısal veriler eklenebilir.Filtreler butonlar</p>
+          </div>
+          <div class="col-sm-4" align="right">
+            <div class="btn-group">
+              <a href="/order/planlama/active" class="btn btn-outline-dark btn-sm active" >Active </a>
+              <a href="/order/planlama/all" class="btn btn-outline-dark btn-sm">Hepsi</a>
+              <a href="/order/planlama/tamamlandi" class="btn btn-outline-dark btn-sm">Tamamlandi</a>
+            </div>
+          </div>
+        </div>
+        -->
+        
+    </div>
+    <div class="table-full-width table-responsive px-0 card-body">
+  
+  
+      {% if diger_jobs %}
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="border-0" scope="col">#</th>
+            <th class="border-0" scope="col">Durum</th>
+            <th class="border-0" scope="col">Tarih</th>
+            <th class="border-0" scope="col">Sipariş</th>
+            <th class="border-0" scope="col">Açıklama</th>
+            <th class="border-0" scope="col">Müşteri</th>
+            <th class="border-0" scope="col">Sip Tes. Tar.</th>
+            <th class="border-0" scope="col" style="width: 7%"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for job in diger_jobs %}
+              <tr>
+                <td><a href="/order/workflowView/{{job.id}}">{{job.id}}</a></td>
+                <td>{{job.status}}</td>
+                <td>{{job.created_date|date:'d-m-Y'}}</td>
+                <td><a href="/order/orderView/{{job.order.id}}">{{job.order.id}}</td>
+                <td>{{job.order.content|safe}}</td>
+                <td>{{job.order.customer.customer_name}}</td>
+                <td>{{job.order.tahmini_tarih_max|date:'d-m-Y'}} - {{job.order.tahmini_tarih_max|timeuntil}} gün</td>
+                
+                <td>
+                  {% if job.status.id == 7 or job.status.id ==  8 %}
+                    <a href="/order/workflowStatuUpdate/{{job.id}}/8" data-toggle="tooltip" data-placement="left" title="Sevk Alanında" onclick="return confirm('Sevk alanına alındığına emin misiniz?')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+                      </svg>
+                    </a>
+                    <a href="/order/workflowStatuUpdate/{{job.id}}/9" data-toggle="tooltip" data-placement="left" title="Sevk Edildi" onclick="return confirm('Sevk edildiğine emin misiniz?')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                      </svg>
+                  </a>
+                  {% else%} <!-- status 19   --->
+                      <a href="/order/workflowStatuUpdate/{{job.id}}/20" data-toggle="tooltip" data-placement="left" title="Müşteriye Teslim edildi" onclick="return confirm('Müşteriye teslim edildiğine emin misiniz?')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+                      </svg>
+                    </a>
+                  {% endif %}
+                 </td>
+                
+              </tr>
+            {% endfor %}
+          
+      
+        </tbody>
+      </table>
+    {%else%}
+      <div class="alert alert-danger">
+          Bekleyen iş yok
+      </div>
+    {% endif %}
+    </div>
+    </div>
+  </div>
+
+  {% endblock body %}

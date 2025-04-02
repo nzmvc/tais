@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+
+<div class="row">
+  <div class="row mb-2">
+    
+  
+     
+    <div class="col-md-6" align="right">
+      <form method="post">
+          {% csrf_token %}
+
+          <input class="form-control" type="date"  name="start_date" >
+          <input class="form-control" type="date"  name="end_date">
+          <input type="text" name="keyword" class="input-sm" placeholder="Ara...">
+          <button type="submit" class="btn btn-info btn-sm"> Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<h1>Filtrelenmiş Log Kayıtları</h1>
+
+{% if filtrelenmis_satirlar %}
+<table class="table">
+    <thead>
+        <tr>
+          
+            <th>Mesaj</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for satir in filtrelenmis_satirlar %}
+        <tr>
+            <td>{{satir}} </td>
+          
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Filtre kriterlerine uyan herhangi bir kayıt bulunamadı.</p>
+{% endif %}
+    
+
+    
+{% endblock body %}

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row">
+    <div >
+    <h3> 
+            İndex
+            
+    </h3>   
+    Hoş Geldiniz, {{ request.user.username}}
+    <hr>
+
+    <a href="/article/addArticle"><button class="btn btn-info">Makale ekle</button></a>
+</div>
+{% endblock body %}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+
+			<!-- start page content -->
+			
+			<div class="col-md-8"> <br><br>
+				
+
+					<form method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{form.media}}
+						{{form|crispy }}
+				
+						<hr>
+						<button type="submit" class="btn btn-warning">Güncelle</button>
+					</form>
+
+			</div>
+						
+			<!-- end page content -->
+
+
+{% endblock body %}

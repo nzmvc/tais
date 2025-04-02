@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load custom_tags  %}
+
+
+<div class="row">
+
+  <div class="card w-100">
+      <div class="card-header  ">
+                <!--    başlık bolumu -->
+                <div class="row" >
+                  <div class="col-9">
+                        <button type="button" class="btn btn-primary">
+                          ChatBot Listele: <span class="badge badge-light">{{chatbots.count }}</span>
+                        </button>
+          
+                        <a href="/chatbot/create_chatbot" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-plus-circle "></i>
+                          </button>
+                        </a>
+                  </div>
+
+                </div>
+
+          </div>
+
+          <div class="table-full-width table-responsive px-0 card-body">
+      
+      
+            {% if chatbots %}
+            <table class="table-hover table-striped table normal-table">
+                <thead>
+                    <tr>
+                        <th class="border-0" scope="col">Adı</th>
+                        <th class="border-0" scope="col">Açıklama</th>
+                        <th class="border-0" scope="col">Kullanıcı</th>
+                        <th class="border-0" scope="col">Model</th>
+                        <th class="border-0" scope="col">Sıcaklık (Temperature)</th>
+                        <th class="border-0" scope="col">Oluşturulma Tarihi</th>
+                        <th class="border-0" scope="col">Durum</th>
+                        <th class="border-0" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chatbot in chatbots %}
+                        <tr>
+                            <td scope="row">
+                                <a href="/chatbot/chatbot_view/{{ chatbot.id }}">{{ chatbot.name }}</a>
+                            </td>
+                            <td>{{ chatbot.description|truncatechars:50 }}</td>
+                            <td>{{ chatbot.user.username }}</td>
+                            <td>{{ chatbot.get_model_display }}</td>
+                            <td>{{ chatbot.temperature }}</td>
+                            <td>{{ chatbot.created_at|date:'d-m-Y H:i' }}</td>
+                            <td>{% if chatbot.is_active %} Aktif {% else %} Pasif {% endif %}</td>
+                            <td>
+                                <a href="/chatbot/chatbot_view/{{ chatbot.id }}">
+                                    <button class="btn btn-success btn-sm" title="Göster">
+                                        <i class="las la-eye la-2x"></i>
+                                    </button>
+                                </a>
+                                <a href="/chatbot/chatbot_update/{{ chatbot.id }}">
+                                    <button class="btn btn-outline-warning btn-sm" title="Güncelle">
+                                        <i class="las la-pen la-2x"></i>
+                                    </button>
+                                </a>
+                                <a href="/chatbot/chatbot_delete/{{ chatbot.id }}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                                    <button class="btn btn-outline-danger btn-sm" title="Sil">
+                                        <i class="las la-trash la-2x"></i>
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+            
+
+
+ 
+
+          </div>
+  </div>
+
+    
+</div>
+{% endblock body %}

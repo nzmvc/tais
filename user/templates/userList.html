@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-md-6" align="left">
+        <h3>Kullanıcı Listesi
+            <a href="/user/userAdd">
+              <button class="btn btn-success btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                </svg>  EKLE
+              </button>
+            </a>
+        </h3> 
+          
+    </div>      
+     
+    <div class="col-md-6" align="right">
+      <form>
+          {% csrf_token %}
+          <input type="text" name="keyword" class="input-sm" placeholder="Ara...">
+          <button type="submit" class="btn btn-info btn-sm"> search</button>
+      </form>
+
+      <div class="btn-group btn-group-sm" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Filtrele
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+          <a class="dropdown-item" href="/user/userList/active">Aktif Kullanıcılar</a>
+          <a class="dropdown-item" href="/user/userList/pasive">Pasif Kullanıcılar</a>
+          <a class="dropdown-item" href="/user/userList/all">Tümü</a>
+          <a class="dropdown-item" href="/user/userList/yeni">Son tanımlanan</a>
+          <a class="dropdown-item" href="/user/userList/eski">Eski kayıtlar</a>
+        </div>
+      </div>
+
+
+    </div>
+  
+</div>
+
+
+   <div> 
+
+    <table class="table font-size-10">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col"></th>
+            <th scope="col">Oluşturma Tar.</th>
+            <th scope="col">Ad Soyad</th>
+            
+            <th scope="col">Kullanıcı Adı</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telefon</th>
+            <th scope="col">Telefon2</th>
+            <th scope="col">Yönetici</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for user in page_obj %}
+              <tr>
+                <th scope="row">{{user.id}}</th>
+                
+                <td>{%if user.employee.profilePhoto %}
+                      <img src="{{user.employee.profilePhoto.url}}" alt="profile-img" class="rounded profile-img img-fluid avatar-70">
+                  {%endif%}
+                </td>
+                <td>{{user.date_joined|date:'d-m-Y'}} </td>
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td><a href="/user/userView/{{user.id}}">{{user.username}}</a></td>
+                <td>{{user.email}}</td>
+                <td>{{user.employee.telephone}}</td>
+                <td>{{user.employee.telephone2}}</td>
+                <td><a href="/user/userSetAdmin/{{user.id}}/{{user.employee.isAdmin}}" class="btm-sm"> 
+                  {% if user.employee.isAdmin %} 
+                    Admin  
+                  {% else %} 
+                    Kullanıcı 
+                  {% endif %}
+                  </a> </td>
+                <td class="d-flex">
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn rounded-pill mt-2 btn-sm" data-toggle="modal" data-target="#pass_exampleModal{{user.id}}">
+                        <i class="las la-key la-2x"></i>
+                      </button>
+                      
+                      <!-- Modal -->
+                      <div class="modal fade" id="pass_exampleModal{{user.id}}" tabindex="-1" aria-labelledby="pass_exampleModalLabel{{user.id}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="pass_exampleModalLabel{{user.id}}">Username: {{user.username}}</h5>
+                              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="POST">
+                              {% csrf_token %}
+                                <div class="modal-body">
+                                  <input type="hidden" name="hidden"  id="hidden" value="{{user.id}}"/>
+                                  <input type="password" class="form-control" name="inputPassword1" placeholder="Password">
+                                  <input type="password" class="form-control" name="inputPassword2" placeholder="Password">
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Güncelle</button>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                
+                  <a href="/user/userUpdate/{{user.id}}" title="Güncelle">
+                    <button class="btn btn-outline-warning rounded-pill mt-2 btn-sm custom-icon-white" title="Güncelle"> <i class="las la-pen la-2x"></i> </button></a>
+                  <a href="/user/userDelete/{{user.id}}" title ="Sil" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                    <button class="btn btn-outline-danger rounded-pill mt-2 btn-sm custom-icon-white" title="Sil"> <i class="las la-trash la-2x"></i> 
+                  </a>
+                  <a href='/user/userYetki/{{user.id}}/listele/perm' title="Yetki Listesi" >
+                      <button class="btn btn-outline-dark rounded-pill mt-2 btn-sm">
+                        <i class="las la-glasses la-2x"></i>
+                      </button>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          
+      
+        </tbody>
+      </table>
+
+      <ul class="pagination">
+				{% if page_obj.has_previous %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+					</li>
+				{% endif %}
+				{%for page in page_obj.paginator.page_range %}
+					<li class="page-item {% if page == page_obj.number %}active{% endif %}">
+						<a class="page-link" href="?page={{page}}">{{page}}</a>
+					</li>
+				{% endfor %}
+				{% if page_obj.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+					</li>
+				{% endif %}
+			</ul>
+
+
+
+</div>
+{% endblock body %}

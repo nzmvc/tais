@@ -1,0 +1,914 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- BEGIN HEAD -->
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<meta name="description" content="Responsive Admin Template" />
+	<meta name="author" content="SmartUniversity" />
+	<title>Teknolikya NGP</title>
+	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+	<!-- icons -->
+	<link href="{% static 'assets/fonts/simple-line-icons/simple-line-icons.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/fonts/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+	<link href="{% static 'assets/fonts/material-design-icons/material-icon.css' %}" rel="stylesheet" type="text/css" />
+	<!--bootstrap -->
+	<link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+	<!-- data tables -->
+	<link href="{% static 'assets/plugins/datatables/plugins/bootstrap/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+		type="text/css" />
+
+	<!-- Material Design Lite CSS -->
+	<link rel="stylesheet" href="{% static 'assets/plugins/material/material.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/material_style.css'%}">
+	<!-- Theme Styles 1-->
+
+	{%if request.session.theme != None %}
+		<link href="{% static 'assets/css/theme/'|add:request.session.theme|add:'/theme_style.css' %}" rel="stylesheet" id="rt_style_components" type="text/css" />
+		<link href="{% static 'assets/css/theme/'|add:request.session.theme|add:'/style.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/plugins.min.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/theme/'|add:request.session.theme|add:'/theme-color.css' %}" rel="stylesheet" type="text/css" />
+	{%else%}
+		<link href="{% static 'assets/css/theme/light/theme_style.css' %}" rel="stylesheet" id="rt_style_components" type="text/css" />
+		<link href="{% static 'assets/css/theme/light/style.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/plugins.min.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/responsive.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'assets/css/theme/light/theme-color.css' %}" rel="stylesheet" type="text/css" />
+	{%endif%}
+
+
+	<!-- favicon -->
+	<link rel="shortcut icon" href="{% static 'assets/img/favicon.ico' %}" />
+</head>
+<!-- END HEAD -->
+
+{%if "dark" == request.session.theme %}
+	<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-dark dark-sidebar-color logo-dark dark-theme">
+{%else%}
+	<body class="page-header-fixed sidemenu-closed-hidelogo page-content-white page-md header-white white-sidebar-color logo-indigo">
+{%endif%}
+
+	<div class="page-wrapper">
+		<!-- start header -->
+		<div class="page-header navbar navbar-fixed-top">
+			<div class="page-header-inner ">
+				<!-- logo start -->
+				<div class="page-logo">
+					<a href="http://www.teknolikya.com.tr">
+						<span class="logo-icon material-icons fa-rotate-45">school</span>
+						<span class="logo-default">NGP </span> </a>
+				</div>
+				<!-- logo end -->
+				<ul class="nav navbar-nav navbar-left in">
+					<li><a href="#" class="menu-toggler sidebar-toggler"><i class="icon-menu"></i></a></li>
+				</ul>
+				<form class="search-form-opened" action="#" method="GET">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search..." name="query">
+						<span class="input-group-btn">
+							<a href="javascript:;" class="btn submit">
+								<i class="icon-magnifier"></i>
+							</a>
+						</span>
+					</div>
+				</form>
+				<!-- start mobile menu -->
+				<a class="menu-toggler responsive-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+					<span></span>
+				</a>
+				<!-- end mobile menu -->
+				<!-- start header menu -->
+				<div class="top-menu">
+					<ul class="nav navbar-nav pull-right">
+						<li><a class="fullscreen-btn"><i class="fa fa-arrows-alt"></i></a></li>
+						<!-- start language menu -->
+						<li class="dropdown language-switch">
+							<a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> <img
+									src="{% static 'assets/img/flags/tr.png'%}" class="position-left" alt=""> Türkçe <span
+									class="fa fa-angle-down"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a class="english"><img src="{% static 'assets/img/flags/tr.png'%}" alt=""> Türkçe</a>
+								</li>
+								<li>
+									<a class="english"><img src="{% static 'assets/img/flags/gb.png'%}" alt=""> English</a>
+								</li>
+								<li>
+									<a class="espana"><img src="{% static 'assets/img/flags/es.png'%}" alt=""> España</a>
+								</li>
+					
+							</ul>
+						</li>
+						<!-- end language menu -->
+						<!-- start notification dropdown -->
+						<li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+							<a class="dropdown-toggle" data-bs-toggle="dropdown" data-hover="dropdown"
+								data-close-others="true">
+								<i class="fa fa-bell-o"></i>
+								<span class="badge headerBadgeColor1"> {{request.session.notification|length}} </span>
+							</a>
+							<ul class="dropdown-menu">
+								<li class="external">
+									<h3><span class="bold">Notifications</span></h3>
+									<span class="notification-label purple-bgcolor">New {{request.session.notification|length}}</span>
+								</li>
+								<li>
+									<ul class="dropdown-menu-list small-slimscroll-style" data-handle-color="#637283">
+										{%for n,m in request.session.notification%}
+										<li> <!-- notification-->
+											<a href="javascript:;">
+												<span class="time">{{m}}</span>
+												<span class="details">
+													<span class="notification-icon circle deepPink-bgcolor"><i
+															class="fa fa-check"></i></span>
+													{{n}} </span>
+											</a>
+										</li>
+										{%endfor%}
+									</ul>
+									<div class="dropdown-menu-footer">
+										<a href="javascript:void(0)"> All notifications </a>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<!-- end notification dropdown -->
+						<!-- start message dropdown 
+						<li class="dropdown dropdown-extended dropdown-inbox" id="header_inbox_bar">
+							<a class="dropdown-toggle" data-bs-toggle="dropdown" data-hover="dropdown"
+								data-close-others="true">
+								<i class="fa fa-envelope-o"></i>
+								<span class="badge headerBadgeColor2"> 2 </span>
+							</a>
+							<ul class="dropdown-menu">
+								<li class="external">
+									<h3><span class="bold">Messages</span></h3>
+									<span class="notification-label cyan-bgcolor">New 2</span>
+								</li>
+								<li>
+									<ul class="dropdown-menu-list small-slimscroll-style" data-handle-color="#637283">
+										<li>
+											<a href="#">
+												<span class="photo">
+													<img src="{% static 'assets/img/prof/prof2.jpg" class="img-circle" alt="">
+												</span>
+												<span class="subject">
+													<span class="from"> Sarah Smith </span>
+													<span class="time">Just Now </span>
+												</span>
+												<span class="message"> Jatin I found you on LinkedIn... </span>
+											</a>
+										</li>
+									
+										<li>
+											<a href="#">
+												<span class="photo">
+													<img src="{% static 'assets/img/prof/prof5.jpg'%}" class="img-circle" alt="">
+												</span>
+												<span class="subject">
+													<span class="from"> Jacob Ryan </span>
+													<span class="time">46 mins </span>
+												</span>
+												<span class="message"> Request for leave application. </span>
+											</a>
+										</li>
+									</ul>
+									<div class="dropdown-menu-footer">
+										<a href="#"> All Messages </a>
+									</div>
+								</li>
+							</ul>
+						</li>
+						-->
+						<!-- end message dropdown -->
+						<!-- start manage user dropdown -->
+						<li class="dropdown dropdown-user">
+							<a class="dropdown-toggle" data-bs-toggle="dropdown" data-hover="dropdown"	data-close-others="true">
+								{% if request.session.profilePic %}
+											<img src="{{request.session.profilePic}}" class="img-circle user-img-circle"  />
+								{%else%}
+									<img src="{% static 'assets/img/dp.jpg' %}" class="img-circle user-img-circle"  />
+								{%endif%}
+								<span class="username username-hide-on-mobile"> {{request.user}} </span>
+								<i class="fa fa-angle-down"></i>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-default">
+								
+								<li>
+									<a href="/user/setAttribute/{{user.id}}/theme/dark">
+										<i class="fa fa-folder-open"></i> Dark Tema
+									</a>
+								</li>
+								<li>
+									<a href="/user/setAttribute/{{user.id}}/theme/light">
+										<i class="fa fa-folder-open-o"></i> Light Tema
+									</a>
+								</li>
+								<li>
+									<a href="/user/yardim">
+										<i class="icon-directions"></i> Yardım
+									</a>
+								</li>
+								<li class="divider"> </li>
+								
+								<li>
+									<a href="/user/ChangeMyPassword/">
+										<i class="icon-key"></i> Şifre Değiştir
+									</a>
+								</li>
+
+								<li>
+									<a href="/user/logoutPage">
+										<i class="icon-logout"></i> Çıkış </a>
+								</li>
+							</ul>
+						</li>
+						<!-- end manage user dropdown 
+						<li class="dropdown dropdown-quick-sidebar-toggler">
+							<a id="headerSettingButton" class="mdl-button mdl-js-button mdl-button--icon pull-right"
+								data-upgraded=",MaterialButton">
+								<i class="material-icons">more_vert</i>
+							</a>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- end header -->
+		<!-- start color quick setting -->
+		<div class="settingSidebar">
+			<a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+			</a>
+			<div class="settingSidebar-body ps-container ps-theme-default">
+				<div class=" fade show active">
+					<div class="setting-panel-header">Setting Panel
+					</div>
+					<div class="quick-setting slimscroll-style">
+						<ul id="themecolors">
+							<li>
+								<p class="sidebarSettingTitle">Sidebar Color</p>
+							</li>
+							<li class="complete">
+								<div class="theme-color sidebar-theme">
+									<a href="#" data-theme="white"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="dark"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="blue"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="indigo"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="cyan"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="green"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="red"><span class="head"></span><span
+											class="cont"></span></a>
+								</div>
+							</li>
+							<li>
+								<p class="sidebarSettingTitle">Header Brand color</p>
+							</li>
+							<li class="theme-option">
+								<div class="theme-color logo-theme">
+									<a href="#" data-theme="logo-white"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-dark"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-blue"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-indigo"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-cyan"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-green"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="logo-red"><span class="head"></span><span
+											class="cont"></span></a>
+								</div>
+							</li>
+							<li>
+								<p class="sidebarSettingTitle">Header color</p>
+							</li>
+							<li class="theme-option">
+								<div class="theme-color header-theme">
+									<a href="#" data-theme="header-white"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-dark"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-blue"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-indigo"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-cyan"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-green"><span class="head"></span><span
+											class="cont"></span></a>
+									<a href="#" data-theme="header-red"><span class="head"></span><span
+											class="cont"></span></a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end color quick setting -->
+		<!-- start page container -->
+		<div class="page-container">
+			<!-- start sidebar menu -->
+			<div class="sidebar-container">
+				<div class="sidemenu-container navbar-collapse collapse fixed-menu">
+					<div id="remove-scroll" class="left-sidemenu">
+						<ul class="sidemenu  page-header-fixed slimscroll-style" data-keep-expanded="false"
+							data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+							<li class="sidebar-toggler-wrapper hide">
+								<div class="sidebar-toggler">
+									<span></span>
+								</div>
+							</li>
+							<li class="sidebar-user-panel">
+								<div class="user-panel">
+									<div class="pull-left image">
+										{% if request.session.profilePic %}
+											<img src="{{request.session.profilePic}}" class="img-circle user-img-circle"  />
+										{%else%}
+											<img src="{% static 'assets/img/dp.jpg' %}" class="img-circle user-img-circle"  />
+										{%endif%}
+										
+									</div>
+									<div class="pull-left info">
+										<p>{{request.user.first_name}}</p>
+										<p>{{request.user.last_name}}</p>
+										
+									</div>
+								</div>
+							</li>
+							<!--                Manager için  -->
+							{% if request.session.userType == "manager" or request.session.userType == "teacher"   %}
+								<li class="nav-item">
+									<a href="/user/dashboard/" class="nav-link nav-toggle"><i class="material-icons">dashboard</i>
+										<span class="title">Kontrol Panel</span><span class="arrow"></span></a>
+								</li>
+							{%endif%}
+
+							<!--                STUDENT için  -->
+							{% if request.session.userType == "student" %}
+								<li class="nav-item">
+									<a href="/user/studentSelfView/" class="nav-link nav-toggle"><i class="material-icons">group</i>
+										<span class="title">Benim Sayfam</span><span class="arrow"></span></a>
+								</li>
+							{%endif%}
+							
+							<!--                Parent için  -->
+							{% if request.session.userType == "parent" %}
+								<li class="nav-item">
+									<a href="/user/parentSelfView/{{request.session.parentId}}" class="nav-link nav-toggle"><i class="material-icons">group</i>
+										<span class="title">Benim Sayfam</span><span class="arrow"></span></a>
+								</li>
+							{%endif%}
+
+							{% if perms.user.change_students or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"><i class="material-icons">group</i>
+									<span class="title">Öğrenciler</span><span class="arrow"></span></a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/user/studentList" class="nav-link "> <span class="title">Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/user/studentAdd" class="nav-link "> <span class="title">Ekle</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/user/shortRegister" class="nav-link "> <span class="title">HızlıForm</span>
+										</a>
+									</li>
+								
+								</ul>
+							</li>
+							{%endif%}
+
+							{% if perms.user.change_parents or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">face</i>
+									<span class="title">Veliler</span> <span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/user/parentList" class="nav-link "> <span class="title">Veli Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/user/parentAdd" class="nav-link "> <span class="title">Veli Ekle</span>
+										</a>
+									</li>
+									
+								</ul>
+							</li>
+							{%endif%}
+							{% if perms.user.change_teachers or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">person</i>
+									<span class="title">Öğretmenler</span> <span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/user/teacherList" class="nav-link "> <span class="title">Öğretmen Listesi</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/user/teacherAdd" class="nav-link "> <span class="title">Öğretmen Ekle</span>
+										</a>
+									</li>
+									
+								</ul>
+							</li>
+							{%endif%}
+
+							{% if perms.user.change_income or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="javascript:;" class="nav-link nav-toggle">
+									<i class="material-icons">list</i>
+									<span class="title"> Görevler</span>
+									<span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/tasks/taskList/aktif" class="nav-link ">
+											<span class="title">Aktif Liste</span>
+										</a>
+									</li>
+									
+									<li class="nav-item">
+										<a href="/tasks/taskList/tum" class="nav-link ">
+											<span class="title">Full Liste</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/tasks/taskAdd" class="nav-link ">
+											<span class="title">Görev Ekle</span>
+										</a>
+									</li>
+								
+								</ul>
+							</li>
+							{%endif%}
+
+							{%if perms.user.change_income or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">monetization_on</i>
+									<span class="title">Ödemeler</span> <span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/user/paymentList" class="nav-link "> <span class="title">Ödeme Listesi</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/user/paymentAdd" class="nav-link "> <span class="title">Ödeme Ekle </span>
+										</a>
+									</li>
+									
+									
+								</ul>
+							</li>
+							{%endif%}
+
+							{% if perms.user.change_income or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">event</i>
+									<span class="title">Haftalık Plan</span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/education/sessionsList" class="nav-link "> <span class="title">Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/education/sessionsAdd" class="nav-link "> <span class="title">Ekle</span>
+										</a>
+									</li>
+									
+									
+								</ul>
+							</li>
+							{%endif%}
+							
+							
+
+							{% if perms.user.change_income or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">school</i>
+									<span class="title">Kurslar</span> <span class="arrow"></span>
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/education/lessonAdd" class="nav-link "> <span class="title">Ders Ekle</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/education/lessonList" class="nav-link "> <span class="title">Ders Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/education/courseList" class="nav-link "> <span class="title">Kurs Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/education/courseCategoryList" class="nav-link "> <span class="title">Kurs Kategori Listele</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							{%endif%}
+
+							{% if perms.user.change_income or request.session.userType == "manager"%}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">message</i>
+									<span class="title">Bilgilendirme</span> <span class="arrow"></span>
+									
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/notification/smsGonder/" class="nav-link "> <span class="title">Sms gonder</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/notification/notificationAdd" class="nav-link ">
+											<span class="title">Bilgilendirme Ekle</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/notification/notificationList" class="nav-link "> <span class="title">Geçmiş Bilgilendirmeler</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="" class="nav-link "> <span class="title">Otomatik bilgilendirme listesi(N/A)</span>
+										</a>
+									</li>
+									
+								</ul>
+							</li>
+
+							{%endif%}
+							{% if perms.user.is_superuser %}
+							<li class="nav-item">
+								<a href="#" class="nav-link nav-toggle"> <i class="material-icons">work</i>
+									<span class="title">Firmalar</span> <span class="arrow"></span>
+									
+								</a>
+								<ul class="sub-menu">
+									<li class="nav-item">
+										<a href="/saas/companyList/active" class="nav-link "> <span class="title">Firma Listele</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="/saas/companyAdd" class="nav-link ">
+											<span class="title">Firma Ekle</span>
+										</a>
+									</li>
+									
+								</ul>
+							</li>
+
+							{%endif%}
+
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- end sidebar menu -->
+			<!-- start page content -->
+						
+				<br>
+				{% if messages %}
+	
+					{% for message in messages %}
+					<div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}> {{ message }} </div>
+					{% endfor %}
+	
+				{% endif %}
+
+			{% block body%}
+
+			{% endblock body%}
+
+			
+			<!-- end page content -->
+			<!-- start chat sidebar -->
+			<div class="chat-sidebar-container" data-close-on-body-click="false">
+				<div class="chat-sidebar">
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a href="#quick_sidebar_tab_1" class="nav-link active tab-icon" data-bs-toggle="tab"> <i
+									class="material-icons">chat</i>Chat
+								<span class="badge badge-danger">4</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="#quick_sidebar_tab_3" class="nav-link tab-icon" data-bs-toggle="tab"> <i
+									class="material-icons">settings</i>
+								Settings
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<!-- Start User Chat -->
+						<div class="tab-pane active chat-sidebar-chat in active show" role="tabpanel"
+							id="quick_sidebar_tab_1">
+							<div class="chat-sidebar-list">
+								<div class="chat-sidebar-chat-users slimscroll-style" data-rail-color="#ddd"
+									data-wrapper-class="chat-sidebar-list">
+									<div class="chat-header">
+										<h5 class="list-heading">Online</h5>
+									</div>
+									<ul class="media-list list-items">
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof3.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="online dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">John Deo</h5>
+												<div class="media-heading-sub">Spine Surgeon</div>
+											</div>
+										</li>
+										<li class="media">
+											<div class="media-status">
+												<span class="badge badge-success">5</span>
+											</div> <img class="media-object" src="{% static 'assets/img/prof/prof1.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="busy dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Rajesh</h5>
+												<div class="media-heading-sub">Director</div>
+											</div>
+										</li>
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof5.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="away dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Jacob Ryan</h5>
+												<div class="media-heading-sub">Ortho Surgeon</div>
+											</div>
+										</li>
+										<li class="media">
+											<div class="media-status">
+												<span class="badge badge-danger">8</span>
+											</div> <img class="media-object" src="{% static 'assets/img/prof/prof4.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="online dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Kehn Anderson</h5>
+												<div class="media-heading-sub">CEO</div>
+											</div>
+										</li>
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof2.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="busy dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Sarah Smith</h5>
+												<div class="media-heading-sub">Anaesthetics</div>
+											</div>
+										</li>
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof7.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="online dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Vlad Cardella</h5>
+												<div class="media-heading-sub">Cardiologist</div>
+											</div>
+										</li>
+									</ul>
+									<div class="chat-header">
+										<h5 class="list-heading">Offline</h5>
+									</div>
+									<ul class="media-list list-items">
+										<li class="media">
+											<div class="media-status">
+												<span class="badge badge-warning">4</span>
+											</div> <img class="media-object" src="{% static 'assets/img/prof/prof6.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="offline dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Jennifer Maklen</h5>
+												<div class="media-heading-sub">Nurse</div>
+												<div class="media-heading-small">Last seen 01:20 AM</div>
+											</div>
+										</li>
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof8.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="offline dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Lina Smith</h5>
+												<div class="media-heading-sub">Ortho Surgeon</div>
+												<div class="media-heading-small">Last seen 11:14 PM</div>
+											</div>
+										</li>
+										<li class="media">
+											<div class="media-status">
+												<span class="badge badge-success">9</span>
+											</div> <img class="media-object" src="{% static 'assets/img/prof/prof9.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="offline dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Jeff Adam</h5>
+												<div class="media-heading-sub">Compounder</div>
+												<div class="media-heading-small">Last seen 3:31 PM</div>
+											</div>
+										</li>
+										<li class="media"><img class="media-object" src="{% static 'assets/img/prof/prof10.jpg' %}"
+												width="35" height="35" alt="...">
+											<i class="offline dot"></i>
+											<div class="media-body">
+												<h5 class="media-heading">Anjelina Cardella</h5>
+												<div class="media-heading-sub">Physiotherapist</div>
+												<div class="media-heading-small">Last seen 7:45 PM</div>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- End User Chat -->
+						<!-- Start Setting Panel -->
+						<div class="tab-pane chat-sidebar-settings" role="tabpanel" id="quick_sidebar_tab_3">
+							<div class="chat-sidebar-settings-list slimscroll-style">
+								<div class="chat-header">
+									<h5 class="list-heading">Layout Settings</h5>
+								</div>
+								<div class="chatpane inner-content ">
+									<div class="settings-list">
+										<div class="setting-item">
+											<div class="setting-text">Sidebar Position</div>
+											<div class="setting-set">
+												<select
+													class="sidebar-pos-option form-control input-inline input-sm input-small ">
+													<option value="left" selected="selected">Left</option>
+													<option value="right">Right</option>
+												</select>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Header</div>
+											<div class="setting-set">
+												<select
+													class="page-header-option form-control input-inline input-sm input-small ">
+													<option value="fixed" selected="selected">Fixed</option>
+													<option value="default">Default</option>
+												</select>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Footer</div>
+											<div class="setting-set">
+												<select
+													class="page-footer-option form-control input-inline input-sm input-small ">
+													<option value="fixed">Fixed</option>
+													<option value="default" selected="selected">Default</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="chat-header">
+										<h5 class="list-heading">Account Settings</h5>
+									</div>
+									<div class="settings-list">
+										<div class="setting-item">
+											<div class="setting-text">Notifications</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-1">
+														<input type="checkbox" id="switch-1" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Show Online</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-7">
+														<input type="checkbox" id="switch-7" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Status</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-2">
+														<input type="checkbox" id="switch-2" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">2 Steps Verification</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-3">
+														<input type="checkbox" id="switch-3" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="chat-header">
+										<h5 class="list-heading">General Settings</h5>
+									</div>
+									<div class="settings-list">
+										<div class="setting-item">
+											<div class="setting-text">Location</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-4">
+														<input type="checkbox" id="switch-4" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Save Histry</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-5">
+														<input type="checkbox" id="switch-5" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="setting-item">
+											<div class="setting-text">Auto Updates</div>
+											<div class="setting-set">
+												<div class="switch">
+													<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+														for="switch-6">
+														<input type="checkbox" id="switch-6" class="mdl-switch__input"
+															checked>
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end chat sidebar -->
+		</div>
+		<!-- end page container -->
+		<!-- start footer -->
+		<div class="page-footer">
+			<div class="page-footer-inner"> 2022 &copy; Next Generation Person - Developed By 
+				<a href="http://www.teknolikya.com.tr" target="_top" class="makerCss">Teknolikya</a>
+			</div>
+			<div class="scroll-to-top">
+				<i class="icon-arrow-up"></i>
+			</div>
+		</div>
+		<!-- end footer -->
+	</div>
+	<!-- start js include path -->
+	<script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/popper/popper.js' %}"></script>
+	<script src="{% static 'assets/plugins/jquery-blockui/jquery.blockui.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+	<!-- bootstrap -->
+	<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+	<!-- data tables -->
+	<script src="{% static 'assets/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatables/plugins/bootstrap/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static '/assets/js/pages/table/table_data.js' %}"></script>
+	<!-- Common js-->
+	<script src="{% static 'assets/js/app.js' %}"></script>
+	<script src="{% static 'assets/js/layout.js' %}"></script>
+	<script src="{% static 'assets/js/theme-color.js' %}"></script>
+	<!-- Material -->
+	<script src="{% static 'assets/plugins/material/material.min.js' %}"></script>
+	<!-- end js include path -->
+</body>
+
+</html>

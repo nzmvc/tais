@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+{% csrf_token %}
+{%if projes%}
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Müşteri</th>
+        <th scope="col">ProjeAdı </th>
+        <th> Dosya</th>
+        <th scope="col">Açıklama</th>
+        <th scope="col">Aktif</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for proje in projes %}
+          <tr>
+            <th scope="row">{{proje.id}}</th>
+            <td>{{proje.customer}}</td>
+            <td><a href="/order/projeView/{{proje.id}}">{{proje.projeAdi}}</a></td>
+            <td>
+              {% if proje.dosya.url is not Null %}
+                  <a href="{{proje.dosya.url}}" target="popup"  onclick="window.open('{{proje.dosya.url}}','popup','width=600,height=600'); return false;">
+                      <button type="button" class="btn btn-primary btn-sm">
+                        Aç
+                      </button>
+                  </a>
+              {% endif %}
+
+            </td>
+            <td>{{proje.aciklama}}</a></td>
+            
+            <td>
+                {% if proje.active == True %}
+                    Aktif
+                {% else%}
+                    Pasif
+                {% endif %}
+            </td>
+            
+            <td><a href="/order/projeUpdate/{{proje.id}}"><button class="btn btn-warning" title="Güncelle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+              <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+            </svg></button></a>
+              {% if proje.active == True %}
+                  <a href="/order/projeDeactive/{{proje.id}}"><button class="btn btn-danger" title="Deaktif Et"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
+                    <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                    <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                    <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+                  </svg></button></a>
+                {% else%}
+                  <a href="/order/projeActive/{{proje.id}}"><button class="btn btn-success" title="Aktif Et"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                  </svg></button></a>
+                {% endif %}
+              
+            
+            </td>
+          </tr>
+        {% endfor %}
+      
+  
+    </tbody>
+  </table>
+
+</div>
+{%endif%}
+  
+
+{%if customers%}
+<div class="row">
+  <div class="row mb-2">
+    
+    <div class="col-md-6">
+        <h3>Müşteri Listesi
+            <a href="/order/customerAdd2">
+              <button class="btn btn-success btn-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                </svg>  EKLE
+              </button>
+            </a>
+        </h3> 
+          
+    </div>      
+     
+    <div class="col-md-6" align="right">
+
+    </div>
+  </div>
+</div>
+
+<div class="row">
+<table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Müşteri Adı</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telefon</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+              <tr>
+                <th scope="row">{{customer.id}}</th>
+                <td><a href="/order/customerView/{{customer.id}}">{{customer.customer_name}}</a></td>
+                <td>{{customer.email}}</td>
+                <td>{{customer.telephone}}</td>
+                <td><a href="/order/customerUpdate/{{customer.id}}"><button class="btn btn-warning">
+                  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                  </svg>
+
+                </button></a></td>
+                <td><a href="/order/customerDelete/{{customer.id}}"  onclick="return confirm('Silmek istediğinize emin misiniz?')"><button class="btn btn-danger">
+                  
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+                    <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                    </svg>
+                </button></a></td>
+              </tr>
+            {% endfor %}
+        </tbody>
+</table>
+</div>
+{%endif%}
+
+
+{% endblock body %}

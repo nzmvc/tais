@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load custom_tags  %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<div class="row">
+
+  <div class="card w-100">
+      <div class="card-header  ">
+                <!--    başlık bolumu -->
+                <div class="row" >
+                  <div class="col-10">
+                        
+           
+                        <a href="/gorevler/duzenliGorevRapor/{{last_year}}/{{last_month}}/{{type}}" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-arrow-alt-circle-left "></i>
+                          </button>
+                        </a>
+                        <button type="button" class="btn btn-primary">
+                                                  Gunluk Gorev Raporu: {{current_year_month }}
+                                              
+                                                </button>
+                        <a href="/gorevler/duzenliGorevRapor/{{next_year}}/{{next_month}}/{{type}}" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-arrow-alt-circle-right "></i>
+                          </button>
+                        </a>
+                  </div>
+                  
+                  <div class="col-2 align-righ">
+
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle t" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filtrele
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                        <a class="dropdown-item" href="/gorevler/duzenliGorevRapor/{{year}}/{{month}}/1">Günlük</a>
+                        <a class="dropdown-item" href="/gorevler/duzenliGorevRapor/{{year}}/{{month}}/2">Haftalık</a>
+                        <a class="dropdown-item" href="/gorevler/duzenliGorevRapor/{{year}}/{{month}}/3">Aylık</a>
+                        <a class="dropdown-item" href="/gorevler/duzenliGorevRapor/{{year}}/{{month}}/4">Yıllık</a>
+                        <a class="dropdown-item" href="/gorevler/duzenliGorevRapor/{{year}}/{{month}}/5">Tümü</a>
+                      
+                     
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      </div>
+          
+          <div class="table-full-width table-responsive px-0 card-body" style="overflow-x: auto;">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col" style="min-width: 250px;">Görev Adı</th>
+                  <th scope="col" >Sorumlu</th>
+                  {%if gunler %}
+                      {%for gun in gunler%}
+                          <th scope="col">
+                            {{gun}}
+                          </th>
+                      {%endfor%}
+                  {%endif%}
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for item in json_data %}
+                <tr>
+                    <td style="min-width: 250px; white-space: nowrap;">{{ item.label|truncatechars:40 }}</td>
+                    <td style="min-width: 50px; white-space: nowrap;">{{ item.sorumlu|truncatechars:20 }}</td>
+                    {% for value in item.data %}
+                        {{ value|get_day_task_color|safe }}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+
+  </div>
+</div>
+
+
+<div>
+  <table>
+    <tr>
+      <td class="bg-success">
+        Görev zamanında kapatılmış
+      </td>
+    </tr>
+    <tr>
+      <td class="bg-warning">
+        Görev zamanında kapatılmamış
+      </td>
+    </tr>
+    <tr>
+      <td class="bg-danger">
+        Görev zamanında kapatılmamış ve süresi geçmiş
+      </td>
+
+    </tr>
+    <tr>
+      <td class="bg-light">
+        Görev bekliyor
+      </td>
+
+    </tr>
+    <tr>
+      <td class="bg-info">
+        Birden fazla görev var kontrol edilmeli
+      </td>
+
+    </tr>
+    <tr>
+      <td class="">
+        (Beyaz)Görev tanımlı değil
+      </td>
+    </tr>
+  </table>
+</div>
+{% endblock body %}

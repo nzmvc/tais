@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOYU Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+        }
+        #chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 80%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px;
+        }
+    </style>
+    <script>
+        function sendMessage() {
+            let message = document.getElementById("message-input").value;
+            let chatBox = document.getElementById("chat-box");
+
+            if (message.trim() === "") return;
+
+            chatBox.innerHTML += `<p><strong>Sen:</strong> ${message}</p>`;
+
+            fetch("/chatbot_response/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<p><strong>Chatbot:</strong> ${data.reply}</p>`;
+                document.getElementById("message-input").value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => console.error("Hata:", error));
+        }
+    </script>
+</head>
+<body>
+    <h3>TOYU Chat</h3>
+    <div id="chat-box"></div>
+    <input type="text" id="message-input" placeholder="Mesajınızı yazın...">
+    <button onclick="sendMessage()">Gönder</button>
+</body>
+</html>

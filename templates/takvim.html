@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+<div class="row">
+  <div class="row mb-2">
+    
+    <div class="col-md-6">
+        <h3>İş takvimi</h3> 
+          
+    </div>      
+     
+    <div class="col-md-6" align="right">
+      <!-- 
+      <form>
+          {% csrf_token %}
+          <input type="text" name="keyword" class="input-sm" placeholder="Ara...">
+          <button type="submit" class="btn btn-info btn-sm"> search</button>
+      </form>
+      -->
+
+    </div>
+
+  </div>
+</div>
+
+
+<div class="row">
+  <table border="1">
+  <tr>
+      {% for res in reservations%}
+          <td>
+              {% for job in res%}      
+                <a href="/order/reservationView/{{job.id}}"><button class="btn btn-primary btn-sm">{{job.start_date}} <br> {{job.order.customer.customer_name}}</button></a><br><br>
+              {%endfor%}
+          </td>
+      <!--
+      <div class="col-md-2">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height: 200px; overflow-y: scroll;">
+               {% for job in res%}
+                  <a href="/order/reservationView/{{job.id}}"><button class="btn btn-primary btn-sm">{{job.start_date}} <br> {{job.order.customer.customer_name}}</button></a>
+                 {%endfor%}
+            </div>
+          </div>
+        </div>
+
+      -->
+  
+    {% endfor%}
+  </tr>
+  </table>
+
+</div>
+
+
+
+{% endblock body %}

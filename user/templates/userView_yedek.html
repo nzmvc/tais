@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div >
+    <h3> Kullanıcı Bilgileri</h3>
+    <a href="/user/userUpdate/{{user.id}}">
+      <button class="btn btn-success btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+        </svg>  Bilgileri Güncelle
+      </button>
+    </a><a href="/user/userChangePassword/{{user.id}}">
+      <button class="btn btn-success btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
+          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+        </svg>  Şifre değiştir
+      </button>
+    </a>
+
+    <div class="row mb-1">
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+              <h3>Ad-Soyad
+               
+              </h3>   
+                <h3 class="mb-0">{{user.first_name}} {{user.last_name}} 
+                
+                </h3>  
+                <br>
+                <h5><p class="card-text mb-auto">Username : {{user.username}}</p></h5>
+            </div>        
+          </div>
+            
+        </div>
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+              <h5>Tel : {{user.employee.telephone}}</h5>
+              <h5>Email: {{user.email}}</h5>
+              <h5>Şube: {{user.employee.sube}}</h5>
+              <h5>Departman: {{user.employee.department}}</h5>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+              <h6>Tanımlanma: {{user.date_joined}}</h6>
+              <h6>Son giris: {{user.last_login}}</h6>
+              
+            </div>
+          </div>
+        </div>
+    </div>  
+     
+    <div class="row mb-1">
+
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-4 d-flex flex-column position-static">
+            <h3> Yapılan işler <span class="badge bg-danger">{{wf.count}}</span>
+                 
+            </a>
+          </h3>
+          <br><br>
+                {% if hakedis %}
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Tarih</th>
+                                <th scope="col">Ürün</th>
+                                <th scope="col">Adet</th>
+                                <th scope="col">Workflow / Sipariş </th>
+                                
+                            </tr>
+                        </thead>
+    
+                    {% for hak in hakedis%}
+                        <tr>
+                        <th scope="row">{{ads.id}}</th>                    
+                        <td>{{hak.created_date}}</td>
+                        <td>{{hak.product.product_name}}</td>
+                        <td>{{hak.adet}}</td>
+                        <td><a href="/order/workflowView/{{hak.wf.id}} ">{{hak.wf.id}}</a> / <a href="/order/orderView/{{hak.wf.order.id}}">{{hak.wf.order}}</a> </td>
+                                               
+                        </tr>
+                    {% endfor%}
+    
+                    </table>
+                    
+                {% endif%}
+    
+          </div>        
+        </div>
+    </div>  
+
+  {% autoescape off %}
+  {{ plot_div }}
+  {% endautoescape %}
+     
+</div>
+{% endblock body %}

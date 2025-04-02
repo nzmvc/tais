@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+
+			<!-- start page content -->
+			<div class="page-content-wrapper">
+				<div class="page-content">
+					<div class="page-bar">
+						<div class="page-title-breadcrumb">
+							<div class=" pull-left">
+								<div class="page-title">Görev Hakkında</div>
+							</div>
+							<ol class="breadcrumb page-breadcrumb pull-right">
+								<li><i class="fa fa-home"></i>&nbsp;<a class="parent-item"
+										href="#">Home</a>&nbsp;<i class="fa fa-angle-right"></i>
+								</li>
+								<li><a class="parent-item" href="">UI Elements</a>&nbsp;<i
+										class="fa fa-angle-right"></i>
+								</li>
+								<li class="active">User Profile</li>
+							</ol>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<!-- BEGIN PROFILE SIDEBAR -->
+							<div class="profile-sidebar">
+								<div class="card">
+									<div class="card-body no-padding height-9">
+										<div class="row">
+											<div class="profile-userpic">
+												<img src="{% static 'assets/img/dp.jpg' %}" class="img-responsive" alt=""> </div>
+										</div>
+										<div class="profile-usertitle">
+											<div class="profile-usertitle-name">{{task.open_user.first_name}} {{task.open_user.last_name}}</div>
+											<div class="profile-usertitle-job"> User : {{task.open_user.id}} </div>
+										</div>
+										<ul class="list-group list-group-unbordered">
+											<li class="list-group-item">
+												<b>Eğitmen Puanı</b> <a class="pull-right">{{score}}</a>
+											</li>
+											<li class="list-group-item">
+												<b>Puan veren </b> <a class="pull-right">{{score}}</a>
+											</li>
+											
+										</ul>
+										<!-- END SIDEBAR USER TITLE -->
+										<!-- SIDEBAR BUTTONS -->
+										<div class="profile-userbuttons">
+											<button type="button" class="btn btn-circle green btn-sm">Hakkında</button>
+											<button type="button" class="btn btn-circle red btn-sm">Soru Sor</button>
+										</div>
+										<!-- END SIDEBAR BUTTONS -->
+									</div>
+								</div>
+								
+								
+
+
+								
+							</div>
+							<!-- END BEGIN PROFILE SIDEBAR -->
+							<!-- BEGIN PROFILE CONTENT -->
+							<div class="profile-content">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="card">
+											<div class="card-head">
+												<header>Görev</header>  
+											</div>
+											<div class="card-body no-padding height-9">
+												<div class="container-fluid">
+                         							
+													<div class="row"  >
+														<div class="col-md-12"  >
+															<ul class="activity-list">
+
+																<div class="row">
+																	<div class="col-md-2 col-6 b-r"> <strong>Görev ID</strong>
+																		<br>
+																		<p class="text-muted">{{task.id}}</p>
+																	</div>
+																	<div class="col-md-2 col-6 b-r"> <strong>Durumu</strong>
+																		<br>
+																		<p class="text-muted">{{task.statu}}</p>
+																	</div>
+																	<div class="col-md-2 col-6 b-r"> <strong>Oluşturulma Tarihi</strong>
+																		<br>
+																		<p class="text-muted">{{task.created_date|date:'d-m-Y'}}</p>
+																	</div>
+																	<div class="col-md-2 col-6"> <strong>Tamamlanma Tarihi</strong>
+																		<br>
+																		<p class="text-muted">{{task.closed_date|date:'d-m-Y'}}</p>
+																	</div>
+																	<div class="col-md-2 col-6"> <strong>Sorumlu</strong>
+																		<br>
+																		<p class="text-muted">{{task.responsible_user}}</p>
+																	</div>
+																	<div class="col-md-2 col-6"> <strong>Dokuman</strong>
+																		<br>
+																		<p class="text-muted">
+																			
+																			{% if task.dokuman.url is not Null %}
+																				<a href="{{task.dokuman.url}}" target="popup" 
+																					onclick="window.open('{{task.dokuman.url}}','popup','width=600,height=600'); return false;">
+																					<button type="button" class="btn btn-primary btn-sm">
+																						DOSYAYI GÖSTER
+																					</button>
+																				</a>
+																			{% endif %}
+
+																			
+																		</p>
+																	</div>
+																</div>
+																
+																
+																<hr>
+																<h4 class="font-bold">AÇIKLAMA</h4>
+
+																<p>{{task.description|safe}}</p>
+
+																
+																<br>
+																<hr>
+																{% if task.statu_id != 4 %}
+																<h3>Gorevi Güncelle </h3>
+														
+																<div>
+																	<form method="post">
+																		{{ form.media }}
+																		{% csrf_token %}
+																		{{form|crispy }}
+																		<br>
+																		<button type="submit" class="btn btn-warning">Güncelle</button>
+																	</form>
+																</div>
+																{%else%}
+																	<h4 class="font-bold">Çözüm Yorum</h4>
+
+																	<p>{{task.solution|safe}}</p>
+																{% endif%}
+
+																<!--
+																<h4 class="font-bold">Education</h4>
+																<hr>
+																<ul>
+																	<li>B.Com.,Gujarat University, Ahmedabad,India.</li>
+																	<li>M.Com.,Gujarat University, Ahmedabad, India.</li>
+																</ul>
+																<br>
+																<h4 class="font-bold">Experience</h4>
+																<hr>
+																<ul>
+																	<li>One year experience as Jr. Clerk from April-2009 to
+																		march-2010 at B. J. Commerce College, Ahmedabad.</li>
+																	<li>Three year experience as Jr. Clerk at V.S. Arts &
+																		Commerse Collage from April - 2008 to April -
+																		2011.</li>
+																	
+																</ul>
+																<br>
+																-->
+
+															
+															</ul>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+
+										
+									</div>
+								</div>
+								<!-- END PROFILE CONTENT -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- end page content -->
+
+
+{% endblock body %}

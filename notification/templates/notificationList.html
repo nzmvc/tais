@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static%}
+
+			<!-- start page content -->
+			<div class="page-content-wrapper">
+				<div class="page-content">			
+						<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-12"> 
+												<div class="card card-box">
+													
+													<div class="card-body ">
+														<div class="row">
+															<div class="col-md-6 col-sm-6 col-6">
+																<div class="btn-group">
+																	<a href="/notification/notificationAdd" id="addRow"
+																		class="btn btn-info">
+																		Ekle <i class="fa fa-plus"></i>
+																	</a>
+																</div>
+															</div>
+															
+														</div>
+														<div class="table-scrollable">
+															<table
+																class="table table-striped table-bordered table-hover table-checkable order-column valign-middle"
+																id="example4">
+																<thead>
+																	<tr>
+																		
+																		<th> # </th>
+																		<th> Oluşturma Tarihi </th>
+																																			
+																		<th> Mesaj </th>
+																		<th>Açan</th>
+																		<th>Sorumlu</th>
+																		
+																		<th>Aksiyon</th>
+																	</tr>
+																</thead>
+																<tbody>
+
+																	
+																{% for notification in notifications %}
+																		<tr class="odd gradeX">
+																		
+																		<td class="left"><a href="">{{notification.id}}</a></td>
+																		<td>{{notification.created_date}}</td>
+																		<td>{{notification.message}}</td>
+																		<td>{{notification.sender}}</td>
+																		
+																		<td class="left">{{notification.responsible_user}}</td>
+																		<td>
+																			<!--
+																			<a href="/notification/{{notification.id}}" class="btn btn-info btn-xs">	<i class="fa fa-eye"></i>
+																			</a>
+																			{% if gorev.statu_id != 4%}
+																				<a href="/notification/notificationUpdate/{{notification.id}}" class="btn btn-primary btn-xs">	<i class="fa fa-pencil"></i>
+																				</a>	
+																				
+																				<a href="/notification/notificationDelete/{{notification.id}}"  onclick="return confirm('Silmek istediğinize emin misiniz?')">
+																				<button class="btn btn-danger btn-xs">	<i class="fa fa-trash-o "></i>	</button>
+																				</a>
+																			{%endif%}
+																			-->
+																		</td>
+																		</tr>
+																{% endfor %}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+							
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end page content -->
+
+
+{% endblock body %}

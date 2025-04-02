@@ -1,0 +1,198 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOYU Yönetim Paneli</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+ 
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.min.css"> 
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker-standalone.css"> 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+  
+</head>
+
+<body>
+    <main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+        <div style="margin-top: 30px;" class="container">
+          <div class="row mb-1">
+                <div class="col-md-6">
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                      <strong class="d-inline-block mb-2 text-primary">
+                          Sipariş ID: {{order.id}}  - {{order.statu}} 
+                          
+                        </strong>
+                      
+                      <h3 class="mb-0">{{order.customer.customer_name}}</h3>
+                      <div class="mb-1 text-muted">{{order.created_date}}</div>
+                      <p class="card-text mb-auto">{{order.content|safe}}</p>
+                      <a href="/order/customerView/{{order.customer.id}}" class="stretched-link">Müşteri Detay</a>
+                    </div>
+                    
+                  </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                      <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                          <h5 class="mb-0">İletişim</h5> <br>
+                          <div >email : {{order.customer.email}}</div> 
+                          <div class="mb-1 text-muted">Telefon:{{order.customer.telephone}}</div> 
+                      </div>
+                  </div>
+              </div>
+            
+              <div class="col-md-3">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                  
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            </div>
+            
+            <div class="row mb-1">
+            
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                          
+                  {% if order.sevk_adres_id  %}
+                     <h3> Seçilmiş adres :</h3>
+                     <table class="table table-striped table-hover">
+                      <thead>
+                          <tr>
+                              <th scope="col"></th>
+                              <th scope="col">Şehir</th>
+                              <th scope="col">İlçe</th>
+                              <th scope="col">Adres</th>
+                              <th scope="col">Map Link</th>
+                              <th scope="col">Aciklama</th>
+                              <th scope="col"></th>
+                              
+                          </tr>
+                      </thead>
+            
+                      <tr>
+                      <th scope="row">{{order.sevk_adres.id}}</th>                    
+                      <td>{{order.sevk_adres.il}}</td>
+                      <td>{{order.sevk_adres.ilce}}</td>
+                      <td>{{order.sevk_adres.adres}}</td>
+                      <td>{{order.sevk_adres.map_link}}</td>
+                      <td>{{order.sevk_adres.aciklama}}</td>
+                      <td>
+            
+                       
+                      </td>
+                      </tr>
+                  </table>
+                 {% endif%} 
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="row mb-1">
+            
+              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                  <h3> Ürünler &nbsp;&nbsp;&nbsp;&nbsp;</h3>
+                  <br><br>
+                      {% if orderProducts %}
+                          <table class="table table-striped table-hover">
+                              <thead>
+                                  <tr>
+                                      <th scope="col"></th>
+                                      <th scope="col">Ürün</th>
+                                      <th scope="col">Renk</th>
+                                      <th scope="col">Adet</th>
+                                      <th scope="col">Birim Fiyat</th>
+                                      <th scope="col">Toplam</th>
+                                      <td></td>
+                                  </tr>
+                              </thead>
+                          
+                          {% for orderProduct in orderProducts%}
+                              <tr>
+                              <th scope="row">{{orderProduct.id}}</th>                    
+                              <td>{{orderProduct.product.product_name}}</td>
+                              <td>{{orderProduct.colour}}</td>
+                              <td>{{orderProduct.amount}}</td>
+                              <td>{{orderProduct.birim_fiyat}}</td>
+                              <td>{{orderProduct.toplam_tutar}}</td>
+                              <td>                  </td>
+                              
+                              </tr>
+                             
+                          {% endfor%}
+            
+                          </table>
+            
+                          <! ------------------------------------------------>
+            
+                          <div class="row mb-1">
+                            <div class="col-md-4">
+                              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                                <div class="col p-4 d-flex flex-column position-static" style="height:150px;">
+                                  <h5 class="mb-0">Notlar : </h5> 
+                                  <p class="card-text mb-auto">{{order.content|safe}}</p>
+                                  <a href="/order/orderUpdate/{{order.id}}" class="stretched-link">Güncelle</a>
+                                </div>
+                                
+                              </div>
+                            </div>
+                          
+                            <div class="col-md-4">
+                                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                                    <div class="col p-4 d-flex flex-column position-static"  style="height:150px;" >
+                                        <h5 class="mb-0">Tahmini Tarih Aralığı</h5><br>
+                                        <div >En Erken: : {{order.tahmini_tarih_min}}</div> 
+                                        <div >En Geç: : {{order.tahmini_tarih_max}}</div> 
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+                              <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                                  <div class="col p-4 d-flex flex-column position-static"  style="height:150px;">
+                                    <br>
+                                      <table border=0>
+                                          <tr><td>Tutar :</td><td>{{price_sum}}</td></tr>
+                                          <tr><td>İskonto :</td><td>{{order.iskonto}}%</td></tr>
+                                          <tr><td>Toplam :</td><td>{{t_tutar}}</td></tr>
+                                      </table>
+                                  </div>
+                              </div>
+                          </div>
+                        
+                        </div>
+                      {% endif%}
+            
+                </div>        
+              </div>
+            </div>  
+        </div> 
+    </main>
+    
+
+  </div>
+</div>
+
+	<!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+    
+</body>
+</html>
+
+
+

@@ -1,0 +1,836 @@
+{% load static%}
+{% load tz %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TAIS</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfPQuwoAAAAADpo8IvJb9m34YGacHI2Ds7YHyIp" async defer></script>
+        
+    <!-- Favicon  href="{% static 'assets/css/pages/extra_pages.css' %}"   -->
+    <link rel="shortcut icon" href="{% static 'TOYU_LOGO_V2_AMBLEM.png' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/backend-plugin.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'assets/css/backend.css?v=1.0.0' %}"> -->
+    <link rel="stylesheet" href="{% static 'assets/css/backend.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/remixicon/fonts/remixicon.css' %}">  
+    
+        <script>
+            function onClick(e) {
+            e.preventDefault();
+            grecaptcha.enterprise.ready(async () => {
+                const token = await grecaptcha.enterprise.execute('6LfPQuwoAAAAADpo8IvJb9m34YGacHI2Ds7YHyIp', {action: 'LOGIN'});
+            });
+            }
+
+            function goBack() {
+                window.history.back();
+            }
+    
+        </script>
+
+
+        <!-- sentry nin (Session Replay) takibi için eklendi -->
+        <script src="https://js.sentry-cdn.com/7a36ee9f9ce84f2395804ede29286419.min.js" crossorigin="anonymous" ></script>
+
+    </head>
+
+  <body class=" color-light ">
+    <!-- loader Start -->
+    <div id="loading">
+          <div id="loading-center">
+          </div>
+    </div>
+    <!-- loader END -->
+    <!-- Wrapper Start -->
+    <div class="wrapper">
+      
+        <div class="iq-sidebar  sidebar-default ">
+            <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
+                <a href="https://www.tais.app/" class="header-logo">
+
+                            {%if request.session.companyLogoUrl %}
+                                <img src="{{request.session.companyLogoUrl}}" class="img-fluid rounded-normal" alt="logo">
+                                <h5 class="logo-title ml-3">{{request.session.companyName}}</h5>
+                            {%else%}
+                            <img src="{% static 'tais_logo.png' %}" class="img-fluid rounded-normal" alt="logo">
+                            
+                            <h5 class="logo-title ml-3">TAIS</h5>
+                            {%endif%}
+                    
+                </a>
+                <div class="iq-menu-bt-sidebar ml-0">
+                    <i class="las la-bars wrapper-menu"></i>
+                </div>
+            </div>
+            <div class="data-scrollbar" data-scroll="1">
+                <nav class="iq-sidebar-menu">
+                    <ul id="iq-sidebar-toggle" class="iq-menu">
+               
+                        <li class="">
+                            <a href="/gorevler/rapor_gorev" class="svg-icon">                        
+                                <svg  class="svg-icon" id="p-dash1" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                                <span class="ml-4">Kontrol Paneli</span>
+                            </a>
+                        </li>
+                       
+                        {% if perms.order.view_problems %}
+                        <li class=" ">
+                            <a href="#chatbot" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <i class="las la-robot la-2x"></i>
+                                <span class="ml-4">ChatBot Yönetim</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="chatbot" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="">
+                                    <a href="/chatbot/chatbot_list">
+                                        <i class="las la-minus"></i><span>ChatBot Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                <a href="/chatbot/create_chatbot">
+                                    <i class="las la-minus"></i><span>ChatBot ekle</span>
+                                </a>
+                                </li>
+                               
+                                <li class="">
+                                    <a href="/chatbot/rapor">
+                                        <i class="las la-minus"></i><span>Rapor</span>
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        {%endif%}
+
+                        {% if perms.gorevler.view_gorevler  %}
+                        <li class=" ">  
+                            <a href="#calendar" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"        class="bi bi-calendar3" viewBox="0 0 16 16">
+                                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z" />
+                                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                </svg>
+                                <span class="ml-4">Takvim</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="calendar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+
+                                {%if perm.order.view_reservation%}
+                                <li class="">
+                                    <a href="/order/takvim_v2" target="_blank">
+                                        <i class="las la-minus"></i><span>Rezervasyon Takvimi</span>
+                                    </a>
+                                </li>
+                                {%endif%}
+
+                            
+                                <li class="">
+                                    <a href="/gorevler/takvim_task" target="_blank">
+                                        <i class="las la-minus"></i><span>Görev Takvimi</span>
+                                    </a>
+                                </li>
+                                
+
+
+                                {%if perm.order.view_reservation%}
+                                <li class="">
+                                <a href="/order/gant_chart" target="_blank">
+                                    <i class="las la-minus"></i><span>Gant</span>
+                                </a>
+                                </li>
+                                {%endif%}
+                        
+                            </ul>
+                        </li>
+                        {%endif%}
+
+                      
+
+                        {% if perms.order.view_problems %}
+                        <li class=" ">
+                            <a href="#problems" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bug" viewBox="0 0 16 16">
+                                    <path d="M4.355.522a.5.5 0 0 1 .623.333l.291.956A4.979 4.979 0 0 1 8 1c1.007 0 1.946.298 2.731.811l.29-.956a.5.5 0 1 1 .957.29l-.41 1.352A4.985 4.985 0 0 1 13 6h.5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 1 1 0v.5A1.5 1.5 0 0 1 13.5 7H13v1h1.5a.5.5 0 0 1 0 1H13v1h.5a1.5 1.5 0 0 1 1.5 1.5v.5a.5.5 0 1 1-1 0v-.5a.5.5 0 0 0-.5-.5H13a5 5 0 0 1-10 0h-.5a.5.5 0 0 0-.5.5v.5a.5.5 0 1 1-1 0v-.5A1.5 1.5 0 0 1 2.5 10H3V9H1.5a.5.5 0 0 1 0-1H3V7h-.5A1.5 1.5 0 0 1 1 5.5V5a.5.5 0 0 1 1 0v.5a.5.5 0 0 0 .5.5H3c0-1.364.547-2.601 1.432-3.503l-.41-1.352a.5.5 0 0 1 .333-.623zM4 7v4a4 4 0 0 0 3.5 3.97V7H4zm4.5 0v7.97A4 4 0 0 0 12 11V7H8.5zM12 6a3.989 3.989 0 0 0-1.334-2.982A3.983 3.983 0 0 0 8 2a3.983 3.983 0 0 0-2.667 1.018A3.989 3.989 0 0 0 4 6h8z"/>
+                                </svg>
+                                <span class="ml-4">Şikayet Yönetimi</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="problems" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="">
+                                    <a href="/order/problemList/aktif">
+                                        <i class="las la-minus"></i><span>Şikayet Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                <a href="/order/problemAddFull">
+                                    <i class="las la-minus"></i><span>Şikayet ekle</span>
+                                </a>
+                                </li>
+                                <li class="">
+                                    <a href="/order/rootCauseAdd">
+                                        <i class="las la-minus"></i><span>Kök Sebep Ekle</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="/order/rapor_sikayet">
+                                        <i class="las la-minus"></i><span>Rapor</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="#">
+                                        <i class="las la-minus"></i><span>TAIS Problem Ekle</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        {% if perms.gorevler.view_gorevler %}
+                        <li class=" ">
+                            <a href="#task" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
+                                </svg>
+                                <span class="ml-4">Görevler</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="task" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="">
+                                    <a href="/gorevler/gorevListele/aktif">
+                                        <i class="las la-minus"></i><span>Görev Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                <a href="/gorevler/gorevEkle">
+                                    <i class="las la-minus"></i><span>Görev ekle</span>
+                                </a>
+                                </li>
+                                
+                                {% if perms.auth.view_user %}
+                                <li class="">
+                                    <a href="/gorevler/gorevStatuList">
+                                        <i class="las la-minus"></i><span>Görev Statu Listesi</span>
+                                    </a>
+                                </li>
+                                {%endif%}
+                            
+                                <li class="">
+                                    <a href="/gorevler/duzenliGorevListele">
+                                        <i class="las la-minus"></i><span>Düzenli Görev Listele</span>
+                                    </a>
+                                </li>
+
+                                <li class="">
+                                    <a href="/gorevler/duzenliGorevRapor/{% now "Y" %}/{% now "m" %}/1">
+                                        <i class="las la-minus"></i><span>Düzenli Görev Rapor</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        {%endif%}
+
+                        
+                        <li class=" ">
+                            <a href="#raporlar" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <span class="ml-4">Raporlar</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            
+                            <ul id="raporlar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                {% if perms.gorevler.view_gorevler %}
+                                <li class="">
+                                    <a href="/gorevler/rapor_gorev">
+                                        <i class="las la-minus"></i><span>Görev Raporları</span>
+                                    </a>
+                                </li>
+                                {%endif%}
+                                {% if perms.order.view_orders %}
+                                <li class="">
+                                <a href="/order/rapor">
+                                    <i class="las la-minus"></i><span>Satış Raporları</span>
+                                </a>
+                                </li>
+                                {%endif%}
+                            
+                            </ul>
+                        </li>
+                        
+
+
+                        {% if perms.user.is_superuser %}
+
+                            <li class=" ">
+                                <a href="#firmalar" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16">
+                                        <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                                    </svg>
+                                    <span class="ml-4">Firmalar </span>
+                                    <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                    </svg>
+                                </a>
+                                <ul id="firmalar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                        
+                                        <li class="">
+                                                <a href="/saas/companyAdd">
+                                                    <i class="las la-minus"></i><span>Firma Ekle</span>
+                                                </a>
+                                        </li>
+                                       
+                                        <li class="">
+                                                <a href="/user/accountRegister">
+                                                    <i class="las la-minus"></i><span>Hesap Aç</span>
+                                                </a>
+                                        </li>
+                                        <li class="">
+                                            <a href="/saas/companyList/active">
+                                                <i class="las la-minus"></i><span>Firma Listesi</span>
+                                            </a>
+                                        </li>
+                                </ul>
+                            </li>
+                                
+
+                            {%endif%}
+
+                            {% if perms.notification.add_notification %}
+                                <li class=" ">
+                                    <a href="#notification" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                        <svg class="svg-icon" id="p-dash6" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line>
+                                        </svg>
+                                        <span class="ml-4">Bilgilendirme</span>
+                                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                        </svg>
+                                    </a>
+                                    <ul id="notification" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                            <li class="">
+                                                    <a href="">
+                                                        <i class="las la-minus"></i><span>Sms Gönder</span>
+                                                    </a>
+                                            </li>
+                                            <li class="">
+                                                    <a href="/notification/notificationAdd">
+                                                        <i class="las la-minus"></i><span>Bilgilendirme Ekle</span>
+                                                    </a>
+                                            </li>
+                                            <li class="">
+                                            <a href="/notification/notificationList/">
+                                                <i class="las la-minus"></i><span>Geçmiş bilgilendirmeler</span>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                                <a href="/user/chat">
+                                                    <i class="las la-minus"></i><span>Chat</span>
+                                                </a>
+                                        </li>   
+                                    </ul>
+                                </li>
+                                
+                        {%endif%}
+
+
+                        
+
+
+                        {% if perms.order.view_dokumanlar %}
+                        <li class=" ">
+                            <a href="#document" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg class="svg-icon" id="p-dash5" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                                <span class="ml-4">Dokumanlar</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="document" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                    <li class="">
+                                            <a href="/dokumanlar/dokumanList">
+                                                <i class="las la-minus"></i><span>Dokuman listesi</span>
+                                            </a>
+                                    </li>
+                                    <li class="">
+                                            <a href="/dokumanlar/dokumanAdd">
+                                                <i class="las la-minus"></i><span>Dokuman ekle</span>
+                                            </a>
+                                    </li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        
+                        {% if perms.auth.view_user %}
+                        <li class=" ">
+                            <a href="#users" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <i class="las la-user-circle" style="font-size:24px"></i>
+
+                                <span class="ml-4">Kullanıcılar</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="users" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="">
+                                    <a href="/user/userList/all">
+                                        <i class="las la-minus"></i><span>Kullanici Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                <a href="/user/userAdd">
+                                    <i class="las la-minus"></i><span>Kullanıcı ekle</span>
+                                </a>
+                            </li>
+                                <li class="">
+                                    <a href="/user/departmentList/ ">
+                                        <i class="las la-minus"></i><span>Departman Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="/user/departmentAdd/ ">
+                                        <i class="las la-minus"></i><span>Departman Ekle</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        
+                        
+                        
+                        {% if perms.user.is_superuser %}
+                        <li class=" ">
+                            <a href="#loglar" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                                    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                                </svg>
+                                <span class="ml-4">Loglar</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="loglar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <a class="nav-link" href="/user/logViewText">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                    Uygulama Logları
+                                </a>
+
+                                <a class="nav-link" href="/user/logViewSms">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                    SMS Logları
+                                </a>
+                                
+                            </ul>
+                        </li>
+                        {%endif%}
+
+                        {% if perms.order.view_settings %}
+                        <li class=" ">
+                            <a href="#ayarlar" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                                    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                                </svg>
+                                <span class="ml-4">Ayarlar</span>
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </a>
+                            <ul id="ayarlar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="">
+                                    <a href="/order/settingsList/{{request.session.company}}"> 
+                                        <i class="las la-minus"></i><span>Ayar Listesi</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="/saas/myCompanyUpdate">
+                                        <i class="las la-minus"></i><span>Firma Bilgileri Güncelle</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {%endif%}     
+                    </ul>
+                </nav>
+                <div id="sidebar-bottom" class="position-relative sidebar-bottom">
+                    <div class="card border-none">
+                        <div class="card-body p-0">
+                            <div class="sidebarbottom-content">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3">
+
+                </div>
+            </div>
+        </div>      
+          
+        <div class="iq-top-navbar">
+            <div class="iq-navbar-custom">
+                <nav class="navbar navbar-expand-lg navbar-light p-0">
+                    <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
+                        <i class="ri-menu-line wrapper-menu"></i>
+                        <a href="" class="header-logo">
+                            {%if request.session.companyLogoUrl %}
+                                <img src="{{request.session.companyLogoUrl}}" class="img-fluid rounded-normal" alt="logo">
+                                <h5 class="logo-title ml-3">{{request.session.companyName}}</h5>
+                            {%else%}
+                            <img src="{% static 'x.png' %}" class="img-fluid rounded-normal" alt="logo">
+                            
+                            <h5 class="logo-title ml-3">TAIS</h5>
+                            {%endif%}
+                        </a>
+                    </div>
+                    <div class="iq-search-bar device-search">
+                        <form class="searchbox" action="/order/arama/" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <a class="search-link" href="#"><i class="ri-search-line"></i></a>
+                            <input type="text" class="text search-input" placeholder="Search here..." name="query">
+                            
+                            </div>
+
+                        </form>
+                    </div>
+                    
+
+                    <div class="d-flex align-items-center">
+                        
+                    </div>
+
+                    <style>
+                        /* Yanıp sönen animasyon tanımı */
+                        @keyframes blink {
+                          0%, 100% {
+                            background-color: #FF9770; /* Orijinal arka plan rengi */
+                            color: white; /* Orijinal yazı rengi */
+                          }
+                          50% {
+                            background-color: #f8d7da; /* Vurgu için farklı renk */
+                            color: black; /* Vurgu için farklı yazı rengi */
+                          }
+                        }
+                    
+                        /* Buton tasarımı */
+                        .blinking-button {
+                          display: inline-block;
+                          padding: 10px 20px;
+                          font-size: 16px;
+                          font-weight: bold;
+                          text-align: center;
+                          text-decoration: none;
+                          color: white;
+                          background-color: #FF9770;
+                          border: none;
+                          border-radius: 50px;
+                          cursor: pointer;
+                          animation: blink 1.5s infinite; /* Yanıp sönme animasyonu */
+                          transition: transform 0.2s;
+                        }
+                    
+                        /* Hover efekt */
+                        .blinking-button:hover {
+                          transform: scale(1.1); /* Butonu biraz büyütür */
+                        }
+                      </style>
+
+                        <!-- CSS ile Modal Tasarımı -->
+                        <style>
+                            
+                            .close {
+                                color: red;
+                                float: right;
+                                font-size: 24px;
+                                cursor: pointer;
+                            }
+                            #chat-box {
+                                height: 250px;
+                                overflow-y: auto;
+                                border: 1px solid #ccc;
+                                padding: 10px;
+                                margin-bottom: 10px;
+                                background: #f8f9fa;
+                            }
+                            input {
+                                width: 80%;
+                                padding: 5px;
+                            }
+                            button {
+                                padding: 5px;
+                            }
+                        </style>
+                    
+               
+
+
+                    <div class="d-flex align-items-center">
+                        
+                        <!--------------->
+                  
+                        <a href="/user/chat" class="mt-2 btn btn-secondary rounded-pill blinking-button">  Chat AI </a>
+                    
+
+                        <!--------------->
+                                    
+
+
+                        <!--------------->
+                        
+                        
+                        
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                          data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                          aria-label="Toggle navigation">
+                          <i class="ri-menu-3-line"></i>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto navbar-list align-items-center">
+
+                                <li class="nav-item nav-icon dropdown">
+                                    <a href="#" class="search-toggle dropdown-toggle btn border add-btn"
+                                        id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="las la-star" style="font-size:16px"></i>
+                                    </a>
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-3">
+                                                
+                                                <a class="iq-sub-card" href="/production/productionTaskListMy/v1/0/open"> <i class="las la-briefcase"></i> İşlerim</a>
+                                                <a class="iq-sub-card" href="/order/customerAdd2">Müşteri Ekle</a>
+                                                <a class="iq-sub-card" href="/crm/offerAdd/">Dosya oluştur</a>
+                                                <a class="iq-sub-card" href="/production/productionStatus/2/0/0/0">Üretim Kontrol</a>
+                                                <a class="iq-sub-card" href="/production/productionList/0/0/v2">Üretim Listele</a>
+                                                <hr>
+                                                <a class="iq-sub-card" href="/user/moduleDocs">Module Tanıtım</a>
+                                                <a class="iq-sub-card" target="_blank" href="#">Eğitim videoları</a>
+                                                <a class="iq-sub-card" href="tel:05326179630">Destek için Ara</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item nav-icon dropdown">
+                                    <a href="#" class="search-toggle dropdown-toggle btn border add-btn"
+                                        id="dropdownMenuButton02" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <img src="{% static 'assets/images/small/flag_tr_16.png'%}" alt="img-flag"
+                                            class="img-fluid image-flag mr-2">Tr
+                                    </a>
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-3">
+                                                <a class="iq-sub-card" href="#"><img
+                                                    src="{% static 'assets/images/small/flag_tr_16.png'%}" alt="img-flag"
+                                                    class="img-fluid mr-2">Tr</a>
+
+                                                <!--  <a class="iq-sub-card" href="#"><img
+                                                    src="{% static 'assets/images/small/flag-01.png'%}" alt="img-flag"
+                                                    class="img-fluid mr-2">En</a>
+                                                
+                                        
+                                                
+                                                <a class="iq-sub-card" href="#"><img
+                                                        src="{% static 'assets/images/small/flag-05.png'%}" alt="img-flag"
+                                                        class="img-fluid mr-2">German</a> -->
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            
+                                <li class="nav-item nav-icon dropdown">
+                                    <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="feather feather-bell">
+                                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                        </svg>
+                                        <span class="bg-primary "></span>
+                                    </a>
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-0 ">
+                                                <div class="cust-title p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h5 class="mb-0">Notifications</h5>
+                                                        <a class="badge badge-primary badge-card" href="#">0</a>
+                                                    </div>
+                                                </div>
+                                                
+                                                <a class="right-ic btn btn-primary btn-block position-relative p-2" href="#"
+                                                    role="button">
+                                                    View All
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="nav-item nav-icon dropdown caption-content">
+                                    <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {%if request.user.employee.profilePhoto %}
+
+                                                    <img src="{{request.user.employee.profilePhoto.url}}" alt="profile-img"
+                                                    class="rounded profile-img img-fluid avatar-70">
+                                                {%else%}
+                                                    <img src="{% static 'assets/images/user/1.png' %}" alt="profile-img"
+                                                    class="rounded profile-img img-fluid avatar-70">
+                                                {%endif%}
+                                    </a>
+                                    <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <div class="card shadow-none m-0">
+                                            <div class="card-body p-0 text-center">
+                                                <div class="media-body profile-detail text-center">
+                                                {%if request.session.companyLogoUrl %}
+                                                    <img src="{{request.session.companyLogoUrl}}" alt="profile-bg" class="rounded-top img-fluid mb-4">
+                                                
+                                                {%else%}
+                                                    <img src="{% static 'TEKNOLİKYA.png' %}" alt="profile-bg" class="rounded-top img-fluid mb-4">
+                                                {%endif%}
+                                                {%if request.user.employee.profilePhoto %}
+
+                                                    <img src="{{request.user.employee.profilePhoto.url}}" alt="profile-img"
+                                                    class="rounded profile-img img-fluid avatar-70">
+                                                {%else%}
+                                                    <img src="{% static 'assets/images/user/1.png' %}" alt="profile-img"
+                                                    class="rounded profile-img img-fluid avatar-70">
+                                                {%endif%}
+                                                    
+
+
+                                                
+                                                </div>
+                                                <div class="p-3">
+                                                <h5 class="mb-1">{{request.session.companyName}}</h5>
+                                                    <h5 class="mb-1">{{request.user}}</h5>
+                                                    <p class="mb-0">{{request.user.last_login}}</p>
+                                                    <div class="d-flex align-items-center justify-content-center mt-3">
+                                                    <a href="/user/ChangeMyPassword" class="btn border">Şifre</a>    
+                                                        <a href="/user/updateMyProfile" class="btn border m-2">Profile</a>
+                                                        <a href="/user/logout" class="btn border">Çıkış</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>   
+        </div>
+
+        <div class="modal fade" id="new-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="popup text-left">
+                            <h4 class="mb-3">Yeni mesaj</h4>
+                            <div class="content create-workform bg-body">
+                                <div class="pb-3">
+                                    <label class="mb-2">Email</label>
+                                    <input type="text" class="form-control" placeholder="Enter Name or Email">
+                                </div>
+                                <div class="col-lg-12 mt-4">
+                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                        <div class="btn btn-outline-primary" data-dismiss="modal">Create</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                    
+                        
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}> {{ message }} </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% block body%}
+
+                    {% endblock body%}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Wrapper End-->
+    <footer class="iq-footer">
+            <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item"><a href="../backend/privacy-policy.html">Privacy Policy</a></li>
+                                <li class="list-inline-item"><a href="../backend/terms-of-service.html">Terms of Use</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://www.teknolikya.com.tr" class="">Teknolikya</a>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Backend Bundle JavaScript -->
+    <script src="{% static 'assets/js/backend-bundle.min.js' %}"></script>
+
+    <!-- Table Treeview JavaScript -->
+    <script src="{% static 'assets/js/table-treeview.js' %}"></script>
+    
+    <!-- Chart Custom JavaScript -->
+    <script src="{% static 'assets/js/customizer.js' %}"></script>
+    
+    <!-- Chart Custom JavaScript -->
+    <script async src="{% static 'assets/js/chart-custom.js' %}"></script>
+    
+    <!-- app JavaScript -->
+    <script src="{% static 'assets/js/app.js' %}"></script>
+
+
+  </body>
+</html>

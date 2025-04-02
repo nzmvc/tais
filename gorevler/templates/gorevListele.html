@@ -1,0 +1,421 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load custom_tags  %}
+
+<style>
+  /* Normal table style */
+  .normal-table {
+      display: table;
+  }
+  /* Mobile table style */
+  .mobile-table {
+      display: none;
+  }
+  /* Media query for mobile devices */
+  @media (max-width: 600px) {
+      .normal-table {
+          display: none;
+      }
+      .mobile-table {
+          display: table;
+      }
+  }
+</style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+// Sayfa yüklendiğinde modalı kontrol et
+var ilkGorev = "{{ilkGorev}}";
+$(document).ready(function(){
+  if (ilkGorev == "True") {
+    // $("#myModalPopup").modal('show');
+  }
+});
+</script>
+
+<div id="myModalPopup" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"> Eğitimi bitirdiniz, tebrikler!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p>Artık sistemi 14 gün özgürce kullanabilirsiniz. </p>
+                <p>Kullanıcı ekle kısmından başka kullanıcılar ekleyip iş ataması yapabilirsiniz. </p>
+                <p>Takvim ekranından işleri takvim formatında takip edebilirsiniz. </p>
+                <p>Raporlama ekranından anlık olarak kullanıcıların performanslarını görebilirsiniz. </p>
+                <p>TOYU ile ofisten sahayı görün !</p>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Kapat</button>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+
+  <div class="card w-100">
+      <div class="card-header  ">
+                <!--    başlık bolumu -->
+                <div class="row" >
+                  <div class="col-9 normal-table">
+                        <button type="button" class="btn btn-primary">
+                          Görev Listele: <span class="badge badge-light">{{gorevler.count }}</span>
+                        </button>
+          
+                        <a href="/gorevler/gorevEkle" >
+                          <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-plus-circle "></i>
+                          </button>
+                        </a>
+                  </div>
+
+                  <div class="col-9 mobile-table">
+                    <button type="button" class="btn btn-primary btn-sm">
+                      Görev Listele: <span class="badge badge-light">{{gorevler.count }}</span>
+                    </button>
+      
+                    <a href="/gorevler/gorevEkle" >
+                      <button class="btn btn-success btn-sm p-0 btn-sm "> &nbsp;<i class="las la-2x la-plus-circle"></i>
+                      </button>
+                    </a>
+                  </div>
+                  
+
+                  <div class="col-3 align-self-center">
+
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filtrele
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                        <a class="dropdown-item" href="/gorevler/gorevListele/aktif">Açık Görevler</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/pasif">Kapanmış görevler</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/baslangicTarihi">Baslangiç Tarihi</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/planlananTarih">Planlanan Tarih</a>
+                        <a class="dropdown-item" href="/gorevler/gorevListele/all">Tümü</a>
+                        {%for statu in gorevStatus%}
+                            <a class="dropdown-item" href="/gorevler/gorevListele/{{statu.id}}">{{statu.aciklama}}</a>
+                        {%endfor%} 
+                      </div>
+                  </div>
+
+                      <!-- <div class="btn-group  btn-group-sm float-right" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-outline-primary"><a href="/gorevler/gorevListele/aktif" class="text-blue" >Aktif</a></button> 
+                        <button type="button" class="btn btn-outline-danger"><a href="/gorevler/gorevListele/pasif" class="text-red">Pasif</a></button> 
+                      </div>  -->
+                  </div>
+                </div>
+
+          </div>
+
+          <div class="table-full-width table-responsive px-0 card-body">
+      
+      
+            {% if page_obj %}
+            <table class="table-hover table-striped table normal-table ">
+              <thead>
+                <tr>
+                  <th class="border-0" scope="col">ID</th>
+                  <th class="border-0" scope="col">Oluşturulma Tarihi</th>
+                  <th class="border-0" scope="col">Planan Bitiş</th>
+                  <th class="border-0" scope="col">Açan</th>
+                  <th class="border-0" scope="col">Sorumlu</th>
+                  <th class="border-0" scope="col">Başlık</th>
+                  <th class="border-0" scope="col">Durum</th>
+                  
+                  {%if ap == "pasif" %}
+                    <th class="border-0" scope="col">Harcama</th>
+                  {%endif%}
+                  <th class="border-0" scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for gorev in page_obj %}
+                    <tr>
+                      <td scope="row"><a href="/gorevler/gorevGoster/{{gorev.id}}">{{gorev.id}}</a></td>
+                      <td>{{gorev.created_date|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.deadline|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.open_user.first_name}} {{gorev.open_user.last_name}} </td>
+                      <td>{{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}</td>
+                      <td>{{gorev.title|safe|truncatechars:50}}</td>
+                      <td>{{gorev.statu}}</td>
+                      {%if ap == "pasif" %}
+                        <td>{{gorev.harcama}}</td>
+                      {%endif%}
+                      <td>
+                          <a href="/gorevler/gorevGoster/{{gorev.id}}"> 
+                            <button class="btn btn-success btn-sm" title="Göster">
+                              <i class="las la-eye la-2x"></i>
+                            </button>
+                          </a>
+                          <a href="/gorevler/gorevGuncelle/{{gorev.id}}">
+                            <button class="btn btn-outline-warning btn-sm" title="Güncelle">
+                              <i class="las la-pen la-2x"></i> </button></a>
+                          <a href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                            <button class="btn btn-outline-danger btn-sm" title="Sil"> <i class="las la-trash la-2x"></i>  </button>
+                          </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+            <div class="normal-table ">
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+                    </li>
+                {% endif %}
+                {%for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{page}}">{{page}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+
+
+ 
+
+            <!-- mobile için görüntü -->
+            <!------------------------->
+            <div class="row mobile-table w-100 m-0 p-0" >
+              {% for gorev in page_obj %}
+                <!---->
+                <a class=" m-0 p-0"  href="/gorevler/gorevGoster/{{gorev.id}}" >
+                  <div class="row  rounded m-2 p-0 border" >
+                       <div class="col-1 font-size-12 line-height p-0  rounded {{gorev|get_task_color}}">
+                       </div>
+                        <div class="col-11 font-size-12 line-height p-0">
+                        
+                          <div class="row align-self-center m-1 p-0 "> 
+                            <div class="col-5 align-self-center  m-0 pl-2 font-size-12 line-height-1 text-left">
+                              <p class="p-0 m-0">{{gorev.responsible_user.first_name|truncatechars:7}} {{gorev.responsible_user.last_name|truncatechars:7}}</p>
+                            </div>    
+                            <div class="col-7  align-self-center line-height-1 m-0 p-0">
+                                    
+                              <p class="text-right m-0 font-size-12
+                              ">{{gorev.start_date|date:'d-m-Y'}} / {{gorev.deadline|date:'d-m-Y'}}</p>
+                            </div>
+                                
+                          </div>
+                          <div class="row  justify-content-between align-self-center m-1 p-0 " > 
+                                <div class="col-10  align-self-center font-size-12 m-0 pl-2 font-size-12 line-height-1 text-left">
+                                  <!-- <p class="p-0"> {{gorev.description|safe|truncatechars:80}} </p> -->
+                                  <h6 class="p-0 m-0">{{gorev.title|truncatechars:30}}</h6>
+                                </div>
+                                <div class="col-2 text-right  align-self-right m-0 pr-2">  
+                                      <!-- <a class=" m-0 p-0"  href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')"> -->
+                                      <i class="las la-2x la-eye "></i>
+                                </div>
+                          </div>
+                        </div>
+                  </div>
+                </a>
+              {% endfor %}
+
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+                    </li>
+                {% endif %}
+                {%for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{page}}">{{page}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            
+
+
+
+          {%else%}
+            <div class="alert alert-danger">
+                Görev kaydı yok
+            </div>
+          {% endif %}
+          </div>
+
+
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-12">
+                <h3> Düzenli Görevler </h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-full-width table-responsive px-0 card-body">
+      
+      
+            {% if duzenliGorevler %}
+            <table class="table-hover table-striped table normal-table ">
+              <thead>
+                <tr>
+                  <th class="border-0" scope="col">ID</th>
+                  <th class="border-0" scope="col">Oluşturulma Tarihi</th>
+                  <th class="border-0" scope="col">Planan Bitiş</th>
+                  <th class="border-0" scope="col">Açan</th>
+                  <th class="border-0" scope="col">Sorumlu</th>
+                  <th class="border-0" scope="col">Başlık</th>
+                  <th class="border-0" scope="col">Durum</th>
+                  
+                  {%if ap == "pasif" %}
+                    <th class="border-0" scope="col">Harcama</th>
+                  {%endif%}
+                  <th class="border-0" scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for gorev in duzenliGorevler %}
+                    <tr>
+                      <td scope="row"><a href="/gorevler/gorevGoster/{{gorev.id}}">{{gorev.id}}</a></td>
+                      <td>{{gorev.created_date|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.deadline|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.open_user.first_name}} {{gorev.open_user.last_name}} </td>
+                      <td>{{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}</td>
+                      <td>{{gorev.title|safe|truncatechars:50}}</td>
+                      <td>{{gorev.statu}}</td>
+                      {%if ap == "pasif" %}
+                        <td>{{gorev.harcama}}</td>
+                      {%endif%}
+                      <td>
+                          <a href="/gorevler/gorevGoster/{{gorev.id}}"> 
+                            <button class="btn btn-success btn-sm" title="Göster">
+                              <i class="las la-eye la-2x"></i>
+                            </button>
+                          </a>
+                          <a href="/gorevler/gorevGuncelle/{{gorev.id}}">
+                            <button class="btn btn-outline-warning btn-sm" title="Güncelle">
+                              <i class="las la-pen la-2x"></i> </button></a>
+                          <a href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')">
+                            <button class="btn btn-outline-danger btn-sm" title="Sil"> <i class="las la-trash la-2x"></i>  </button>
+                          </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+            <div class="normal-table ">
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+                    </li>
+                {% endif %}
+                {%for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{page}}">{{page}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+
+
+ 
+
+            <!-- mobile için görüntü -->
+            <!------------------------->
+            <div class="row mobile-table w-100 m-0 p-0" >
+              {% for gorev in page_obj %}
+                <!---->
+                <a class=" m-0 p-0"  href="/gorevler/gorevGoster/{{gorev.id}}" >
+                  <div class="row  rounded m-2 p-0 border" >
+                       <div class="col-1 font-size-12 line-height p-0  rounded {{gorev|get_task_color}}">
+                       </div>
+                        <div class="col-11 font-size-12 line-height p-0">
+                        
+                          <div class="row align-self-center m-1 p-0 "> 
+                            <div class="col-5 align-self-center  m-0 pl-2 font-size-12 line-height-1 text-left">
+                              <p class="p-0 m-0">{{gorev.responsible_user.first_name|truncatechars:7}} {{gorev.responsible_user.last_name|truncatechars:7}}</p>
+                            </div>    
+                            <div class="col-7  align-self-center line-height-1 m-0 p-0">
+                                    
+                              <p class="text-right m-0 font-size-12
+                              ">{{gorev.start_date|date:'d-m-Y'}} / {{gorev.deadline|date:'d-m-Y'}}</p>
+                            </div>
+                                
+                          </div>
+                          <div class="row  justify-content-between align-self-center m-1 p-0 " > 
+                                <div class="col-10  align-self-center font-size-12 m-0 pl-2 font-size-12 line-height-1 text-left">
+                                  <!-- <p class="p-0"> {{gorev.description|safe|truncatechars:80}} </p> -->
+                                  <h6 class="p-0 m-0">{{gorev.title|truncatechars:30}}</h6>
+                                </div>
+                                <div class="col-2 text-right  align-self-right m-0 pr-2">  
+                                      <!-- <a class=" m-0 p-0"  href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')"> -->
+                                      <i class="las la-2x la-eye "></i>
+                                </div>
+                          </div>
+                        </div>
+                  </div>
+                </a>
+              {% endfor %}
+
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Önceki</a>
+                    </li>
+                {% endif %}
+                {%for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{page}}">{{page}}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sonraki</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            
+
+
+
+          {%else%}
+            <div class="alert alert-danger">
+                Görev kaydı yok
+            </div>
+          {% endif %}
+          </div>
+  </div>
+
+    
+</div>
+{% endblock body %}

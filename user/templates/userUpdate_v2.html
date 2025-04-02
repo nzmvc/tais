@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+<div class="row">
+    <div >
+    <h3> 
+            Kullanıcı Guncelle
+            
+    </h3>   
+ 
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form|crispy }}
+        <hr>
+        {{emp_form|crispy }}
+        <br>
+        <button type="submit" class="btn btn-warning">Güncelle</button>
+    </form>
+</div>
+{% endblock body %}

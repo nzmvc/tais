@@ -1,0 +1,43 @@
+TOYU NEDİR ?
+Müşterilerine kapı , pencere, parke , mutfak , mobilya vs  gibi ürün satışı ve kurulum operasyonları gerçekleştiren firmalar için Web yada mobil cihazınızdan , Anlık olarak 
+Satış adetlerinizi
+Cironuzu
+Bekleyen müşteri operasyonlarınızı
+Açık müşteri şikayetlerinizi 
+Usta bazlı yapılan işleri 
+Müşterilerin memnuniyetini
+takip edebilir ve  planlanlama işlerinizi gerçekleştirebilirsiniz.  
+
+KİMLER KULLANABİLİR?
+Şu an aktif olarak Kapı, mutfak ve parke satışı ve kurulum operasyonu yapan bir firma kullanıyor. Aynı şekilde müşteride kurulum operasyonu yürüten tüm firmalar bunu kullanabilir.
+
+NASIL ERİŞİLİR ?
+İnternet erişimi olan  her hangi bir bilgisayar ve mobil cihazlardan kullanılabilir. Kurulum gerektirmez. 
+
+NE FAYDA SAĞLAR ?
+Maliyetlerinizi düşürür karlılığınızı arttırır
+Müşteri memnuniyetini arttırır
+Anlık raporları ile karar almanızı sağlar
+Problemleri hızlı bir şekilde fark edersiniz.
+Operasyon yönetimini kolaylaştırır
+Performans yönetimini kolaylaştırır.
+Hakediş yönetiminin kolaylaştırır
+
+TEMEL ÖZELLİKLER:
+Sistem üzerinde ,tanımlanarak yönetilebilecekler
+Müşteriler
+Kullanıcılar
+Departmanlar
+Şubeler
+Ürünler
+Kategoriler
+Çalışan personel/usta 
+Kullanılan araçlar(araba,kamyon vs)  
+Yapılan işlemlerin logları ( hangi kullanıcı ,ne zaman, ne yapmış)
+Satış işlemlerinizi sistem üzerinden kolaylıkla girerek ilgili ekiplerin otomatik iş ataması yapabilirsiniz.
+Sistemde saklanması gereken ölçüm vs gibi dosyaları sipariş sırasında veya sonrasında siparişe yükleyebilirsiniz.
+Sipariş fişlerinizi sistem üzerinden otomatik çıktı alabilirsiniz.
+Departmanlar yapmaları gereken işleri sistem üzerinden görebilir. Aksiyonlarını tamamladıklarında system üzerinden kapatabilirler.
+Planlama ekibiniz yapılacak işleri sistemde müsait olan personele ve araça göre kolay ve hızlı bir şekilde tanımlayabilir.
+Takvim üzerinde planlanmış işlerini görüntülenerek kolaylıkla takip edilebilir.
+Müşteri şikayet takibi ve problem analizi yapabilirsiniz.

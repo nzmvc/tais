@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<style>
+  /* Normal table style */
+  .normal-table {
+      display: table;
+  }
+  /* Mobile table style */
+  .mobile-table {
+      display: none;
+  }
+  /* Media query for mobile devices */
+  @media (max-width: 600px) {
+      .normal-table {
+          display: none;
+      }
+      .mobile-table {
+          display: table;
+      }
+  }
+</style>
+
+
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="card">
+          <div class="card-header  ">
+
+            <div class="row" >
+              <div class="col-9 normal-table">
+                    <button type="button" class="btn btn-primary">
+                      Görev Listele: <span class="badge badge-light">{{gorevler.count }}</span>
+                    </button>
+      
+                    <a href="/gorevler/gorevEkle" >
+                      <button class="btn btn-success btn-sm p-0 "> &nbsp;<i class="las la-3x la-plus-circle "></i>
+                      </button>
+                    </a>
+              </div>
+
+              <div class="col-9 mobile-table">
+                <button type="button" class="btn btn-primary btn-sm">
+                  Görev Listele: <span class="badge badge-light">{{gorevler.count }}</span>
+                </button>
+  
+                <a href="/gorevler/gorevEkle" >
+                  <button class="btn btn-success btn-sm p-0 btn-sm "> &nbsp;<i class="las la-2x la-plus-circle"></i>
+                  </button>
+                </a>
+              </div>
+              
+
+              <div class="col-3 align-self-center">
+
+                <div class="btn-group btn-group-sm" role="group">
+                  <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     Filtrele
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                     <a class="dropdown-item" href="/gorevler/gorevListele/aktif">Açık Görevler</a>
+                     <a class="dropdown-item" href="/gorevler/gorevListele/pasif">Kapanmış görevler</a>
+                     <a class="dropdown-item" href="/gorevler/gorevListele/baslangicTarihi">Baslangiç Tarihi</a>
+                     <a class="dropdown-item" href="/gorevler/gorevListele/planlananTarih">Planlanan Tarih</a>
+                  </div>
+               </div>
+
+                  <!-- <div class="btn-group  btn-group-sm float-right" role="group" aria-label="Basic example">
+                     <button type="button" class="btn btn-outline-primary"><a href="/gorevler/gorevListele/aktif" class="text-blue" >Aktif</a></button> 
+                    <button type="button" class="btn btn-outline-danger"><a href="/gorevler/gorevListele/pasif" class="text-red">Pasif</a></button> 
+                  </div>  -->
+              </div>
+            
+          </div>
+
+
+          </div>
+          <div class="table-full-width table-responsive px-0 card-body">
+      
+      
+            {% if gorevler %}
+            <table class="table-hover table-striped table normal-table ">
+              <thead>
+                <tr>
+                  <th class="border-0" scope="col">ID</th>
+                  <th class="border-0" scope="col">Oluşturulma Tarihi</th>
+                  <th class="border-0" scope="col">Planan Bitiş</th>
+                  <th class="border-0" scope="col">Açan</th>
+                  <th class="border-0" scope="col">Sorumlu</th>
+                  <th class="border-0" scope="col">Başlık</th>
+                  <th class="border-0" scope="col">Durum</th>
+                  
+                  {%if ap == "pasif" %}
+                    <th class="border-0" scope="col">Harcama</th>
+                  {%endif%}
+                  <th class="border-0" scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for gorev in gorevler %}
+                    <tr>
+                      <td scope="row"><a href="/gorevler/gorevGoster/{{gorev.id}}">{{gorev.id}}</a></td>
+                      <td>{{gorev.created_date|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.deadline|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.open_user.first_name}} {{gorev.open_user.last_name}} </td>
+                      <td>{{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}</td>
+                      <td>{{gorev.title|safe}}</td>
+                      <td>{{gorev.statu}}</td>
+                      {%if ap == "pasif" %}
+                        <td>{{gorev.harcama}}</td>
+                      {%endif%}
+                      <td>
+                        
+                          <a href="/gorevler/gorevGoster/{{gorev.id}}">
+                          
+                            <button class="btn btn-success" title="Göster"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                            </svg></button>
+                          </a>
+                          <a href="/gorevler/gorevGuncelle/{{gorev.id}}">
+                            <button class="btn btn-outline-warning" title="Güncelle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                          </svg></button></a>
+                          <a href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')"><button class="btn btn-outline-danger" title="Sil">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                            </svg></button>
+                          </a>
+                          
+                        
+                        
+                    </tr>
+                  {% endfor %}
+                
+            
+              </tbody>
+            </table>
+
+ 
+
+
+            <div class="row mobile-table w-100 m-0 p-0" >
+              {% for gorev in gorevler %}
+                <!---->
+                <div class="row  m-0 p-0 border" >
+                    <div class="col-3 m-0 align-self-center ">
+                      <div class="row justify-content-center">
+                        <div class="col ">
+                          <p class="text-center line-height font-size-14">{{gorev.deadline|date:'d-m'}}</p>
+                          <p class="text-center line-height font-size-14">{{gorev.deadline|date:'Y'}}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-9 m-0 p-0 border">
+                        <div class="row align-self-center m-2 p-0"> 
+                              <div class="col-7 font-size-14 align-self-center line-height m-0 p-0">
+                                  <h6>{{gorev.title|truncatechars:20}}</h6>
+                              </div>
+                              <div class="col-5 font-size-12 line-height text-right">
+                                  <p class="p-0 m-0">{{gorev.responsible_user.first_name|truncatechars:7}} {{gorev.responsible_user.last_name|truncatechars:7}}</p>
+                              </div>
+                        </div>
+                        <div class="row  justify-content-between m-2 p-0" > 
+                              <div class="col-10 font-size-12 line-height m-0 p-0">
+                                <p class="p-0"> {{gorev.description|safe|truncatechars:80}} </p>
+                              </div>
+                              <div class="col-2 align-self-center m-0 p-0">  
+                                    <!-- <a class=" m-0 p-0"  href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')"> -->
+                                      <a class=" m-0 p-0"  href="/gorevler/gorevGoster/{{gorev.id}}" ><i class="las la-2x la-eye "></i></a>
+                                      
+                                    
+                              </div>
+                          
+                      </div>
+                    </div>
+                </div>
+              
+              {% endfor %}
+            </div>
+
+
+
+          <!--   <table class="table-hover table-striped table mobile-table ">
+              <thead>
+                <tr>
+                 
+                  <th class="border-0" scope="col">Planan Bitiş</th>
+                  <th class="border-0" scope="col">Sorumlu</th>
+                  <th class="border-0" scope="col">Başlık</th>
+                  <th class="border-0" scope="col">Durum</th>
+                  <th class="border-0" scope="col"></th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                  {% for gorev in gorevler %}
+                    <tr>
+                      
+                      <td>{{gorev.deadline|date:'d-m-Y h:s'}}</td>
+                      <td>{{gorev.responsible_user.first_name}} {{gorev.responsible_user.last_name}}</td>
+                      <td>{{gorev.title|safe}}</td>
+                      <td>{{gorev.statu}}</td>
+                      
+                      <td>
+                        
+                          <a href="/gorevler/gorevGoster/{{gorev.id}}">
+                            <button class="btn btn-success" title="Göster"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                            </svg></button>
+                          </a>
+                          <a href="/gorevler/gorevGuncelle/{{gorev.id}}">
+                            <button class="btn btn-outline-warning" title="Güncelle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                          </svg></button></a>
+                          <a href="/gorevler/gorevSil/{{gorev.id}}" onclick="return confirm('Silmek istediğinize emin misiniz?')"><button class="btn btn-outline-danger" title="Sil">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+                            </svg></button>
+                          </a>
+                          
+                        
+                        
+                    </tr>
+                  {% endfor %}
+                
+            
+              </tbody>
+            </table>
+ -->
+
+
+          {%else%}
+            <div class="alert alert-danger">
+                Görev kaydı yok
+            </div>
+          {% endif %}
+        </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock body %}

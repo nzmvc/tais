@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% if wf %}
+<div class="row mb-1">
+    <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+          <strong class="d-inline-block mb-2 text-primary">
+              Workflow ID: {{wf.id}} 
+              
+            </strong>
+          
+          <h3 class="mb-0">{{wf.order.customer.customer_name}}</h3>
+          <div class="mb-1 text-muted">{{wf.order.created_date}}</div>
+          <p class="card-text mb-auto">{{wf.order.content|safe}}</p>
+          <a href="/order/customerView/{{wf.order.customer.id}}" class="stretched-link">Müşteri Detay</a>
+        </div>
+        
+      </div>
+    </div>
+	
+    <div class="col-md-3">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;" >
+                <h5 class="mb-0">İletişim</h5>
+                <div >email : {{wf.order.customer.email}}</div> 
+                <div class="mb-1 text-muted">Telefon:{{wf.order.customer.telephone}}</div> 
+            </div>
+        </div>
+    </div>
+
+
+    
+    <div class="col-md-3">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static" style="height:180px;">
+                {% if wf.order.order_image.url is not Null %}
+                    <a href="{{wf.order.order_image.url}}" target="popup" 
+                    onclick="window.open('{{order.order_image.url}}','popup','width=600,height=600'); return false;">
+                        <img width="200" height="200"  class="img-fluid rounded" src="{{wf.order.order_image.url}}" alt="">  
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-1">
+    
+    <div class="row g-0 border rounded overflow-hidden  position-relative">
+        <div class="col p-4 d-flex flex-column position-static" >
+            <h3> Sipariş paketi</h3>
+            
+            {% if orderPacketsItems %}
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th scope="col"></th>
+                          <th scope="col">Ürün</th>
+                          <th scope="col">Renk</th>
+                          <th scope="col">Adet</th>
+                         
+                          <th scope="col">Paket</th>
+                          <th scope="col">Tipi</th>
+                          <td></td>
+                      </tr>
+                  </thead>
+              
+              {% for ops in orderPacketsItems%}
+                  <tr>
+                  <th scope="row">{{ops.id}}</th>                    
+                  <td>{{ops.product.product_name}}</td>
+                  <td>{{ops.orderProducts.colour}}</td>
+                  <td>{{ops.amount}}</td>
+                  
+                  <td>{% if ops.orderPacket_id == 0 %}
+                        Yok
+                      {%else%}
+                        {{ops.orderPacket_id}}
+                      {%endif%}
+                  </td>
+                  <td>{{ops.orderPacket.order_type}}</td>
+                  <td>
+           
+                  </td>
+                  
+                  </tr>
+                 
+              {% endfor%}
+
+              </table>
+              {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row mb-1">
+
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static" >
+        <h3> 
+            {% if wf.status_id == 2 %}
+                Uretim planı 
+            {% elif wf.status_id == 6 %}
+                Sevk Planı
+            {% elif wf.status_id == 11 %}
+                Montaj Planı
+            {% endif %}
+        </h3>
+            <br><br>
+            {% if reservations %}
+                {% for reservation in reservations%}
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col"></th> 
+                                <th scope="col"></th>
+                                <th scope="col"></th>                            
+                            </tr>
+                        </thead>
+                        <tr><td>Start </td><td>{{reservation.start_date}}</td><td >Güncelleme</td><td>{{reservation.version}}</td></tr>
+                        <tr><td >Açıklama</td><td colspan="3">{{reservation.description}}</td></tr>
+                        <tr><td>Ustalar</td><td>
+                            {% for usta in reservationItem.getPerson%}
+                                {{ usta.employee_id}}
+                            {% endfor%}
+                        </td></tr>
+                        
+                    
+                    </table>
+                {%endfor%}
+            {%else%}
+            <div class="row mb-1">
+                <div class="col-md-6 ">
+            
+                    <form method="POST">
+                        {% csrf_token %}
+                        <table>
+                            <tr>
+                                <td>Montaj başlangıç tarihi</td>
+                                <td><input type="date" name="planGun" class="input-sm" placeholder="Tarih">  <input type="time"  name="stime"></td>
+                            </tr>
+                            <tr>
+                                <td>Montaj bitiş tarihi</td>
+                                <td> <input type="date" name="planGun_end" class="input-sm" placeholder="Tarih"> <input type="time"  name="etime">
+                                
+                                </td>
+                            </tr>
+                        </table>
+                        <button type="submit" class="btn btn-info btn-sm"> Plan yap</button>
+                    </form>
+                </div>
+                <div class="col-md-6 ">
+                    <h4> "Plan yap" butonuna barasak devam ediniz</h4>
+                </div>
+            </div>
+        
+
+            {% endif%}
+        </h3>  
+        
+    <br><BR>
+</div>
+</div>
+</div>
+
+
+    {%else%}
+    <div class="alert alert-danger">
+        Sipariş bulunamadı
+    </div>
+    {% endif %}
+    
+</div>
+{% endblock body %}

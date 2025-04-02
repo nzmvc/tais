@@ -1,0 +1,53 @@
+# Django
+**/__pycache__/
+__pycache__/
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+*.sqlite3
+media/
+
+# Heroku
+*.idea
+.vscode
+venv
+*.pyc
+/staticfiles
+.DS_Store
+*.sqlite3
+
+# Python
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Python virtual environments
+.venv/
+.venv
+.env/
+.env
+env/
+venv/
+ENV/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Linux
+*.swp
+
+# Testing
+.pytest_cache/
+.coverage
+
+log.txt
+logSms.txt

@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<form method="post" >
+    {% csrf_token %}
+ <div class="container">
+    <h1 style="margin:10px auto 50px auto; text-align:center">Sipariş Paket seçimi</h1>
+    <div class="row">
+      <div class="col-sm-5">
+        Gruplanmamış Ürünler
+        <select name="from" id="undo_redo" class="form-control" size="8" multiple="multiple">
+            {% for product in products %}
+            <option value="{{ product.id}}"> {{ product.product.product_name}} </option>
+        {% endfor %}
+        </select>
+      </div>
+      <div class="col-sm-1">
+          <br><br>
+        <button type="button" id="undo_redo_undo" class="btn btn-primary btn-block">undo</button>
+        <!-- bu buton çalışırken sorun cıkardı. hepsini attığımızda kayıt yapmadı. sanki kutu boşmuş gibi
+             <button type="button" id="undo_redo_rightAll" class="btn btn-default btn-block"> >> </button>  -->
+        <button type="button" id="undo_redo_rightSelected" class="btn btn-default btn-block"> --> </i></button>
+        <button type="button" id="undo_redo_leftSelected" class="btn btn-default btn-block"> <-- </button>
+        <!-- <button type="button" id="undo_redo_leftAll" class="btn btn-default btn-block"> << </button>   -->
+        <button type="button" id="undo_redo_redo" class="btn btn-warning btn-block">redo</button>
+      </div>
+      <div class="col-sm-2">
+          Seçilmiş ürünler
+        <select name="to" id="undo_redo_to" class="form-control" size="8" multiple="multiple"></select>
+      </div>
+      <div  class="col-sm-2">
+
+            Sipariş Tipi
+          <select name="order_type" class="select form-control" required="" id="id_order_type">
+            <option value="" selected="">---------</option>
+            <option value="U">Uretim</option>
+            <option value="S">Sevk</option>
+            <option value="M">Montaj</option>
+            <option value="D">Depo Teslim</option>
+          </select>
+          <br>
+          Üretim
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="uretim" id="inlineRadio1" value="1">
+            <label class="form-check-label" for="inlineRadio1">Var</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="uretim" id="inlineRadio2" value="0">
+            <label class="form-check-label" for="inlineRadio2">Yok</label>
+          </div>
+
+      </div>
+
+
+      
+      <div  class="d-grid gap-2 col-2 mx-auto">
+            
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8">
+        <input type="text" class="form-control" placeholder="Açıklama" name="aciklama">
+      </div>
+      <div class="col-sm-4">
+              {% if order.siparis_paketi == False %}
+                  <button class="btn btn-primary" >Sipariş paketi oluştur</button>
+              {% endif %}
+      </div>
+    </div>
+  </div>
+
+</form>
+<hr><br>
+
+<div class="table-full-width table-responsive px-0 card-body">
+      
+    {% if products_selected %}
+    Sipariş Grupları
+    <table class="table-hover table-striped table">
+      <thead>
+        <tr>
+          <th class="border-0" scope="col">ID</th>
+          <th class="border-0" scope="col">Ürün</th>
+          <th class="border-0" scope="col">Paket ID</th>
+          <th class="border-0" scope="col">Sipariş Tipi</th>
+          <th class="border-0" scope="col">Üretim</th>
+          <th class="border-0" scope="col">Açıklama</th>
+          <th class="border-0" scope="col"></th>
+          
+        </tr>
+      </thead>
+      <tbody>
+          {% for packet in products_selected %}
+            <tr>
+              <td scope="row">{{packet.id}}</td>
+              <td>{{packet.product.product_name}}</td>
+              <td>{{packet.orderpackets.id}}</td>
+              <td>{{packet.orderpackets.order_type}}</td>
+              <td>
+                {% if packet.orderpackets.uretim %}
+                  Var
+                {%else%}
+                  Yok
+                {%endif%}
+                
+              </td>
+              <td>{{packet.orderpackets.aciklama}}</td>
+              <td>
+                <div class="dropdown">
+                    {% if order.siparis_paketi == False %}
+                    <a class="dropdown-item" href="/order/orderPacketDelete/{{packet.id}}"><button class="btn btn-outline-info" type="button">
+                        Sil
+                    </button></a>
+                    {% endif %}
+                  
+                </div>
+                
+            </tr>
+          {% endfor %}
+        
+    
+      </tbody>
+    </table>
+  {%else%}
+    <div class="alert alert-danger">
+        Sipariş Paketi oluşturulmamış!!!
+    </div>
+  {% endif %}
+</div>
+<div class="col-sm-10 ">
+    {% if products.count == 0%}
+        <a href="/order/orderPaketOnayla/{{order.id}}/{{workflow_id}}"><button class="btn btn-danger" > Sipariş paketlerini Onayla  </button></a>
+    {% endif %}
+</div>
+
+<br><br><br>
+<script src="https://www.jqueryscript.net/demo/Two-side-Multi-Select-Plugin-with-jQuery-multiselect-js/js/multiselect.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#undo_redo').multiselect();
+  });
+    
+</script>
+    
+{% endblock body %}
