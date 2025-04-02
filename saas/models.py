@@ -37,7 +37,7 @@ class Company (models.Model):
     active = models.BooleanField(verbose_name="Aktif/Pasif",default=True)
     created_date = models.DateTimeField(verbose_name="Oluşturulma tarihi",default=timezone.now)
     user = models.ForeignKey(User,verbose_name="Sorumlu",on_delete=models.CASCADE,null=True,blank=True)
-    sector = models.ForeignKey(Sector, verbose_name="Sektor",default=1,on_delete=models.PROTECT,null=True,blank=True)
+    sector = models.ForeignKey(Sector, verbose_name="Sektor",on_delete=models.PROTECT,null=True,blank=True)
     faturaDetay = models.TextField(verbose_name="Fatura DetayBilgileri",null=True,blank=True)
     vergi_dairesi = models.CharField(max_length=100,verbose_name="Vergi Dairesi",null=True,blank=True) 
     vergi_no = models.CharField(max_length=100,verbose_name="Vergi Numarası",null=True,blank=True)

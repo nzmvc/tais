@@ -1,9 +1,11 @@
 import boto3,datetime
 from botocore.exceptions import NoCredentialsError
+from decouple import config
 
-AWS_ACCESS_KEY = 'AKIAVIOZGAKTMWX62NOC'
-AWS_SECRET_KEY = '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'
-BUCKET_NAME = 'toyuappbucket'
+AWS_ACCESS_KEY = config('AWS_ACCESS_KEY')
+
+AWS_SECRET_KEY = config('AWS_SECRET_KEY')
+BUCKET_NAME = config('BUCKET_NAME')
 
 def upload_to_s3(file_path, s3_file_name):
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
@@ -24,6 +26,6 @@ BACKUP_FILE = f"{BACKUP_DIR}/toyu_db-{date_str}.sqlite3"
 
 file_path = BACKUP_FILE
 
-s3_file_name = "toyu_production_db"+date_str+".sqlite3"
+s3_file_name = "tais_production_db"+date_str+".sqlite3"
 
 upload_to_s3(file_path, s3_file_name)

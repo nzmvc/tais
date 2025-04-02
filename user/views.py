@@ -141,13 +141,6 @@ def gruplaraEkle(request,newUser):
     # Register olan admin kullnaıcısı için aşagıdaki gruplar tanımlanır.
     group_names = [
         "company_admin",
-        "task_management_grp_perm",
-        "field_operations_grp_perm",
-        "production_management_grp_perm",
-        "project_management_grp_perm",
-        "problem_management_grp_perm",
-        "task_management_grp_perm_normal_user",
-        "production_management_grp_perm_normal_user",
     ]
     # Grupları kullanıcıya ekle
     for group_name in group_names:

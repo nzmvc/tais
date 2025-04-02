@@ -40,7 +40,6 @@
                             
 						
 							<th> # </th>
-							<th>Durum</th>
 							<th>Oluşturma Tarihi</th>
 							<th>İsim</th>																		
 							<th>Telefon</th>
@@ -59,47 +58,7 @@
 								<tr class="odd gradeX">
 								
 								<td class="left"><a href="/saas/companyView/{{company.id}}">{{company.id}}</a></td>
-								<td class="left">
-									{% if company.status == null %}
-										 <!-- Button trigger modal -->
-										 <button type="button" class="btn btn-outline-warning btn-sm p-1" data-toggle="modal" data-target="#exampleModal{{company.id}}">
-											Not Gir
-										  </button>
-										  
-										  <!-- Modal -->
-										  <div class="modal fade" id="exampleModal{{company.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{company.id}}" aria-hidden="true">
-											<div class="modal-dialog">
-											  <div class="modal-content">
-												<div class="modal-header">
-												  <h5 class="modal-title" id="exampleModalLabel{{company.id}}">Not gir</h5>
-												  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												  <span aria-hidden="true">&times;</span>
-												  </button>
-												</div>
-												<div class="modal-body">
-													  <form method="POST" enctype="multipart/form-data">
-														{% csrf_token %}
-														  <div class="modal-body">
-															<input type="text" name="note" class="form-control" placeholder="Not giriniz">
-															<input type="hidden" name="company_id"  id="hidden" value="{{company.id}}">
-														  </div>
-														  <div class="modal-footer">
-															<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-															<button type="submit" class="btn btn-primary"> Not Gir </button>
-														  </div>
-													  </form>
-												</div>
-					  
-					  
-											  </div>
-											</div>
-										  </div>
-										  <!-- modal end -->
-									
-									{% else %}
-										<span class="badge badge-warning">{{company.status}}</span>
-									{% endif %}
-								</td>
+								
 								<td>{{company.created_date}}</td>
 								<td>{{company.name}}</td>
 								<td>{{company.telefon}}</td>

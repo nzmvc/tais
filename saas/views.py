@@ -10,8 +10,13 @@ from saas.forms import CompanyForm
 import datetime
 from django.core.paginator import Paginator
 # Create your views here.
+import random
+import string
 
-
+def generate_password(length=6):
+    characters = string.digits
+    password = ''.join(random.choice(characters) for i in range(length))
+    return password
 
 @login_required(login_url='/user/login/')
 def companyAdd(request):

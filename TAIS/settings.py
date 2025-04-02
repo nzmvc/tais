@@ -33,7 +33,7 @@ SECRET_KEY = "django-insecure-*migvc7em$t@740xc%oan5%0q326_c_8kn1pqmy#da(g)4u9z@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["tais.teknolikya.com.tr","localhost"]
 
 
 # Application definition
@@ -92,7 +92,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",  # Frontend'in çalıştığı adres
-    "https://senin-domainin.com",  # Canlı sistemin adresi
+    "https://tais.teknolikya.com.tr",  # Canlı sistemin adresi
 ]
 
 CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS"]
