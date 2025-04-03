@@ -27,12 +27,13 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 from decouple import config
-from saas.models import Company, CompanyModules,Modules,Modules
+from saas.models import Company, CompanyModules, CompanySettings,Modules,Modules, Settings
 import requests,random
 from django.http import HttpResponseForbidden, JsonResponse
 import time
-
 from django.conf import settings
+import saas
+
 
 # views.py
 
@@ -194,7 +195,7 @@ def createUserAndCompany(request,email,phone):
         
         if not companySettingsAdd(company.id) :
             messages.warning(request,"Firma ayarlarında hata, 05326179630 u arayın!")
-            order.views.send_sms(request,"0905326179630",f"yetkilendirme hatası {company}")
+            notification.views.send_sms(request,"0905326179630",f"yetkilendirme hatası {company}")
             print("firma setting ayarlandı")
             Logla(request,f'Firma Yetkinlendirmede hata !!! ')
                         
@@ -258,7 +259,7 @@ def userConfirm(request,userName,otp):
     
 
 def simpleLogin(request,userName,otp):
-    
+    print("simpleLogin çalışıyor")
     user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
     print("user_agent",user_agent)
     if "whatsapp" in user_agent or "bot" in user_agent:
@@ -272,6 +273,7 @@ def simpleLogin(request,userName,otp):
             randomPassword = str(random.randint(100000,999999))
             user.set_password(randomPassword)
             user.save()
+            print("user aktif edildi")
             messages.info(request,"Kullanıcı aktif edildi sistemi kullanmaya başlayabilirsiniz.")
             Logla(request,f'Kullanıcı aktif edildi {userName}')
             login(request,user)
@@ -281,33 +283,40 @@ def simpleLogin(request,userName,otp):
 
             request.session['company'] = company_id         # session içerisini company_id bilgisi company adında saklanır. sonraki sayfalarda bu kullanılır
             request.session['companyName'] = company.name   # companyname de session içerisinde tutulur.
-            request.session['is_vendor'] = is_vendor(company_id)
-            request.session['is_supplier'] = is_supplier(company_id)
+    
 
             
             if company.logo :                               # firmanın logosu sisteme yüklenmiş ise bu da session a atılır
                 request.session['companyLogoUrl'] = company.logo.url
                 #print(company.logo.url)
-            
+                
+            print("session a company bilgileri atıldı")
+
             scheme = request.is_secure() and "https" or "http"
             hostname =  f'{scheme}://{request.get_host()}/'
             webLink = f"{hostname}/user/login"
             wellcome_msg = f"Sistemimize hoşgeldiniz. Kullanıcı adınız : {userName} Şifreniz : {randomPassword} link: {webLink}"
             
-            if order.views.getSettings("registration_sms",1):
+            if saas.views.getSettings("registration_sms",1):
                 #messages.warning(request,"sms gönderimi yapılacak")
-                print("sms gönderilecek")
+                print("register sms gönderilecek")
                 if user.employee.telephone:
+                    print("telefon var")
                     try:
-                        order.views.send_sms(request,user.employee.telephone,wellcome_msg)
+                        notification.views.send_sms(request,user.employee.telephone,wellcome_msg)
                         notification.views.whatsappMessage(request,user.employee.telephone,wellcome_msg)
                         #messages.info(request,"Erişim bilgileri telefonunuza gönderildi")
-                        print("sms gonderildi")
+                        print("register sms gonderildi")
                     except Exception as e:
                         print("sms veya whatsapp gonderiminde hata : "+ str(e))
                         messages.error(request,"sms veya whatsapp gonderiminde hata : "+ str(e))
                         Logla(request,f'Sms veya whatsapp Gönderiminde hata phone:{user.employee.telephone}  hata:{str(e)} ')
-                        
+                else:
+                    print("telefon yok")
+                    messages.warning(request,"Telefon numarası yok")
+                    Logla(request,f'Telefon numarası yok {userName} ')
+            else:
+                print("registration sms gönderilmeyecek.settings de kapalı")    
             return redirect("/user/moduleDocs/")
         else:
             messages.warning(request,"Kullanıcı aktif edilemedi. Linkin süresi dolmuş olabilir. Aynnı Numara ile tekrar kayıt deneyiniz. Yeni aktivasyon linki gönderilecektir.")
@@ -327,7 +336,7 @@ def sendActivation(request,newUser,company,otp,phone,email):
     """
     msg_html = render_to_string("email_wellcome.html",{'company':company,'newUser':newUser,'link':simpleLoginLink})
     
-    if order.views.getSettings("registration_mail",1):      #ayarlarda mail gönderin aktif ise gönderim yapılır
+    if saas.views.getSettings("registration_mail",1):      #ayarlarda mail gönderin aktif ise gönderim yapılır
         print("mail gönderilecek")
         try:
             send_mail(subject="TOYU - HOŞ GELDİNİZ",
@@ -345,12 +354,12 @@ def sendActivation(request,newUser,company,otp,phone,email):
             Logla(request,f'Mail Gönderiminde hata {email} ')
     """
     
-    if order.views.getSettings("registration_sms",1):
+    if saas.views.getSettings("registration_sms",1):
         #messages.warning(request,"sms gönderimi yapılacak")
         print("sms gönderilecek")
         try:
-            order.views.send_sms(request,phone,f"Aktivasyon için tıklayın {simpleLoginLink} Destek için: 05326179630")
-            order.views.send_sms(request,"5326179630",f"Yeni firma !!! Firmaniz eklendi:{company} user:{email} ")
+            notification.views.send_sms(request,phone,f"Aktivasyon için tıklayın {simpleLoginLink} Destek için: 05326179630")
+            notification.views.send_sms(request,"5326179630",f"Yeni firma !!! Firmaniz eklendi:{company} user:{email} ")
             notification.views.whatsappMessage(request,phone,f"Aktivasyon için tıklayın {simpleLoginLink} Destek için: 05326179630")
             #messages.info(request,"Aktivasyon linki telefonunuza gönderildi linki tıklayınız")
             print("sms gonderildi")
@@ -585,14 +594,14 @@ def register(request): # kullanıcı kayıt sayfası
 
                     if not companySettingsAdd(company.id) :
                         messages.warning(request,"Firma ayarlarında hata, 05326179630 u arayın!")
-                        order.views.send_sms(request,"0905326179630",f"yetkilendirme hatası {company}")
+                        notification.views.send_sms(request,"0905326179630",f"yetkilendirme hatası {company}")
                         print("firma setting ayarlandı")
                         Logla(request,f'Firma Yetkinlendirmede hata !!! ')
 
                     # godnerilecek mesajıniçeriği html olarak oluşturulur
                     msg_html = render_to_string("email_wellcome.html",{'company':company,'newUser':newUser.username ,'password':password})
                     
-                    if order.views.getSettings("registration_mail",1):      #ayarlarda mail gönderin aktif ise gönderim yapılır
+                    if saas.views.getSettings("registration_mail",1):      #ayarlarda mail gönderin aktif ise gönderim yapılır
 
                         send_mail(subject="TOYU - HOŞ GELDİNİZ",
                                 message="Uygulamamızın ücretsiz eğitimlerine katılmak için bizi arayınız . 0532 617 96 30",
@@ -604,17 +613,17 @@ def register(request): # kullanıcı kayıt sayfası
                         Logla(request,f'Mail Gönderildi {email} ')
                     
                     
-                    if order.views.getSettings("registration_sms",1):
+                    if saas.views.getSettings("registration_sms",1):
                         #messages.warning(request,"sms gönderimi yapılacak")
                         try:
-                            order.views.send_sms(request,phone,f"Firmaniz eklendi:{company} user:{email}  destek:05326179630")
-                            order.views.send_sms(request,"5326179630",f"Yeni firma !!!Firmaniz eklendi:{company} user:{email} ")
+                            notification.views.send_sms(request,phone,f"Firmaniz eklendi:{company} user:{email}  destek:05326179630")
+                            notification.views.send_sms(request,"5326179630",f"Yeni firma !!!Firmaniz eklendi:{company} user:{email} ")
                             
                         except:
                             messages.error(request,"sms gonderiminde hata")
                             Logla(request,f'Sms Gönderiminde hata {phone} ')
                    
-                    order.views.send_sms(request,phone,f"TOYU kayıt doğrulama kodu : {newUser.employee.otp} ")
+                    notification.views.send_sms(request,phone,f"TOYU kayıt doğrulama kodu : {newUser.employee.otp} ")
 
                     return redirect(f"/user/telephoneConfirm/{newUser.id}")
                 
@@ -657,7 +666,7 @@ def telephoneConfirm(request,userid):
 
             user.employee.otp_expiredate = datetime.datetime.now() + datetime.timedelta(minutes=10) # 10 dk içinde telefon doğrulaması yapılmalı
             user.employee.save()
-            order.views.send_sms(request,user.employee.telephone,f"TOYU doğrulama kodu: {user.employee.otp} ")
+            notification.views.send_sms(request,user.employee.telephone,f"TOYU doğrulama kodu: {user.employee.otp} ")
             messages.info(request,"Doğrulama kodu tekrar gönderildi")
             Logla(request,f'Doğrulama kodu tekrar gönderildi {user}')
             return render(request,"telephoneConfirm.html")
@@ -710,9 +719,9 @@ def telephoneConfirm(request,userid):
             print("company sessiona a eklendi company:", request.session['company']   )
             # else browser session will be as long as the session  cookie time "SESSION_COOKIE_AGE"
 
-            if order.views.getSettings("toyu_adm_taskReg_bilgi",1):
-                order.views.send_sms(request,"5326179630",f" user:{user.username}  registerda telefon confirm tamamlandılogged in oldu ")
-                #order.views.send_sms(request,"5322664250",f" user:{user.username}  registerda telefon confirm tamamlandılogged in oldu ")
+            if saas.views.getSettings("toyu_adm_taskReg_bilgi",1):
+                notification.views.send_sms(request,"5326179630",f" user:{user.username}  registerda telefon confirm tamamlandılogged in oldu ")
+                #notification.views(request,"5322664250",f" user:{user.username}  registerda telefon confirm tamamlandılogged in oldu ")
  
             Logla(request,f"{user} taskmanagerregister tamamlandı logged in oldu .ilk gorev ekle sayfasına yönlendirildi")
             messages.success(request,"Başarıyla giriş yaptınız")
@@ -809,11 +818,11 @@ def taskmanagerRegister(request):
                     messages.info(request,f'tel:{telephone} çoklu kullanıcı var!!! destek@toyu.app adresine mail atınız')
 
                 # kullanıcı ilk defa da tanımlansa ara süreçten tekrar da girse aynı işlemler yapılır
-                """if order.views.getSettings("toyu_adm_taskReg_bilgi",1):
-                    order.views.send_sms(request,"5326179630",f"tasmanagerregister yeni kullanıcı {newUser.username}  kod gonderilecek ")
-                    order.views.send_sms(request,"5322664250",f"tasmanagerregister yeni kullanıcı {newUser.username}  kod gonderilecek ")"""
+                """if saas.views.getSettings("toyu_adm_taskReg_bilgi",1):
+                    notification.views.send_sms(request,"5326179630",f"tasmanagerregister yeni kullanıcı {newUser.username}  kod gonderilecek ")
+                    notification.views.send_sms(request,"5322664250",f"tasmanagerregister yeni kullanıcı {newUser.username}  kod gonderilecek ")"""
 
-                order.views.send_sms(request,telephone,f"TOYU doğrulama kodu: {newUser.employee.otp} ")
+                notification.views.send_sms(request,telephone,f"TOYU doğrulama kodu: {newUser.employee.otp} ")
                 Logla(request,f'user:{newUser} doğrulama kodu gönderildi tel:{newUser.employee.telephone} ')
                 messages.info(request,"Doğrulama kodu gönderildi")  
                 return redirect(f"/user/telephoneConfirm/{newUser.id}")
@@ -868,7 +877,7 @@ def passwordResetWithPhone(request):
                     print(code)
                 
                     Logla(request,f'user:{user} şifre resetleme için  OTP tekrar ayarlandı . ')
-                    order.views.send_sms(request,telephone,f"TOYU şifre sıfırlama kodu: {user.employee.otp} ")
+                    notification.views.send_sms(request,telephone,f"TOYU şifre sıfırlama kodu: {user.employee.otp} ")
                     notification.views.whatsappMessage(request,telephone,f"TOYU şifre sıfırlama kodu: {user.employee.otp} ")
                     Logla(request,f'user:{user} şifre sıfırlama kodu gönderildi tel:{user.employee.telephone} ')
                     messages.info(request,"Şifre sıfırlama kodu gönderildi")
@@ -920,7 +929,7 @@ def passwordResetWithPhoneConfirm(request,userid):
 
                 Logla(request,f'password_reset_telefon sistem yeni password atadı ilgili_user:{user.username}')
 
-                order.views.send_sms(request,user.employee.telephone,f"Şifre güncellendi TOYU user:{user.username} password : {password} ")
+                notification.views.send_sms(request,user.employee.telephone,f"Şifre güncellendi TOYU user:{user.username} password : {password} ")
                 notification.views.whatsappMessage(request,user.employee.telephone,f"Şifre güncellendi TOYU user:{user.username} password : {password} ")
                 Logla(request,f'password_reset_telefon password sms ile gonderildi ilgili_user:{user.username}')
                 messages.success(request,"Şifre sıfırlandı")
@@ -1400,7 +1409,7 @@ def userChangePassword(request,id):
         #########################################
             
 
-        order.views.send_sms(request,user.employee.telephone,f"TOYU şifreniz değişti username:{user.username} pass:{password} ")
+        notification.views.send_sms(request,user.employee.telephone,f"TOYU şifreniz değişti username:{user.username} pass:{password} ")
 
         return redirect("/gorevler/gorevListele/all")
     

@@ -82,3 +82,25 @@ class Company_Address(models.Model):
 
 
 
+class Settings(models.Model):
+    ozellik_type = (("String","String"),("Int","Int"),("Float","Float"),("Bool","Bool"))
+    id = models.AutoField(primary_key=True)
+    ozellik = models.CharField(max_length=50,verbose_name="Özellik",unique=True)
+    type = models.CharField(max_length=10,choices=ozellik_type,verbose_name="Tip",default="Bool")
+    aciklama = models.CharField(max_length=150,verbose_name="Açıklama",null=True,blank=True)
+
+    def __str__(self):
+        return self.ozellik
+
+class CompanySettings(models.Model):
+    id = models.AutoField(primary_key=True)
+    settings = models.ForeignKey(Settings,verbose_name="Özellik",on_delete=models.CASCADE)
+    deger = models.CharField(max_length=20,verbose_name="Değer ")
+    company= models.ForeignKey(Company,on_delete=models.PROTECT,blank=True,null=True)
+
+    def getValue(self):
+        return self.deger
+    
+    def setValue(self,value):
+        self.deger = value
+        self.save()

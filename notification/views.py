@@ -6,8 +6,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse, response
 from django.contrib.auth.decorators import login_required,user_passes_test,permission_required
 from django.contrib import messages
-from user.views import Logla
-from user.models import User
+from user.views import Logla, LoglaSms
+from user.models import SmsProblem, User
 import datetime
 import os
 from twilio.rest import Client
@@ -166,3 +166,68 @@ def notificationList(request):
 
     return  render(request,'notificationList.html',{'notifications':notifications}) 
 
+
+
+############################################################################
+####################### SEND _SMS_       #################################
+############################################################################
+
+
+#<?xml version='1.0' encoding='utf-8'?>
+def send_sms(request,gsm_no,gsm_mesaj):
+    sms_donus={ "99":"UNKNOWN_ERROR",
+                "00":"SUCCESS",
+                "97":"USE_POST_METHOD",
+                "91":"MISSING_POST_DATA",
+                "89":"WRONG_XML_FORMAT",
+                "87":"WRONG_USER_OR_PASSWORD",
+                "85":"WRONG_SMS_HEADER",
+                "84":"WRONG_SEND_DATE_TIME",
+                "83":"EMPTY_SMS",
+                "81":"NOT_ENOUGH_CREDITS",
+                "77":"DUPLICATED_MESSAGE",
+                }
+    
+    #gsm_mesaj = sms_icerik_duzekt(gsm_mesaj)
+
+    sms_data ="<sms>"
+    sms_data +="<username>nazimavci</username>"
+    sms_data +="<password>5567406b75a19855187347c04549be2c</password>"
+    sms_data +="    <header>TEKNOLIKYA</header>"
+    
+    """sms_data +="<username>gursuyapi</username>"
+    sms_data +="<password>1f6d3e8e0cfda061f2a7f0dda92fb69b</password>"
+    sms_data +="    <header>GURSUYAPI</header>"""
+    sms_data +="    <validity>2880</validity>"
+    sms_data +="    <message>"
+    sms_data +="        <gsm>"
+    sms_data +="            <no>90"+gsm_no.replace(" ","")[-10:]+"</no>"
+    sms_data +="        </gsm>"
+    sms_data +="        <msg>"+gsm_mesaj+"</msg>"
+    sms_data +="    </message>"
+    sms_data +="</sms>"
+
+    #headers = {'Content-Type': 'application/xml'} # set what your server accepts
+    headers = {'Content-Type': 'application/xml; charset=UTF-8',"Content-Encoding": "UTF-8"} # turkçe karakter gönderebilmek için
+    
+    SEND_SMS_URL = "http://panel.1sms.com.tr:8080/api/smspost/v1"
+
+    #messages.info(request,"sms gönderimi yapılacak")
+    try:
+        req_sms =requests.post(SEND_SMS_URL, data=sms_data.encode('utf-8'),headers=headers)
+      
+
+        #messages.info(request,f"SMS :{sms_donus[req_sms.text[:2]]}")
+        Logla(request,f"{gsm_no} numarasına sms gonderildi sonu:{sms_donus[req_sms.text[:2]]}")
+        LoglaSms(request,f"__{gsm_no}__numarasına sms gonderildi__mesaj:{gsm_mesaj}__sonuç:{sms_donus[req_sms.text[:2]]}")
+        
+        if req_sms.text[:2] != "00":
+            hataKayit = SmsProblem(telephone=gsm_no,message=gsm_mesaj,status=req_sms.text[:2],last_error=sms_donus[req_sms.text[:2]],try_count=1)
+            hataKayit.save()
+            Logla(request,f"gitmeyen sms kaydedildi id:{hataKayit.id} tel:{gsm_no} mesaj:{gsm_mesaj} sonuç:{sms_donus[req_sms.text[:2]]}")
+
+        return req_sms.text
+    except Exception as e:
+        messages.error(request,f"SMS gönderiminde hata yaşandı hata:{e}")
+        Logla(request,f"{gsm_no} numarasına sms gonderiminde hata yaşandı hata: {e} ")
+        LoglaSms(request,f"{gsm_no} numarasına sms gonderiminde hata yaşandı hata: {e} ")

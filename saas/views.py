@@ -5,7 +5,7 @@ from django.http import HttpResponse, response
 from django.contrib.auth.decorators import login_required,user_passes_test,permission_required
 from django.contrib import messages
 from user.views import Logla, createUsername
-from saas.models import Company, CompanyModules, CompanyStatus, Modules
+from saas.models import Company, CompanyModules, CompanySettings, CompanyStatus, Modules, Settings
 from saas.forms import CompanyForm
 import datetime
 from django.core.paginator import Paginator
@@ -13,6 +13,46 @@ from django.core.paginator import Paginator
 import random
 import string
 
+
+def getSettings(attr,company_id):
+    try:
+        ozellik = Settings.objects.get(ozellik=attr)
+        deger = CompanySettings.objects.filter(settings=ozellik,company_id=company_id).values('deger')[0]['deger']  # özellik yoksa tabloya eklenmemiş isre exception kısmında ekleme yapılır
+        
+    except Exception as e:
+        print(e)
+        ozellik_ekle = CompanySettings(settings=ozellik,company_id=company_id,deger=1)    # özellik tablosuna sonradan eklenen bir değer varsa bu companysettings de bulunmayacaktır. bu sebeple burada ekliyoruz
+        ozellik_ekle.save()
+
+        return True
+    
+    if deger == '1':
+        return True
+    else:
+        return False
+
+def getSettingsValue (attr,company_id):
+    try:
+        ozellik = Settings.objects.get(ozellik=attr)
+        cs = CompanySettings.objects.get(settings=ozellik,company_id=company_id)
+        deger = cs.getValue()
+        return deger
+    except Exception as e:
+        print(e)
+        ozellik_ekle = CompanySettings(settings=ozellik,company_id=company_id,deger=1)
+        ozellik_ekle.save()
+        return 1
+def setSettingValue(attr,company_id,value):
+    try:
+        ozellik = Settings.objects.get(ozellik=attr)
+        cs = CompanySettings.objects.get(settings=ozellik,company_id=company_id)
+        cs.deger = value
+        cs.save()
+    except Exception as e:
+        print(e)
+        ozellik_ekle = CompanySettings(settings=ozellik,company_id=company_id,deger=value)
+        ozellik_ekle.save()
+        
 def generate_password(length=6):
     characters = string.digits
     password = ''.join(random.choice(characters) for i in range(length))
