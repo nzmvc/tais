@@ -157,7 +157,7 @@
 
         console.log("API Key:", apiKey);
 
-        fetch(`http://localhost:8000/chatbot/api/chatbot/${apiKey}/`, {  
+        fetch(`http://tais.teknolikya.com.tr/chatbot/api/chatbot/${apiKey}/`, {  
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: message, session_id: session_id })
