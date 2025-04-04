@@ -12,7 +12,79 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
 #chatgpt form
+
+from django import forms
+from .models import Chatbot
+
+#TODO: multi file upload çalışmıyor
+
 class ChatbotForm(forms.ModelForm):
+    file = forms.FileField(
+        required=False,
+        #widget=forms.ClearableFileInput(attrs={'multiple': True, 'class': 'form-control'}),
+        help_text="Chatbot'un eğitileceği dosyaları yükleyin (PDF, TXT, MD, DOCX, CSV)."
+    )
+
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Chatbot adını girin (Örn: DestekBot)',
+        })
+    )
+
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Chatbot hakkında kısa bir açıklama ekleyin.',
+        }),
+        required=False
+    )
+
+    instructions = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Chatbot nasıl yanıt vermeli? Örn: Kullanıcıya sadece destek sağlayın.',
+        }),
+        required=False
+    )
+
+    model = forms.ChoiceField(
+        choices=[("gpt-4-1106-preview", "GPT-4"), ("gpt-3.5-turbo", "GPT-3.5")],
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        help_text="GPT-4 daha güçlü, ancak GPT-3.5 daha hızlıdır."
+    )
+    
+    temperature = forms.FloatField(
+        widget=forms.NumberInput(attrs={
+            'type': 'number',
+            'class': 'form-control',
+            'min': '0.0',
+            'max': '1.0',
+            'step': '0.1',
+            'id': 'temperature-input'
+        }),
+        initial=0.7,
+        help_text="Yanıtların rastgeleliği için 0.0 (kesin) ile 1.0 (rastgele) arasında bir değer girin veya slider'ı kullanın."
+    )
+
+    widget_color = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'type': 'color',
+            'class': 'form-control form-control-color',
+            'style': 'width: 50px; height: 50px; border: none;'
+        }),
+        help_text="Chatbot widget'ının rengini seçin."
+    )
+
+    class Meta:
+        model = Chatbot
+        fields = ['name', 'description', 'instructions', 'model', 'temperature', 'widget_color', 'file']
+
+
+
+class ChatbotForm_old(forms.ModelForm):
     file = forms.FileField(
         required=False,
         #widget=forms.FileInput(attrs={'multiple': True}),

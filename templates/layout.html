@@ -1,5 +1,7 @@
 {% load static%}
 {% load tz %}
+{% load custom_tags  %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -18,6 +20,8 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/vendor/remixicon/fonts/remixicon.css' %}">  
     
+    
+
         <script>
             function onClick(e) {
             e.preventDefault();
@@ -32,13 +36,16 @@
     
         </script>
 
-
-        <!-- sentry nin (Session Replay) takibi için eklendi -->
         <script src="https://js.sentry-cdn.com/7a36ee9f9ce84f2395804ede29286419.min.js" crossorigin="anonymous" ></script>
-
+       
     </head>
 
   <body class=" color-light ">
+
+    {% get_html_data as html_script %}
+    {{ html_script|safe }}        
+    
+                
     <!-- loader Start -->
     <div id="loading">
           <div id="loading-center">
@@ -71,7 +78,7 @@
                     <ul id="iq-sidebar-toggle" class="iq-menu">
                
                         <li class="">
-                            <a href="/gorevler/rapor_gorev" class="svg-icon">                        
+                            <a href="#" class="svg-icon">                        
                                 <svg  class="svg-icon" id="p-dash1" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
                                 </svg>
@@ -110,48 +117,7 @@
                         </li>
                         {%endif%}
 
-                        {% if perms.gorevler.view_gorevler  %}
-                        <li class=" ">  
-                            <a href="#calendar" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"        class="bi bi-calendar3" viewBox="0 0 16 16">
-                                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z" />
-                                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                                </svg>
-                                <span class="ml-4">Takvim</span>
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </a>
-                            <ul id="calendar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-
-                                {%if perm.order.view_reservation%}
-                                <li class="">
-                                    <a href="/order/takvim_v2" target="_blank">
-                                        <i class="las la-minus"></i><span>Rezervasyon Takvimi</span>
-                                    </a>
-                                </li>
-                                {%endif%}
-
-                            
-                                <li class="">
-                                    <a href="/gorevler/takvim_task" target="_blank">
-                                        <i class="las la-minus"></i><span>Görev Takvimi</span>
-                                    </a>
-                                </li>
-                                
-
-
-                                {%if perm.order.view_reservation%}
-                                <li class="">
-                                <a href="/order/gant_chart" target="_blank">
-                                    <i class="las la-minus"></i><span>Gant</span>
-                                </a>
-                                </li>
-                                {%endif%}
-                        
-                            </ul>
-                        </li>
-                        {%endif%}
+                       
 
                       
 
@@ -195,85 +161,7 @@
                             </ul>
                         </li>
                         {%endif%}
-                        {% if perms.gorevler.view_gorevler %}
-                        <li class=" ">
-                            <a href="#task" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-square" viewBox="0 0 16 16">
-                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
-                                </svg>
-                                <span class="ml-4">Görevler</span>
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </a>
-                            <ul id="task" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="">
-                                    <a href="/gorevler/gorevListele/aktif">
-                                        <i class="las la-minus"></i><span>Görev Listesi</span>
-                                    </a>
-                                </li>
-                                <li class="">
-                                <a href="/gorevler/gorevEkle">
-                                    <i class="las la-minus"></i><span>Görev ekle</span>
-                                </a>
-                                </li>
-                                
-                                {% if perms.auth.view_user %}
-                                <li class="">
-                                    <a href="/gorevler/gorevStatuList">
-                                        <i class="las la-minus"></i><span>Görev Statu Listesi</span>
-                                    </a>
-                                </li>
-                                {%endif%}
-                            
-                                <li class="">
-                                    <a href="/gorevler/duzenliGorevListele">
-                                        <i class="las la-minus"></i><span>Düzenli Görev Listele</span>
-                                    </a>
-                                </li>
-
-                                <li class="">
-                                    <a href="/gorevler/duzenliGorevRapor/{% now "Y" %}/{% now "m" %}/1">
-                                        <i class="las la-minus"></i><span>Düzenli Görev Rapor</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        {%endif%}
-
-                        
-                        <li class=" ">
-                            <a href="#raporlar" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
-                                </svg>
-                                <span class="ml-4">Raporlar</span>
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </a>
-                            
-                            <ul id="raporlar" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                {% if perms.gorevler.view_gorevler %}
-                                <li class="">
-                                    <a href="/gorevler/rapor_gorev">
-                                        <i class="las la-minus"></i><span>Görev Raporları</span>
-                                    </a>
-                                </li>
-                                {%endif%}
-                                {% if perms.order.view_orders %}
-                                <li class="">
-                                <a href="/order/rapor">
-                                    <i class="las la-minus"></i><span>Satış Raporları</span>
-                                </a>
-                                </li>
-                                {%endif%}
-                            
-                            </ul>
-                        </li>
-                        
+                      
 
 
                         {% if perms.user.is_superuser %}
@@ -312,74 +200,8 @@
 
                             {%endif%}
 
-                            {% if perms.notification.add_notification %}
-                                <li class=" ">
-                                    <a href="#notification" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                        <svg class="svg-icon" id="p-dash6" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line>
-                                        </svg>
-                                        <span class="ml-4">Bilgilendirme</span>
-                                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                        </svg>
-                                    </a>
-                                    <ul id="notification" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                            <li class="">
-                                                    <a href="">
-                                                        <i class="las la-minus"></i><span>Sms Gönder</span>
-                                                    </a>
-                                            </li>
-                                            <li class="">
-                                                    <a href="/notification/notificationAdd">
-                                                        <i class="las la-minus"></i><span>Bilgilendirme Ekle</span>
-                                                    </a>
-                                            </li>
-                                            <li class="">
-                                            <a href="/notification/notificationList/">
-                                                <i class="las la-minus"></i><span>Geçmiş bilgilendirmeler</span>
-                                            </a>
-                                        </li>
-                                        <li class="">
-                                                <a href="/user/chat">
-                                                    <i class="las la-minus"></i><span>Chat</span>
-                                                </a>
-                                        </li>   
-                                    </ul>
-                                </li>
-                                
-                        {%endif%}
 
-
-                        
-
-
-                        {% if perms.order.view_dokumanlar %}
-                        <li class=" ">
-                            <a href="#document" class="collapsed" data-toggle="collapse" aria-expanded="false">
-                                <svg class="svg-icon" id="p-dash5" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                    <line x1="1" y1="10" x2="23" y2="10"></line>
-                                </svg>
-                                <span class="ml-4">Dokumanlar</span>
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </a>
-                            <ul id="document" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                    <li class="">
-                                            <a href="/dokumanlar/dokumanList">
-                                                <i class="las la-minus"></i><span>Dokuman listesi</span>
-                                            </a>
-                                    </li>
-                                    <li class="">
-                                            <a href="/dokumanlar/dokumanAdd">
-                                                <i class="las la-minus"></i><span>Dokuman ekle</span>
-                                            </a>
-                                    </li>
-                            </ul>
-                        </li>
-                        {%endif%}
-                        
-                        {% if perms.auth.view_user %}
+                        {% if perms.user.is_superuser %}
                         <li class=" ">
                             <a href="#users" class="collapsed" data-toggle="collapse" aria-expanded="false">
                                 <i class="las la-user-circle" style="font-size:24px"></i>
@@ -586,9 +408,9 @@
 
                     <div class="d-flex align-items-center">
                         
-                        <!--------------->
+                        <!-------<a href="/user/chat" class="mt-2 btn btn-secondary rounded-pill blinking-button">  Chat AI </a>-------->
                   
-                        <a href="/user/chat" class="mt-2 btn btn-secondary rounded-pill blinking-button">  Chat AI </a>
+                        
                     
 
                         <!--------------->
@@ -618,11 +440,8 @@
                                         <div class="card shadow-none m-0">
                                             <div class="card-body p-3">
                                                 
-                                                <a class="iq-sub-card" href="/production/productionTaskListMy/v1/0/open"> <i class="las la-briefcase"></i> İşlerim</a>
-                                                <a class="iq-sub-card" href="/order/customerAdd2">Müşteri Ekle</a>
-                                                <a class="iq-sub-card" href="/crm/offerAdd/">Dosya oluştur</a>
-                                                <a class="iq-sub-card" href="/production/productionStatus/2/0/0/0">Üretim Kontrol</a>
-                                                <a class="iq-sub-card" href="/production/productionList/0/0/v2">Üretim Listele</a>
+                                                <a class="iq-sub-card" href="/chatbot/create_chatbot">Bot Ekle</a>
+                                                
                                                 <hr>
                                                 <a class="iq-sub-card" href="/user/moduleDocs">Module Tanıtım</a>
                                                 <a class="iq-sub-card" target="_blank" href="#">Eğitim videoları</a>

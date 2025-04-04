@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 import json
 import os
 from decouple import config
+from user.views import Logla
 from .forms import ChatbotForm, UploadedFileForm
 from .models import Chatbot, UploadedFile, ChatbotSession, ChatMessage
 from django.contrib import messages
@@ -239,7 +240,9 @@ def chatbot_response(request):
             return JsonResponse({"reply": bot_reply, "audio_url": f"/media/audio_response.mp3"}, status=200)
 
         except Exception as e:
+            Logla(request,f"chatbot_response hata:{e}")
             return JsonResponse({"error": str(e)}, status=500)
+        
 
     return JsonResponse({"error": "Only POST requests are allowed."}, status=400)
 
@@ -363,17 +366,19 @@ def chat(request):
 
 @login_required
 def create_chatbot(request):
+    print("create_chatbot çalıştı")
     if request.method == 'POST':
         form = ChatbotForm(request.POST)
         file_form = UploadedFileForm(request.POST, request.FILES)
-        
+        print("form:", form)
         if form.is_valid():
+            print("form valid")
             chatbot = form.save(commit=False)
             chatbot.user = request.user  # Kullanıcıyı atıyoruz
             chatbot.company_id = request.session["company"]  # Kullanıcının şirketini atıyoruz
             chatbot.save()
             print("Chatbot oluşturuldu:", chatbot.id)
-            
+            Logla(request,f"Chatbot database de oluşturuldu: {chatbot.id}")
             # Dosyalar varsa kaydet
             files = request.FILES.getlist('file')
             for file in files:
@@ -396,10 +401,14 @@ def create_chatbot(request):
                 tools       =[{"type": "file_search"}],
                 temperature   = chatbot.temperature,
             )
-
+            
+            
             if not assistant:
                 print("Asistan oluşturulamadı.")
+                Logla(request,f"adım 1 OpenAI asistanı oluşturulamadı")
                 return JsonResponse({"error": "Asistan oluşturulamadı."}, status=400)
+            
+            Logla(request,f"adım 1 OpenAI asistanı oluşturuldu: {assistant.id}")
             print("Asistan oluşturuldu:", assistant.id)
             chatbot.assistant_id = assistant.id
             chatbot.save()
@@ -410,12 +419,14 @@ def create_chatbot(request):
             chatbot.vector_store_id = vector_store.id
             chatbot.save()
             print("Vektör deposu oluşturuldu:", vector_store.id) 
-   
+            Logla(request,f"Adım 2 vektor deposu oluşturuldu: {vector_store.id}")
+            
             # ADIM 3: Dosyaları yükle ve vektör deposuna ekle
             file_batch = client.vector_stores.file_batches.upload_and_poll(
                 vector_store_id=vector_store.id, files=file_streams
             )
             print("Dosyalar yüklendi ve vektör deposuna eklendi:", file_batch.status)
+            Logla(request,f"adım 3 dosyalar yüklendi ve vektör deposuna eklendi: {file_batch.status}")
             
             """assistant = client.beta.assistants.update(
                 assistant_id=assistant.id,
@@ -428,14 +439,18 @@ def create_chatbot(request):
                 assistant_id=assistant.id,
                 tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
             )
-
+            Logla(request,f"adım 4 asistan güncellendi: {assistant.id}")
+            
             return redirect(f"/chatbot/chatbot_view/{chatbot.id}")
-
+        else:
+            print("Form geçersiz:", form.errors)
+            Logla(request,f"Form geçersiz: {form.errors}")
+            messages.error(request, "Form geçersiz. Lütfen kontrol edin.")
     else:
         form = ChatbotForm()
         file_form = UploadedFileForm()
     
-    return render(request, 'create_chatbot_v1.html', {'form': form, 'file_form': file_form})
+    return render(request, 'create_chatbot_v3.html', {'form': form, 'file_form': file_form})
 
 @login_required
 def chatbot_view(request, chatbot_id):
@@ -468,6 +483,7 @@ def chatbot_update(request, chatbot_id):
         if form.is_valid():
             form.save()
             messages.info(request,"guncelleme yapıldı")
+            Logla(request,f"Chatbot local database güncellendi: {chatbot.id}")
             
             #TODO: openai'den asistanı güncelleme işlemi
             client = OpenAI(api_key=config("OPENAI_TEST_KEY"))
@@ -480,8 +496,10 @@ def chatbot_update(request, chatbot_id):
                     
                 )
                 print("Asistan güncellendi:", response)
+                Logla(request,f"OpenAI asistanı güncellendi: {response.id}")
                 messages.info(request,"OpennAI asistan güncellendi")
             except e:
+                Logla(request,f"OpenAI asistanı güncellenemedi: {e}")
                 messages.error(request,"Asistan güncellenemedi. Hata: "+str(e))
                 print("OpenAI Assistant Güncelleme Hatası:", e)
             return redirect('chatbot_view', chatbot.id)
@@ -502,13 +520,17 @@ def chatbot_delete(request, chatbot_id):
         response = client.beta.assistants.delete(chatbot.assistant_id)
         print("Asistan silindi:", response)
         messages.info(request,"OpennAI asistan silindi") 
+        Logla(request,f"OpenAI asistanı silindi: {response.id}")
+        
         # Silme işlemi başarılıysa, chatbot'u sil
         chatbot.delete()
         print("Chatbot silindi:", chatbot.id)
+        Logla(request,f"Chatbot local database silindi: {chatbot.id}")
         messages.info(request,"TAIS db den asistan silindi") 
 
     except Exception as e:
         print("OpenAI Assistant Silme Hatası:", e)
+        Logla(request,f"OpenAI asistanı silinemedi: {e}")
         messages.error(request,"Asistan silinemedi. Hata: "+str(e))
 
     return redirect('/chatbot/chatbot_list')

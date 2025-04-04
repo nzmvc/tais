@@ -1003,7 +1003,7 @@ def loginPage(request):
             if modulesRecond.modules_id == 1:
                 return redirect("/gorevler/gorevListele/all")"""
 
-        return redirect("/user/userList/all")
+        return redirect("/chatbot/chatbot_list")
     
     return  render(request,'login.html')
 

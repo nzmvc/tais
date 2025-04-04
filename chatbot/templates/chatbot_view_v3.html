@@ -119,56 +119,6 @@
 </div>
 
 <br><br>
-<div class="col-md-12">
-    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">          
-        <div class="col p-4 d-flex flex-column position-static" style="">
-        
-
-
-             <!-- Chat Test Alanı -->
-        <div class="col-12 bg-white rounded-lg shadow-md p-6 h-[600px] flex flex-col">
-           
-            <h3 class="text-lg font-semibold mb-4">ChatBot Test</h3>
-
-            <div id="chat-container" class="flex-1 overflow-y-auto mb-4 space-y-4">
-                {% for message in test_messages %}
-                <div class="{% if message.role == 'user' %}text-right{% endif %}">
-                    <div class="inline-block max-w-[80%] p-3 rounded-lg 
-                              {% if message.role == 'user' %}bg-blue-100{% else %}bg-gray-100{% endif %}">
-                        <div class="text-sm text-gray-500 mb-1">
-                            {{ message.get_role_display }}
-                        </div>
-                        <p class="text-gray-800">{{ message.content }}</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            
-            <hr class="my-4">
-
-
-            <form id="chat-form" hx-post="/chatbot/api/chatbot/{{chatbot.api_key}}" 
-                  hx-swap="beforeend" hx-target="#chat-container">
-                <div class="flex gap-2">
-                    <input type="text" name="message" 
-                           class="flex-1 p-2 border rounded-lg"
-                           placeholder="Mesajınızı yazın..." required>
-                    <button type="submit" 
-                            class="px-4 py-2 text-white rounded-lg"
-                            style="background-color: {{ chatbot.widget_color }}">
-                        Gönder
-                    </button>
-                </div>
-            </form>
-        </div> 
-
-        <hr>
-        
-        </div>
-    </div>
-</div>
-<br><br>
-
 
 <div class="col-md-12">
     <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">          
@@ -177,15 +127,14 @@
              <!-- Embed Kod Alanı -->
              <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Websitenize Ekleyin</h3>
-                    <button onclick="copyEmbedCode()"
-                            class="text-sm px-3 py-1 bg-gray-100 rounded-lg">
-                        Kopyala
-                    </button>
+                    <h3 class="text-lg font-semibold">Websitenize Ekleyin
+                        <button onclick="copyEmbedCode()"
+                                class="text-sm px-3 py-1 bg-primary rounded-lg">
+                            Kopyala
+                        </button>
+                    </h3>
                 </div>
-                <pre id="embed-code" class="bg-gray-50 p-4 rounded-lg text-sm overflow-x-auto">
-                    
-                &lt;script src="https://tais.teknolikya.com.tr/static/js/embed.js?api_key={{ chatbot.api_key }}"&gt;&lt;/script&gt;
+                <pre id="embed-code"> &lt;script src="https://tais.teknolikya.com.tr/static/js/embed.js?api_key={{ chatbot.api_key }}"&gt;&lt;/script&gt;
                 </pre>
                 <p class="text-sm text-gray-600 mt-2">
                     Bu kodu web sitenizin &lt;/body&gt; etiketinden önce yapıştırın
@@ -195,6 +144,90 @@
         </div>
     </div>
 </div>
+
+<br><br>
+<div class="col-md-12">
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">          
+        <div class="col p-4 d-flex flex-column position-static" style="">
+            <!-- Chat Test Alanı -->
+            <div class="col-12 bg-white rounded-lg shadow-md p-6 h-[600px] flex flex-col">
+                <div class="container mt-5">
+                    <div id="testchatbox" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: scroll;">
+                        <!-- Mesajlar burada görünecek -->
+                    </div>
+                    <form id="testchat-form" class="input-group">
+                        <input type="text" id="user-input" class="form-control" placeholder="Bir soru yazın..." required>
+                        <button class="btn btn-primary" type="submit">Gönder</button>
+                    </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById("testchat-form");
+    const userInput = document.getElementById("user-input");
+    const chatbox = document.getElementById("testchatbox");
+
+    chatForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const userMessage = userInput.value.trim();
+
+        if (!userMessage) return;
+
+        // Kullanıcı mesajını göster
+        chatbox.innerHTML += `<div class="text-end mb-2"><b>Sen:</b> ${userMessage}</div>`;
+        userInput.value = "";
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        try {
+            const response = await fetch(`/chatbot/api/chatbot/{{ chatbot.api_key }}/`, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "X-API-Key": "{{ chatbot.api_key }}"
+                },
+                body: JSON.stringify({ 
+                    message: userMessage,
+                    session_id: localStorage.getItem("chatbot_session_id") || ""
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.reply) {
+                // Bot yanıtını göster
+                const replyDiv = document.createElement("div");
+                replyDiv.className = "text-start mb-2";
+                replyDiv.innerHTML = `<b>Chatbot:</b> ${data.reply}`;
+                chatbox.appendChild(replyDiv);
+                
+                if(data.session_id) {
+                    localStorage.setItem("chatbot_session_id", data.session_id);
+                }
+                
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        } catch (error) {
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "text-danger";
+            errorDiv.innerHTML = `Hata: ${error.message}`;
+            chatbox.appendChild(errorDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    });
+});
+</script>
+<br><br>
+
+
+
 
    
 

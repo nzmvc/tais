@@ -1,7 +1,7 @@
 from django import template
 from django.core.cache import cache
 from django.db.models import Q,Sum,Count
-
+from decouple import config
 
 import datetime
 register = template.Library()
@@ -77,3 +77,8 @@ def get_item(dictionary, key):
 @register.filter
 def multiply(value, arg):
     return float(value) * float(arg)
+
+
+@register.simple_tag
+def get_html_data():
+    return config('HEADER', default='')

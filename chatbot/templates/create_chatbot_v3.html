@@ -1,0 +1,173 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg col-md-9">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Yeni Chatbot Oluştur</h1>
+    
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+
+        <div class="grid grid-cols-2 gap-6">
+            <!-- Sol Kolon -->
+            <div class="space-y-4">
+                <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.help_text %}
+                        <small class="text-gray-500">{{ form.name.help_text }}</small>
+                    {% endif %}
+                    {% if form.name.errors %}
+                        <div class="text-red-500 text-sm">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    {% if form.description.help_text %}
+                        <small class="text-gray-500">{{ form.description.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <br><br>
+
+                <!-- Instructions Alanı -->
+                <div class="form-group">
+                    <label for="instructions">Chatbot Talimatları (Instructions)</label>
+                    {{ form.instructions }}
+                    {% if form.instructions.help_text %}
+                        <small class="text-gray-500">{{ form.instructions.help_text }}</small>
+                    {% endif %}
+
+                    <!-- Örnek Promtlar -->
+                    <div class="mt-2">
+                        <label class="block text-sm font-semibold mb-1">Örnek Talimatlar Seçiniz:</label>
+                        <select class="w-full p-2 border rounded" id="instruction-examples"
+                                onchange="updateInstructions()">
+                            <option value="">Bir örnek seçin...</option>
+                            <option value="Ürün Desteği: Kullanıcıların ürünler hakkında sorduğu soruları yanıtlayın. Ürün özellikleri, kullanım talimatları ve bakım bilgileri hakkında net bilgiler verin.">Ürün Desteği</option>
+                            <option value="Teknik Destek: Kullanıcılara yazılım, donanım veya sistem sorunlarıyla ilgili yardım edin. Kurulum rehberliği, hata ayıklama ve çözümler sunun.">Teknik Destek</option>
+                            <option value="Genel Asistan: Kullanıcılara genel sorularında yardımcı olun. Nazik, açıklayıcı ve faydalı yanıtlar verin.">Genel Kullanım (Varsayılan)</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <br><br>
+
+            <hr>
+            <!-- Sağ Kolon -->
+            <div class="space-y-4">
+                
+
+                <br><br>
+
+                <div class="form-group">
+                    {{ form.model.label_tag }}
+                    {{ form.model }}
+                    {% if form.model.help_text %}
+                        <small class="text-gray-500">{{ form.model.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <br><br>
+
+                <!-- Temperature -->
+                <div class="form-group">
+                    <label for="temperature">Yanıt Rastgeleliği (Temperature)</label>
+                    <div class="flex items-center gap-4">
+                        <input type="range" name="temperature" min="0" max="1" step="0.1"
+                            class="form-range w-full mt-2"
+                            id="temperature-slider"
+                            value="{{ form.temperature.value }}"
+                            oninput="syncTemperature(this.value)">
+                                                
+                        <input type="number" name="temperature" min="0" max="1" step="0.1"
+                            class="form-control w-20 text-center"
+                            id="temperature"
+                            value="{{ form.temperature.value }}"
+                            oninput="syncSlider(this.value)">
+                    </div>
+                    {% if form.temperature.help_text %}
+                        <small class="text-gray-500">{{ form.temperature.help_text }}</small>
+                    {% endif %}
+                    <!-- Yanıt Modları -->
+                    <div class="mt-2 text-sm text-gray-600">
+                        <strong>Yanıt Modları:</strong>
+                        <ul class="list-disc ml-4">
+                            <li><strong>Kesin Yanıt (0.0 - 0.3):</strong> Daha tutarlı, belirli ve net yanıtlar verir.</li>
+                            <li><strong>Dengeli (0.4 - 0.6):</strong> Hem kesin hem yaratıcı yanıtlar arasında dengeli bir mod.</li>
+                            <li><strong>Yaratıcı (0.7 - 1.0):</strong> Daha özgün ve farklı yanıtlar üretir, bazen tahmin edilemez olabilir.</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <br><br>
+
+                <!-- Dosya Yükleme -->
+                <div class="form-group">
+                    {{ form.file.label_tag }}
+                    {{ form.file }}
+                    {% if form.file.help_text %}
+                        <small class="text-gray-500">{{ form.file.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="block mb-2">{{ form.widget_color.label }}</label>
+                    <div class="flex items-center gap-4">
+                        {{ form.widget_color }}
+                        <div id="color-box" class="w-8 h-8 rounded-lg shadow-sm border" 
+                             style="background-color: {{ form.widget_color.value }};">
+                        </div>
+                    </div>
+                    {% if form.widget_color.help_text %}
+                        <small class="text-gray-500">{{ form.widget_color.help_text }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3 bg-blue-600 text-white font-bold rounded-lg">
+            Chatbot'u Oluştur ve Test Et
+        </button>
+    </form>
+</div>
+
+<br><br>
+
+<script>
+    function syncTemperature(value) {
+        document.getElementById('temperature').value = value;
+    }
+
+    function syncSlider(value) {
+        document.getElementById('temperature-slider').value = value;
+    }
+
+    // Color Picker Güncelleme
+    document.addEventListener("DOMContentLoaded", function() {
+        const colorInput = document.querySelector("input[type='color']");
+        const colorBox = document.getElementById("color-box");
+        
+        colorInput.addEventListener("input", function() {
+            colorBox.style.backgroundColor = colorInput.value;
+        });
+    });
+
+    // Instructions Örneklerini Güncelleme
+    function updateInstructions() {
+        const selectedValue = document.getElementById("instruction-examples").value;
+        if (selectedValue) {
+            document.getElementById("id_instructions").value = selectedValue;
+        }
+    }
+
+</script>
+
+{% endblock body %}
